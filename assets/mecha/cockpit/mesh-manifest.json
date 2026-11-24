@@ -1,0 +1,655 @@
+{
+  "schema": 1,
+  "triangles": 20034,
+  "vertices": 60102,
+  "objects": [
+    {
+      "object": "Armored cheek",
+      "first_vertex": 0,
+      "vertex_count": 564
+    },
+    {
+      "object": "Armored cheek.001",
+      "first_vertex": 564,
+      "vertex_count": 564
+    },
+    {
+      "object": "Armored cheek.002",
+      "first_vertex": 1128,
+      "vertex_count": 564
+    },
+    {
+      "object": "Armored cheek.003",
+      "first_vertex": 1692,
+      "vertex_count": 564
+    },
+    {
+      "object": "Armored cheek.004",
+      "first_vertex": 2256,
+      "vertex_count": 564
+    },
+    {
+      "object": "Armored cheek.005",
+      "first_vertex": 2820,
+      "vertex_count": 564
+    },
+    {
+      "object": "Canopy inner bronze seam",
+      "first_vertex": 3384,
+      "vertex_count": 228
+    },
+    {
+      "object": "Canopy inner bronze seam.001",
+      "first_vertex": 3612,
+      "vertex_count": 228
+    },
+    {
+      "object": "Canopy ivory spine",
+      "first_vertex": 3840,
+      "vertex_count": 420
+    },
+    {
+      "object": "Canopy ivory spine.001",
+      "first_vertex": 4260,
+      "vertex_count": 420
+    },
+    {
+      "object": "Center armor brow",
+      "first_vertex": 4680,
+      "vertex_count": 564
+    },
+    {
+      "object": "Central red lamp",
+      "first_vertex": 5244,
+      "vertex_count": 564
+    },
+    {
+      "object": "Central warning bezel",
+      "first_vertex": 5808,
+      "vertex_count": 564
+    },
+    {
+      "object": "Console toggle",
+      "first_vertex": 6372,
+      "vertex_count": 564
+    },
+    {
+      "object": "Console toggle.001",
+      "first_vertex": 6936,
+      "vertex_count": 564
+    },
+    {
+      "object": "Console toggle.002",
+      "first_vertex": 7500,
+      "vertex_count": 564
+    },
+    {
+      "object": "Console toggle.003",
+      "first_vertex": 8064,
+      "vertex_count": 564
+    },
+    {
+      "object": "Console toggle.004",
+      "first_vertex": 8628,
+      "vertex_count": 564
+    },
+    {
+      "object": "Console toggle.005",
+      "first_vertex": 9192,
+      "vertex_count": 564
+    },
+    {
+      "object": "Console toggle.006",
+      "first_vertex": 9756,
+      "vertex_count": 564
+    },
+    {
+      "object": "Console toggle.007",
+      "first_vertex": 10320,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot",
+      "first_vertex": 10884,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.001",
+      "first_vertex": 11448,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.002",
+      "first_vertex": 12012,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.003",
+      "first_vertex": 12576,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.004",
+      "first_vertex": 13140,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.005",
+      "first_vertex": 13704,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.006",
+      "first_vertex": 14268,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.007",
+      "first_vertex": 14832,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.008",
+      "first_vertex": 15396,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.009",
+      "first_vertex": 15960,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.010",
+      "first_vertex": 16524,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.011",
+      "first_vertex": 17088,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.012",
+      "first_vertex": 17652,
+      "vertex_count": 564
+    },
+    {
+      "object": "Cooling slot.013",
+      "first_vertex": 18216,
+      "vertex_count": 564
+    },
+    {
+      "object": "Equipped ammunition ivory shell",
+      "first_vertex": 18780,
+      "vertex_count": 504
+    },
+    {
+      "object": "Equipped ammunition olive inner lip",
+      "first_vertex": 19284,
+      "vertex_count": 504
+    },
+    {
+      "object": "Equipped ammunition rear enclosure",
+      "first_vertex": 19788,
+      "vertex_count": 564
+    },
+    {
+      "object": "Equipped ammunition recessed CRT",
+      "first_vertex": 20352,
+      "vertex_count": 564
+    },
+    {
+      "object": "Equipped ammunition screw",
+      "first_vertex": 20916,
+      "vertex_count": 564
+    },
+    {
+      "object": "Equipped ammunition screw slot",
+      "first_vertex": 21480,
+      "vertex_count": 36
+    },
+    {
+      "object": "Equipped ammunition screw slot.001",
+      "first_vertex": 21516,
+      "vertex_count": 36
+    },
+    {
+      "object": "Equipped ammunition screw slot.002",
+      "first_vertex": 21552,
+      "vertex_count": 36
+    },
+    {
+      "object": "Equipped ammunition screw slot.003",
+      "first_vertex": 21588,
+      "vertex_count": 36
+    },
+    {
+      "object": "Equipped ammunition screw.001",
+      "first_vertex": 21624,
+      "vertex_count": 564
+    },
+    {
+      "object": "Equipped ammunition screw.002",
+      "first_vertex": 22188,
+      "vertex_count": 564
+    },
+    {
+      "object": "Equipped ammunition screw.003",
+      "first_vertex": 22752,
+      "vertex_count": 564
+    },
+    {
+      "object": "Heading ivory shell",
+      "first_vertex": 23316,
+      "vertex_count": 504
+    },
+    {
+      "object": "Heading olive inner lip",
+      "first_vertex": 23820,
+      "vertex_count": 504
+    },
+    {
+      "object": "Heading rear enclosure",
+      "first_vertex": 24324,
+      "vertex_count": 564
+    },
+    {
+      "object": "Heading recessed CRT",
+      "first_vertex": 24888,
+      "vertex_count": 564
+    },
+    {
+      "object": "Heading screw",
+      "first_vertex": 25452,
+      "vertex_count": 564
+    },
+    {
+      "object": "Heading screw slot",
+      "first_vertex": 26016,
+      "vertex_count": 36
+    },
+    {
+      "object": "Heading screw slot.001",
+      "first_vertex": 26052,
+      "vertex_count": 36
+    },
+    {
+      "object": "Heading screw slot.002",
+      "first_vertex": 26088,
+      "vertex_count": 36
+    },
+    {
+      "object": "Heading screw slot.003",
+      "first_vertex": 26124,
+      "vertex_count": 36
+    },
+    {
+      "object": "Heading screw.001",
+      "first_vertex": 26160,
+      "vertex_count": 564
+    },
+    {
+      "object": "Heading screw.002",
+      "first_vertex": 26724,
+      "vertex_count": 564
+    },
+    {
+      "object": "Heading screw.003",
+      "first_vertex": 27288,
+      "vertex_count": 564
+    },
+    {
+      "object": "Hydraulic polished rod",
+      "first_vertex": 27852,
+      "vertex_count": 132
+    },
+    {
+      "object": "Hydraulic polished rod.001",
+      "first_vertex": 27984,
+      "vertex_count": 132
+    },
+    {
+      "object": "IS overview ivory shell",
+      "first_vertex": 28116,
+      "vertex_count": 504
+    },
+    {
+      "object": "IS overview olive inner lip",
+      "first_vertex": 28620,
+      "vertex_count": 504
+    },
+    {
+      "object": "IS overview rear enclosure",
+      "first_vertex": 29124,
+      "vertex_count": 564
+    },
+    {
+      "object": "IS overview recessed CRT",
+      "first_vertex": 29688,
+      "vertex_count": 564
+    },
+    {
+      "object": "IS overview screw",
+      "first_vertex": 30252,
+      "vertex_count": 564
+    },
+    {
+      "object": "IS overview screw slot",
+      "first_vertex": 30816,
+      "vertex_count": 36
+    },
+    {
+      "object": "IS overview screw slot.001",
+      "first_vertex": 30852,
+      "vertex_count": 36
+    },
+    {
+      "object": "IS overview screw slot.002",
+      "first_vertex": 30888,
+      "vertex_count": 36
+    },
+    {
+      "object": "IS overview screw slot.003",
+      "first_vertex": 30924,
+      "vertex_count": 36
+    },
+    {
+      "object": "IS overview screw.001",
+      "first_vertex": 30960,
+      "vertex_count": 564
+    },
+    {
+      "object": "IS overview screw.002",
+      "first_vertex": 31524,
+      "vertex_count": 564
+    },
+    {
+      "object": "IS overview screw.003",
+      "first_vertex": 32088,
+      "vertex_count": 564
+    },
+    {
+      "object": "Legend A L SH",
+      "first_vertex": 32652,
+      "vertex_count": 366
+    },
+    {
+      "object": "Legend B R SH",
+      "first_vertex": 33018,
+      "vertex_count": 420
+    },
+    {
+      "object": "Legend CHASSIS",
+      "first_vertex": 33438,
+      "vertex_count": 648
+    },
+    {
+      "object": "Legend EQUIPPED / AMMUNITION",
+      "first_vertex": 34086,
+      "vertex_count": 1812
+    },
+    {
+      "object": "Legend MECHA HACK",
+      "first_vertex": 35898,
+      "vertex_count": 876
+    },
+    {
+      "object": "Legend OVERVIEW",
+      "first_vertex": 36774,
+      "vertex_count": 774
+    },
+    {
+      "object": "Legend L HAND",
+      "first_vertex": 37548,
+      "vertex_count": 498
+    },
+    {
+      "object": "Legend R HAND",
+      "first_vertex": 38046,
+      "vertex_count": 540
+    },
+    {
+      "object": "Legend RADAR",
+      "first_vertex": 38586,
+      "vertex_count": 540
+    },
+    {
+      "object": "Legend TORSO",
+      "first_vertex": 39126,
+      "vertex_count": 456
+    },
+    {
+      "object": "Legend X L HIP",
+      "first_vertex": 39582,
+      "vertex_count": 426
+    },
+    {
+      "object": "Legend Y R HIP",
+      "first_vertex": 40008,
+      "vertex_count": 450
+    },
+    {
+      "object": "Overhead arch",
+      "first_vertex": 40458,
+      "vertex_count": 420
+    },
+    {
+      "object": "Overhead olive bulkhead",
+      "first_vertex": 40878,
+      "vertex_count": 564
+    },
+    {
+      "object": "Pilot floor",
+      "first_vertex": 41442,
+      "vertex_count": 564
+    },
+    {
+      "object": "Radar ivory shell",
+      "first_vertex": 42006,
+      "vertex_count": 504
+    },
+    {
+      "object": "Radar olive inner lip",
+      "first_vertex": 42510,
+      "vertex_count": 504
+    },
+    {
+      "object": "Radar rear enclosure",
+      "first_vertex": 43014,
+      "vertex_count": 564
+    },
+    {
+      "object": "Radar recessed CRT",
+      "first_vertex": 43578,
+      "vertex_count": 564
+    },
+    {
+      "object": "Radar screw",
+      "first_vertex": 44142,
+      "vertex_count": 564
+    },
+    {
+      "object": "Radar screw slot",
+      "first_vertex": 44706,
+      "vertex_count": 36
+    },
+    {
+      "object": "Radar screw slot.001",
+      "first_vertex": 44742,
+      "vertex_count": 36
+    },
+    {
+      "object": "Radar screw slot.002",
+      "first_vertex": 44778,
+      "vertex_count": 36
+    },
+    {
+      "object": "Radar screw slot.003",
+      "first_vertex": 44814,
+      "vertex_count": 36
+    },
+    {
+      "object": "Radar screw.001",
+      "first_vertex": 44850,
+      "vertex_count": 564
+    },
+    {
+      "object": "Radar screw.002",
+      "first_vertex": 45414,
+      "vertex_count": 564
+    },
+    {
+      "object": "Radar screw.003",
+      "first_vertex": 45978,
+      "vertex_count": 564
+    },
+    {
+      "object": "Seat back",
+      "first_vertex": 46542,
+      "vertex_count": 564
+    },
+    {
+      "object": "Seat pan",
+      "first_vertex": 47106,
+      "vertex_count": 564
+    },
+    {
+      "object": "Side console chassis",
+      "first_vertex": 47670,
+      "vertex_count": 564
+    },
+    {
+      "object": "Side console chassis.001",
+      "first_vertex": 48234,
+      "vertex_count": 564
+    },
+    {
+      "object": "Side console inlay",
+      "first_vertex": 48798,
+      "vertex_count": 564
+    },
+    {
+      "object": "Side console inlay.001",
+      "first_vertex": 49362,
+      "vertex_count": 564
+    },
+    {
+      "object": "Status lamp lens",
+      "first_vertex": 49926,
+      "vertex_count": 564
+    },
+    {
+      "object": "Status lamp lens.001",
+      "first_vertex": 50490,
+      "vertex_count": 564
+    },
+    {
+      "object": "Status lamp lens.002",
+      "first_vertex": 51054,
+      "vertex_count": 564
+    },
+    {
+      "object": "Status lamp lens.003",
+      "first_vertex": 51618,
+      "vertex_count": 564
+    },
+    {
+      "object": "Status lamp lens.004",
+      "first_vertex": 52182,
+      "vertex_count": 564
+    },
+    {
+      "object": "Status lamp socket",
+      "first_vertex": 52746,
+      "vertex_count": 564
+    },
+    {
+      "object": "Status lamp socket.001",
+      "first_vertex": 53310,
+      "vertex_count": 564
+    },
+    {
+      "object": "Status lamp socket.002",
+      "first_vertex": 53874,
+      "vertex_count": 564
+    },
+    {
+      "object": "Status lamp socket.003",
+      "first_vertex": 54438,
+      "vertex_count": 564
+    },
+    {
+      "object": "Status lamp socket.004",
+      "first_vertex": 55002,
+      "vertex_count": 564
+    },
+    {
+      "object": "Torso servo ivory shell",
+      "first_vertex": 55566,
+      "vertex_count": 504
+    },
+    {
+      "object": "Torso servo olive inner lip",
+      "first_vertex": 56070,
+      "vertex_count": 504
+    },
+    {
+      "object": "Torso servo rear enclosure",
+      "first_vertex": 56574,
+      "vertex_count": 564
+    },
+    {
+      "object": "Torso servo recessed CRT",
+      "first_vertex": 57138,
+      "vertex_count": 564
+    },
+    {
+      "object": "Torso servo screw",
+      "first_vertex": 57702,
+      "vertex_count": 564
+    },
+    {
+      "object": "Torso servo screw slot",
+      "first_vertex": 58266,
+      "vertex_count": 36
+    },
+    {
+      "object": "Torso servo screw slot.001",
+      "first_vertex": 58302,
+      "vertex_count": 36
+    },
+    {
+      "object": "Torso servo screw slot.002",
+      "first_vertex": 58338,
+      "vertex_count": 36
+    },
+    {
+      "object": "Torso servo screw slot.003",
+      "first_vertex": 58374,
+      "vertex_count": 36
+    },
+    {
+      "object": "Torso servo screw.001",
+      "first_vertex": 58410,
+      "vertex_count": 564
+    },
+    {
+      "object": "Torso servo screw.002",
+      "first_vertex": 58974,
+      "vertex_count": 564
+    },
+    {
+      "object": "Torso servo screw.003",
+      "first_vertex": 59538,
+      "vertex_count": 564
+    }
+  ],
+  "coordinate_system": "right-handed, X right, Y up, -Z forward, metres",
+  "vertex_format": "little-endian float32 position[3], normal[3], linear_color[3], emissive[1]",
+  "pilot_origin": [
+    0,
+    0,
+    0
+  ],
+  "source": "Mecha Hack XR cockpit with original HUD lettering"
+}

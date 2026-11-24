@@ -1,0 +1,457 @@
+{
+  "schema": 1,
+  "authoring": "Original deterministic noise/oscillator synthesis; no recorded or cartridge samples",
+  "license": "CC0-1.0",
+  "rate": 48000,
+  "channels": 1,
+  "files": [
+    {
+      "path": "audio/effect-00.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.337615966796875,
+      "sha256": "8900e68b24b2d22332f5ffdcec3a6dde181d7c80c8350fadd807e0c354c01ab0"
+    },
+    {
+      "path": "audio/effect-01.wav",
+      "kind": "rocket",
+      "frames": 33600,
+      "peak": 0.452880859375,
+      "sha256": "dcb3c7ae808fc6e42dfe58c4b844684a26bc0f9b69a8c87df461b7ea2d4950d6"
+    },
+    {
+      "path": "audio/effect-02.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.280670166015625,
+      "sha256": "9a48dfe3eba7a9cf1ca60b3310cfc329f46d5b448f53b7990953ca9510801a89"
+    },
+    {
+      "path": "audio/effect-03.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.347442626953125,
+      "sha256": "82911498d4e55893d74f5ae2421070630b23f44875d6db12e19f4af5626c61bd"
+    },
+    {
+      "path": "audio/effect-04.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.295745849609375,
+      "sha256": "30f5c7b0d3c9a23d5d1d9cfb51b90bbaacf069a0fc3b9e8f6063c923b9371335"
+    },
+    {
+      "path": "audio/effect-05.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.309478759765625,
+      "sha256": "a41d82fd7d8e42ee65556417c5e242b7cffaaa198ea45c41628523b11d8e8e86"
+    },
+    {
+      "path": "audio/effect-06.wav",
+      "kind": "motor",
+      "frames": 8640,
+      "peak": 0.17327880859375,
+      "sha256": "0abc93f3dfad06692fd34d89bf56d95416b0eb382bdcefec8ed8913a429f7618"
+    },
+    {
+      "path": "audio/effect-07.wav",
+      "kind": "rocket",
+      "frames": 33600,
+      "peak": 0.521575927734375,
+      "sha256": "a97abad9f74e99fd26e25684c242d0776ac02b8f6a391d0280019789ae64aca9"
+    },
+    {
+      "path": "audio/effect-08.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.262969970703125,
+      "sha256": "8400528218b1a87320e28eff0d4320bcadf2815bf752aacc6be8d7dfed3103a1"
+    },
+    {
+      "path": "audio/effect-09.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.32305908203125,
+      "sha256": "fb6cbad8681d457b28ab28bdc8ce6c81ff119523cb91a4bc828ec0cc1f7dae08"
+    },
+    {
+      "path": "audio/effect-10.wav",
+      "kind": "foot",
+      "frames": 15360,
+      "peak": 0.5518798828125,
+      "sha256": "5b333c24315dba2ff57bd8d9e8156fbaa8159f028eed410b1cdde0778d604d75"
+    },
+    {
+      "path": "audio/effect-11.wav",
+      "kind": "rocket",
+      "frames": 33600,
+      "peak": 0.517303466796875,
+      "sha256": "76b53885bd23227eb47b35b806ae18044949af219eea56ca4b12bc0d7a93e334"
+    },
+    {
+      "path": "audio/effect-12.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.271484375,
+      "sha256": "6ea8116e3fbd80dcd3882e73f1017b3de5dd0ef692f5e50a4c12a85a02e9a80d"
+    },
+    {
+      "path": "audio/effect-13.wav",
+      "kind": "rocket",
+      "frames": 33600,
+      "peak": 0.50006103515625,
+      "sha256": "9dfb34ed9a48107a82057fc306d4def618ab60db2c2ff5bc8f9f447f9ad3f474"
+    },
+    {
+      "path": "audio/effect-14.wav",
+      "kind": "damage",
+      "frames": 13440,
+      "peak": 0.4281005859375,
+      "sha256": "8f65ebc64b1b4028490b89427f85c27c85ccdbc873f6486ffecd521fae8b8e93"
+    },
+    {
+      "path": "audio/effect-15.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.278228759765625,
+      "sha256": "1f32e0f6b3d2ac5d8374705ae6dbdd3c287e1642670ef573b874adf43811d568"
+    },
+    {
+      "path": "audio/effect-16.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.301544189453125,
+      "sha256": "67bc5a63cbea4c963c0891d88d297b30d37979b48aff0eac983b9c24720b303e"
+    },
+    {
+      "path": "audio/effect-17.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.36553955078125,
+      "sha256": "24952ca756bcaf854113053f10d19bf2ec8907d18204a78d7ab5e532b5266732"
+    },
+    {
+      "path": "audio/effect-18.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.321075439453125,
+      "sha256": "623ba8f6263341101bed4decc998fb922bc66629624499f1dad85d2c968243f2"
+    },
+    {
+      "path": "audio/effect-19.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.328125,
+      "sha256": "f2c3a65939504cc1f698ed760d69d13f74f70c010e742f77d44061d4a97087c9"
+    },
+    {
+      "path": "audio/effect-20.wav",
+      "kind": "explosion",
+      "frames": 52800,
+      "peak": 0.46136474609375,
+      "sha256": "94d88d7751363fe61d6b46678a8023bcfd5323841a282050d63cb3924a11887e"
+    },
+    {
+      "path": "audio/effect-21.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.31878662109375,
+      "sha256": "248d8b01927baf60a61f8b9141d70286dd43528ecf64303f2353c54333d23952"
+    },
+    {
+      "path": "audio/effect-22.wav",
+      "kind": "large",
+      "frames": 76800,
+      "peak": 0.496002197265625,
+      "sha256": "c6a97a74d5d40d345f1d4f0dc1d083116863992306a17ac9886ee06fc0fe3c89"
+    },
+    {
+      "path": "audio/effect-23.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.332244873046875,
+      "sha256": "f226baad3b44c2020f6da49534fecd7cc3fccb4da5cfbb9f1e28663697933648"
+    },
+    {
+      "path": "audio/effect-24.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.343017578125,
+      "sha256": "1f6b13bb0ce62682ea38dc53921c1204ff09780dd28b5c9ef960900235a148df"
+    },
+    {
+      "path": "audio/effect-25.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.2779541015625,
+      "sha256": "e28d22a7326446df10c15905a33960b60bebc99629d8bb6bf83fd11a44edea48"
+    },
+    {
+      "path": "audio/effect-26.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.30743408203125,
+      "sha256": "9b386e530d17329ac708ad843e71fc604c6514c21103b6140792360772eb9458"
+    },
+    {
+      "path": "audio/effect-27.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.30401611328125,
+      "sha256": "c63645a6c48d3edeabaaa391d11f94c977ff0c156b3f0de464c0671bb121b5bf"
+    },
+    {
+      "path": "audio/effect-28.wav",
+      "kind": "cue",
+      "frames": 7200,
+      "peak": 0.1732177734375,
+      "sha256": "2daca5c5608511d64333c378038198e46a6dabc42d9cab5be71a50ce1796625f"
+    },
+    {
+      "path": "audio/effect-29.wav",
+      "kind": "cue",
+      "frames": 7200,
+      "peak": 0.1732177734375,
+      "sha256": "2daca5c5608511d64333c378038198e46a6dabc42d9cab5be71a50ce1796625f"
+    },
+    {
+      "path": "audio/effect-30.wav",
+      "kind": "cue",
+      "frames": 7200,
+      "peak": 0.1732177734375,
+      "sha256": "2daca5c5608511d64333c378038198e46a6dabc42d9cab5be71a50ce1796625f"
+    },
+    {
+      "path": "audio/effect-31.wav",
+      "kind": "cue",
+      "frames": 7200,
+      "peak": 0.1732177734375,
+      "sha256": "2daca5c5608511d64333c378038198e46a6dabc42d9cab5be71a50ce1796625f"
+    },
+    {
+      "path": "is2/audio/effect-00.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.393402099609375,
+      "sha256": "9a67e44b91cc4282e8326fe3cb03964f752e047a8bff1dc8f1da9cc5ed36af15"
+    },
+    {
+      "path": "is2/audio/effect-01.wav",
+      "kind": "rocket",
+      "frames": 33600,
+      "peak": 0.54583740234375,
+      "sha256": "97115bc05782e7f8c77a73bb5cb0fc0d3eea7afc47a6b03448fb5d75b53c4118"
+    },
+    {
+      "path": "is2/audio/effect-02.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.399017333984375,
+      "sha256": "870e7a801093a812e3d681d0291b7dcd397ce7e2085de7365f12fad492a32b78"
+    },
+    {
+      "path": "is2/audio/effect-03.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.313934326171875,
+      "sha256": "4fca239bc76725ea788f5721162e5deded30a44eb5000101086919db59abd54d"
+    },
+    {
+      "path": "is2/audio/effect-04.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.33441162109375,
+      "sha256": "d1bb917de38ea11d7aa93c4f7a046b67c84f0e3aad0302fbaf6bce7042d6236e"
+    },
+    {
+      "path": "is2/audio/effect-05.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.279083251953125,
+      "sha256": "867e30d76dd8830a8f7a8c5b42ada767de57e0505e56d8f9433a1c32b17aba5b"
+    },
+    {
+      "path": "is2/audio/effect-06.wav",
+      "kind": "motor",
+      "frames": 8640,
+      "peak": 0.173126220703125,
+      "sha256": "04e72c2ad110c86c2ad947a852e8e9b92635a950efca2475b2155ffe3a574442"
+    },
+    {
+      "path": "is2/audio/effect-07.wav",
+      "kind": "rocket",
+      "frames": 33600,
+      "peak": 0.488525390625,
+      "sha256": "e3d2c2a09672980444a0c1001b81918fb4e3ff8e1ee7084aed6bf013aa896415"
+    },
+    {
+      "path": "is2/audio/effect-08.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.32989501953125,
+      "sha256": "d46df3f0b860c7602dd57f45ce1cdd002e03a4c6b4da8004cc4c85f16512bdaf"
+    },
+    {
+      "path": "is2/audio/effect-09.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.302642822265625,
+      "sha256": "b2c490e7d38ae74919075d09bbbee91029b5bfc15decfb4aca3fff483a9053f2"
+    },
+    {
+      "path": "is2/audio/effect-10.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.31939697265625,
+      "sha256": "6045a7a667e86949af00d8b84be7f4434de7a4db733e0f250fdfed1bd51542ae"
+    },
+    {
+      "path": "is2/audio/effect-11.wav",
+      "kind": "rocket",
+      "frames": 33600,
+      "peak": 0.5045166015625,
+      "sha256": "884125f0a3855081ba702c7300c14d08d918be1082778e620b13471365091b6e"
+    },
+    {
+      "path": "is2/audio/effect-12.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.28350830078125,
+      "sha256": "1e4dcdc01c7b34e7628021c10537e2f8ccc33613ead0a112983d20657eb1e685"
+    },
+    {
+      "path": "is2/audio/effect-13.wav",
+      "kind": "rocket",
+      "frames": 33600,
+      "peak": 0.4779052734375,
+      "sha256": "c7ad1f376c6b63837b2d3137b7cf9c99d0af6d82588be4c11b598649e7fec149"
+    },
+    {
+      "path": "is2/audio/effect-14.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.302764892578125,
+      "sha256": "ecf0bc8760220a454768471e5138136bc3e087cacaeb651ce8768a976eb6218f"
+    },
+    {
+      "path": "is2/audio/effect-15.wav",
+      "kind": "foot",
+      "frames": 15360,
+      "peak": 0.508331298828125,
+      "sha256": "f68f099f756712ae4056e131f90dbf2fa503d39287eddaed1a9f8cb32a95b62a"
+    },
+    {
+      "path": "is2/audio/effect-16.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.2733154296875,
+      "sha256": "af3bed033bfa1dea1928c032a5ad35406781a3e357a89c2d257c93f1dfb1dbc0"
+    },
+    {
+      "path": "is2/audio/effect-17.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.315399169921875,
+      "sha256": "6eb49a2b041aa7100de74c22795d26e434da565594dfb6464aed1b24570e846c"
+    },
+    {
+      "path": "is2/audio/effect-18.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.357757568359375,
+      "sha256": "8290f5dd4e7a92cb63a0289324fb4219dbd132b8a7e3748ae1ef1404f0f27342"
+    },
+    {
+      "path": "is2/audio/effect-19.wav",
+      "kind": "damage",
+      "frames": 13440,
+      "peak": 0.355865478515625,
+      "sha256": "0cad50851ebeb7ec2807c99ede1c47684271c4a024f1fe22a53f194f08782fdc"
+    },
+    {
+      "path": "is2/audio/effect-20.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.314178466796875,
+      "sha256": "5b20dcf6eaafd8b22c804107aa18dc772687e05d8bbad28fc7b0152c68b96013"
+    },
+    {
+      "path": "is2/audio/effect-21.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.3421630859375,
+      "sha256": "2c1bc3c918121b9c09ead9df0f1f6874011680ea9446dba31fa17d3520db3772"
+    },
+    {
+      "path": "is2/audio/effect-22.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.346343994140625,
+      "sha256": "b8d77f8e732104d339fee8e1b1031de273156996b9ae08f662dc4a843909439b"
+    },
+    {
+      "path": "is2/audio/effect-23.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.295745849609375,
+      "sha256": "7edc1ace4ae913cb2b5eaf98b7ae172e1693072dda65d87f07bfb1acaa035931"
+    },
+    {
+      "path": "is2/audio/effect-24.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.334075927734375,
+      "sha256": "776202ac7c7d4ac7ad338cfc96bee6edbfafa2a6b86ea1a4e5de134e970cf98c"
+    },
+    {
+      "path": "is2/audio/effect-25.wav",
+      "kind": "explosion",
+      "frames": 52800,
+      "peak": 0.588836669921875,
+      "sha256": "cd57cdfdd260908757eab464d0f7d6a8689b05aa2ff4ecbdf8dedf15157d51ec"
+    },
+    {
+      "path": "is2/audio/effect-26.wav",
+      "kind": "shot",
+      "frames": 8640,
+      "peak": 0.3399658203125,
+      "sha256": "22784f7257f2b33bb735d33166988449238bb1ab07c840da169931a69b929384"
+    },
+    {
+      "path": "is2/audio/effect-27.wav",
+      "kind": "large",
+      "frames": 76800,
+      "peak": 0.610870361328125,
+      "sha256": "f48cd6e9b8d7921c4f78b8a22cdce219fe050bbcbd1a1a345ee88a588ecaa706"
+    },
+    {
+      "path": "is2/audio/effect-28.wav",
+      "kind": "cue",
+      "frames": 7200,
+      "peak": 0.1732177734375,
+      "sha256": "2daca5c5608511d64333c378038198e46a6dabc42d9cab5be71a50ce1796625f"
+    },
+    {
+      "path": "is2/audio/effect-29.wav",
+      "kind": "cue",
+      "frames": 7200,
+      "peak": 0.1732177734375,
+      "sha256": "2daca5c5608511d64333c378038198e46a6dabc42d9cab5be71a50ce1796625f"
+    },
+    {
+      "path": "is2/audio/effect-30.wav",
+      "kind": "cue",
+      "frames": 7200,
+      "peak": 0.1732177734375,
+      "sha256": "2daca5c5608511d64333c378038198e46a6dabc42d9cab5be71a50ce1796625f"
+    },
+    {
+      "path": "is2/audio/effect-31.wav",
+      "kind": "cue",
+      "frames": 7200,
+      "peak": 0.1732177734375,
+      "sha256": "2daca5c5608511d64333c378038198e46a6dabc42d9cab5be71a50ce1796625f"
+    }
+  ]
+}

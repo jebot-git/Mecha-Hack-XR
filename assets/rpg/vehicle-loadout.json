@@ -1,0 +1,11 @@
+{
+  "modules": ["vehicle_mode"],
+  "equipment": {
+    "left_hand": "blade",
+    "right_hand": "rifle",
+    "left_shoulder": "empty",
+    "right_shoulder": "scan",
+    "left_hip": "repair",
+    "right_hip": "vehicle_mode"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "primacy": {
+    "friendly_contact": [
+      "对上暗号了。自己人。",
+      "收到你的信号。我们跟你走。",
+      "先遣组报到。听得清吗？",
+      "看见你了，给我留个位置。"
+    ],
+    "friendly_support": [
+      "我牵制它，你先过。",
+      "别急，我跟得上。",
+      "这边交给我。你忙你的。",
+      "盯住了。我掩护你。"
+    ],
+    "friendly_confirm": [
+      "信号消失。目标已摧毁。",
+      "嗯，看清了。你打掉了它。",
+      "记录组，这个可以划掉了。",
+      "漂亮。少了一个麻烦。"
+    ],
+    "enemy_contact": [
+      "发现目标，别跟丢了。",
+      "有动静。确认，是敌人。",
+      "识别码不对。全组警戒。",
+      "别出声，我看见它了。"
+    ],
+    "enemy_attack": [
+      "抓到空当了。上！",
+      "目标交给我。",
+      "一起上。就是现在！",
+      "看准了，这一下躲不开。"
+    ],
+    "enemy_distress": [
+      "失控了！快躲开！",
+      "中继台，我撑不住了！",
+      "驾驶舱破了！有人听见吗？",
+      "记录发出去了。别等我。"
+    ]
+  },
+  "terran": {
+    "friendly_contact": [
+      "Workshop crew here. Room for one more?",
+      "Got your signal, mate. Right with you.",
+      "Friendly patrol coming through.",
+      "That's us on your scope. Coming with you."
+    ],
+    "friendly_support": [
+      "Keep going, I've got this one.",
+      "Bit of breathing room, coming up.",
+      "Leave this one to me, mate.",
+      "Take your time, mate. I'm on it."
+    ],
+    "friendly_confirm": [
+      "That's a clean hit, mate!",
+      "Nice work. Scratch one.",
+      "That'll take a lot of fixing.",
+      "Yep, saw it go down."
+    ],
+    "enemy_contact": [
+      "Contact on my scope.",
+      "Heads up, mate. I've got a contact.",
+      "That's no friend of ours.",
+      "I've got a live one!"
+    ],
+    "enemy_attack": [
+      "My turn. Give us a bit of room.",
+      "Righto. Let's dent it.",
+      "On you go, I'll take this one.",
+      "Hold still, you mongrel!"
+    ],
+    "enemy_distress": [
+      "Stay back! She's coming apart!",
+      "Lost the controls, mate! I'm going down!",
+      "The cockpit's full of smoke!",
+      "Get out! Get out!"
+    ]
+  },
+  "dominion": {
+    "friendly_contact": [
+      "Ici la garde. On vous accompagne.",
+      "C'est nous autres. Tu nous reçois ?",
+      "Ton signal est bon. On te suit.",
+      "Escorte en place. La garde est avec vous."
+    ],
+    "friendly_support": [
+      "Vas-y, je m'en occupe.",
+      "On te couvre. Prends ton temps.",
+      "Continue, je prends le relais.",
+      "Reste avec moi. On va passer."
+    ],
+    "friendly_confirm": [
+      "Belle touche. Je l'ai vu tomber.",
+      "Cible détruite. C'est confirmé.",
+      "C'est réglé. Lâche pas.",
+      "Celui-là, il se relèvera pas."
+    ],
+    "enemy_contact": [
+      "Je les vois d'icitte. Tenez-vous prêts !",
+      "Ça bouge. C'est pas des nôtres.",
+      "Garde, ouvrez l'œil. Contact confirmé.",
+      "Je te vois, toi. Tu m'échapperas pas."
+    ],
+    "enemy_attack": [
+      "Tasse-toi un peu. J'y vais !",
+      "Pour le prince ! On fonce, la gang !",
+      "À mon signal. Là !",
+      "Je l'ai dans ma mire. J'engage."
+    ],
+    "enemy_distress": [
+      "La coque vient de lâcher !",
+      "J'ai plus de commandes ! Écartez-vous !",
+      "Ma verrière est fendue. Ça tient plus !",
+      "Poste de garde, vous me recevez ? Mayday !"
+    ]
+  }
+}

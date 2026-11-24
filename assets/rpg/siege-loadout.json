@@ -1,0 +1,13 @@
+{
+  "modules": [
+    "shoulder_hardpoint"
+  ],
+  "equipment": {
+    "left_hand": "cannon",
+    "right_hand": "cannon",
+    "left_shoulder": "empty",
+    "right_shoulder": "empty",
+    "left_hip": "repair",
+    "right_hip": "scan"
+  }
+}

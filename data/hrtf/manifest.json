@@ -1,0 +1,17 @@
+{
+  "source_commit": "18fd5aba46e20787b51f28f7197a68506c965c07",
+  "source_file_sha256": "1898786e8db9a90d5f5dff7b91cc514ebc2628cd4ca28a878ae82422838fbe62",
+  "format": "ISHR v1: little-endian u32 version/directions/taps/rate; float32 Cartesian directions; float32 HRIR[direction][ear][tap], zlib-compressed",
+  "sample_rate": 48000,
+  "directions": 836,
+  "taps": 256,
+  "ears": 2,
+  "elevation_range": [
+    -90,
+    90
+  ],
+  "uncompressed_bytes": 1722180,
+  "uncompressed_sha256": "1d80d4968ebcff7509f44dd5ebbd8a293c2fd6e5de4ff43abc3d8bd0be9ed7b8",
+  "compressed_bytes": 1625785,
+  "compressed_sha256": "03cf45b3172a53e806ac4661c50848db5bb61534c3b9f6bae10a217e685b5db3"
+}

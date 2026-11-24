@@ -1,0 +1,1240 @@
+{
+  "schema": 1,
+  "units": "triangles",
+  "source": "User requested the same design upgrade for remaining enemy models and explicitly allowed doubled kaiju polygon budgets. Abomination hybrid is classified as kaiju; all other remaining enemy caps stay unchanged.",
+  "scope": "Exactly44 remaining enemy visual IDs; previous65 refined mecha, equipment and original IS sources excluded.",
+  "assets": [
+    {
+      "id": "abomination",
+      "file": "meshes/abomination.json",
+      "category": "kaiju_hybrid",
+      "content_group": "core_base",
+      "archetype": "biped",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/abomination.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "budget_multiplier": 2,
+      "baseline_triangles": 356,
+      "baseline_sha256": "774a000ebc67179cfeb74324ff3d68c5248505c09e32312898f1b67594ccb4a4",
+      "bounds": {
+        "low": [
+          -5.523781818181819,
+          0.0,
+          -3.35
+        ],
+        "high": [
+          5.523781818181819,
+          14.181818181818182,
+          2.056388178162003
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "mecha",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "abomination_alt",
+      "file": "meshes/abomination_alt.json",
+      "category": "kaiju_hybrid",
+      "content_group": "core_alternate",
+      "archetype": "biped",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/abomination_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "budget_multiplier": 2,
+      "baseline_triangles": 392,
+      "baseline_sha256": "3311e1c46f0ad9070a6522a05b7a594400b7efa33ab653aaf1091cde632638cb",
+      "bounds": {
+        "low": [
+          -5.523782,
+          0.0,
+          -3.35
+        ],
+        "high": [
+          5.523782,
+          14.181818,
+          2.056388
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "mecha",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "abyssal_kaiju",
+      "file": "meshes/abyssal_kaiju.json",
+      "category": "organic_kaiju",
+      "content_group": "manual",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/abyssal_kaiju.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "budget_multiplier": 2,
+      "baseline_triangles": 300,
+      "baseline_sha256": "c2462d73649fcf31a804e5342e3b77514df85345ee18ede815afd0b083f437ae",
+      "bounds": {
+        "low": [
+          -8.093197,
+          0.0,
+          -4.919105
+        ],
+        "high": [
+          8.093197,
+          15.675,
+          7.561933
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "anti_mecha_destruction_squad",
+      "file": "meshes/anti_mecha_destruction_squad.json",
+      "category": "anti_mecha_squad",
+      "content_group": "core_base",
+      "archetype": "infantry",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/anti_mecha_destruction_squad.json",
+      "baseline_budget": 376,
+      "budget": 376,
+      "budget_multiplier": 1,
+      "baseline_triangles": 294,
+      "baseline_sha256": "ba0103ca47c93fbd0a81cd5e8b6504ee3f38d37d05bfb9716ec1ecd79930b32e",
+      "bounds": {
+        "low": [
+          -2.62,
+          0.0,
+          -1.1
+        ],
+        "high": [
+          2.62,
+          1.8144454325041244,
+          1.7567545531674562
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "squad",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "anti_mecha_destruction_squad_alt",
+      "file": "meshes/anti_mecha_destruction_squad_alt.json",
+      "category": "anti_mecha_squad",
+      "content_group": "core_alternate",
+      "archetype": "infantry",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/anti_mecha_destruction_squad_alt.json",
+      "baseline_budget": 752,
+      "budget": 752,
+      "budget_multiplier": 1,
+      "baseline_triangles": 330,
+      "baseline_sha256": "acc3484309db87e57978192e1583794dd8a34ed00a2501665997a34ad80c5a12",
+      "bounds": {
+        "low": [
+          -2.62,
+          0.0,
+          -1.1
+        ],
+        "high": [
+          2.62,
+          1.814445,
+          1.756755
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "squad",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "anti_mecha_hovertank",
+      "file": "meshes/anti_mecha_hovertank.json",
+      "category": "hover_vehicle",
+      "content_group": "core_base",
+      "archetype": "hovercraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/anti_mecha_hovertank.json",
+      "baseline_budget": 124,
+      "budget": 124,
+      "budget_multiplier": 1,
+      "baseline_triangles": 100,
+      "baseline_sha256": "b33ce9dd2576b5d2cdc24c57d625abcb6006497d71b42d4964c04b6d1850c274",
+      "bounds": {
+        "low": [
+          -3.9,
+          0.0,
+          -6.5
+        ],
+        "high": [
+          3.9,
+          3.7,
+          3.75
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "hovercraft",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "anti_mecha_hovertank_alt",
+      "file": "meshes/anti_mecha_hovertank_alt.json",
+      "category": "hover_vehicle",
+      "content_group": "core_alternate",
+      "archetype": "hovercraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/anti_mecha_hovertank_alt.json",
+      "baseline_budget": 248,
+      "budget": 248,
+      "budget_multiplier": 1,
+      "baseline_triangles": 136,
+      "baseline_sha256": "c3988d8e06034b7297387a828e18568f315afeff76087c1c98b2cbb84b6f117c",
+      "bounds": {
+        "low": [
+          -3.9,
+          0.0,
+          -6.5
+        ],
+        "high": [
+          3.9,
+          3.7,
+          3.75
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "hovercraft",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "anti_mecha_strike_team",
+      "file": "meshes/anti_mecha_strike_team.json",
+      "category": "anti_mecha_squad",
+      "content_group": "core_base",
+      "archetype": "infantry",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/anti_mecha_strike_team.json",
+      "baseline_budget": 376,
+      "budget": 376,
+      "budget_multiplier": 1,
+      "baseline_triangles": 240,
+      "baseline_sha256": "be5ceada3c412f2a38cc9fd35e1ac4437d53197ed37aa1850cfaed0e6e2391b0",
+      "bounds": {
+        "low": [
+          -2.62,
+          0.0,
+          -1.1
+        ],
+        "high": [
+          2.62,
+          1.8144454325041244,
+          1.3
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "squad",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "anti_mecha_strike_team_alt",
+      "file": "meshes/anti_mecha_strike_team_alt.json",
+      "category": "anti_mecha_squad",
+      "content_group": "core_alternate",
+      "archetype": "infantry",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/anti_mecha_strike_team_alt.json",
+      "baseline_budget": 752,
+      "budget": 752,
+      "budget_multiplier": 1,
+      "baseline_triangles": 276,
+      "baseline_sha256": "a81f8f296a97e2b33e896e8ce23d317ff93ac6eacbd668a6ee0c0d1add54946b",
+      "bounds": {
+        "low": [
+          -2.62,
+          0.0,
+          -1.1
+        ],
+        "high": [
+          2.62,
+          1.814445,
+          1.3
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "squad",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "artillery_battery",
+      "file": "meshes/artillery_battery.json",
+      "category": "installation",
+      "content_group": "manual",
+      "archetype": "installation",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/artillery_battery.json",
+      "baseline_budget": 300,
+      "budget": 300,
+      "budget_multiplier": 1,
+      "baseline_triangles": 120,
+      "baseline_sha256": "ece12ee7163b4c9eea32863bf4ca2c3614a79591d0c4af62dbe0582dc829fe08",
+      "bounds": {
+        "low": [
+          -4.629575,
+          0.0,
+          -7.068674
+        ],
+        "high": [
+          4.629575,
+          6.614747,
+          3.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "installation",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "bomber",
+      "file": "meshes/bomber.json",
+      "category": "fighter",
+      "content_group": "manual",
+      "archetype": "aircraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/bomber.json",
+      "baseline_budget": 248,
+      "budget": 248,
+      "budget_multiplier": 1,
+      "baseline_triangles": 148,
+      "baseline_sha256": "0fc38ba91b1ba005c3877138d6e27fa3185e5bef638b652e9b491164b3e5994c",
+      "bounds": {
+        "low": [
+          -7.0,
+          0.0,
+          -8.0
+        ],
+        "high": [
+          7.0,
+          3.279423,
+          6.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "aircraft",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "carrier",
+      "file": "meshes/carrier.json",
+      "category": "capital_craft",
+      "content_group": "manual",
+      "archetype": "aircraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/carrier.json",
+      "baseline_budget": 752,
+      "budget": 752,
+      "budget_multiplier": 1,
+      "baseline_triangles": 172,
+      "baseline_sha256": "4a60238d2ede47b34d288e86d23543815a06a7e8b2add7eedcf5a219adb90f32",
+      "bounds": {
+        "low": [
+          -7.0,
+          0.0,
+          -8.0
+        ],
+        "high": [
+          7.0,
+          3.279423,
+          6.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "aircraft",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "cruiser",
+      "file": "meshes/cruiser.json",
+      "category": "capital_craft",
+      "content_group": "manual",
+      "archetype": "aircraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/cruiser.json",
+      "baseline_budget": 752,
+      "budget": 752,
+      "budget_multiplier": 1,
+      "baseline_triangles": 184,
+      "baseline_sha256": "4557c1c44c3a79787c81a4c376ddadf7a749f916a3023003e9cd949e58e4b4d3",
+      "bounds": {
+        "low": [
+          -7.0,
+          0.0,
+          -8.0
+        ],
+        "high": [
+          7.0,
+          3.279423,
+          6.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "aircraft",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "cyclone_drone",
+      "file": "meshes/cyclone_drone.json",
+      "category": "hover_drone",
+      "content_group": "manual",
+      "archetype": "hovercraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/cyclone_drone.json",
+      "baseline_budget": 248,
+      "budget": 248,
+      "budget_multiplier": 1,
+      "baseline_triangles": 108,
+      "baseline_sha256": "bf5ccf6b41b7b0fda52df520b27160d89d24024dec4c6e7c319f01c4dd555057",
+      "bounds": {
+        "low": [
+          -3.4,
+          0.0,
+          -6.5
+        ],
+        "high": [
+          3.4,
+          3.7,
+          3.75
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "hovercraft",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "deepdiver_submarine",
+      "file": "meshes/deepdiver_submarine.json",
+      "category": "submarine",
+      "content_group": "manual",
+      "archetype": "hovercraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/deepdiver_submarine.json",
+      "baseline_budget": 248,
+      "budget": 248,
+      "budget_multiplier": 1,
+      "baseline_triangles": 108,
+      "baseline_sha256": "71d3497113be0c206a1019422ba5afda837c54d2d96433ff9f52c7823fd1de09",
+      "bounds": {
+        "low": [
+          -3.4,
+          0.0,
+          -6.5
+        ],
+        "high": [
+          3.4,
+          3.7,
+          3.75
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "hovercraft",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "dreadnought",
+      "file": "meshes/dreadnought.json",
+      "category": "capital_craft",
+      "content_group": "manual",
+      "archetype": "aircraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/dreadnought.json",
+      "baseline_budget": 752,
+      "budget": 752,
+      "budget_multiplier": 1,
+      "baseline_triangles": 268,
+      "baseline_sha256": "7888ff20b2e16e0ba54dfd0157bf7271d5e3f2a354a73e18a3662deb9ee3d0d0",
+      "bounds": {
+        "low": [
+          -7.0,
+          0.0,
+          -8.0
+        ],
+        "high": [
+          7.0,
+          3.279423,
+          6.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "aircraft",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "fast_attack_hovercraft",
+      "file": "meshes/fast_attack_hovercraft.json",
+      "category": "hover_vehicle",
+      "content_group": "core_base",
+      "archetype": "hovercraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/fast_attack_hovercraft.json",
+      "baseline_budget": 52,
+      "budget": 52,
+      "budget_multiplier": 1,
+      "baseline_triangles": 52,
+      "baseline_sha256": "a1dedbf1c3ef90350375177285e774fd502b36534bdb493da6a35b6b366ac8a7",
+      "bounds": {
+        "low": [
+          -3.4,
+          0.0,
+          -6.5
+        ],
+        "high": [
+          3.4,
+          3.7,
+          3.75
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "hovercraft",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "fast_attack_hovercraft_alt",
+      "file": "meshes/fast_attack_hovercraft_alt.json",
+      "category": "hover_vehicle",
+      "content_group": "core_alternate",
+      "archetype": "hovercraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/fast_attack_hovercraft_alt.json",
+      "baseline_budget": 104,
+      "budget": 104,
+      "budget_multiplier": 1,
+      "baseline_triangles": 88,
+      "baseline_sha256": "88cf15724b12dd52bd1f15deacab4ded61ca5eb12f70a02551ffc9706344f428",
+      "bounds": {
+        "low": [
+          -3.4,
+          0.0,
+          -6.5
+        ],
+        "high": [
+          3.4,
+          3.7,
+          3.75
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "hovercraft",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "gunboat",
+      "file": "meshes/gunboat.json",
+      "category": "capital_craft",
+      "content_group": "manual",
+      "archetype": "aircraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/gunboat.json",
+      "baseline_budget": 752,
+      "budget": 752,
+      "budget_multiplier": 1,
+      "baseline_triangles": 160,
+      "baseline_sha256": "48428468ae334eda0cadfbf1f80cb6a150f9dde4da1bf92894c6ee7646996ddd",
+      "bounds": {
+        "low": [
+          -7.0,
+          0.0,
+          -8.0
+        ],
+        "high": [
+          7.0,
+          3.279423,
+          6.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "aircraft",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "heavy_hover_tank",
+      "file": "meshes/heavy_hover_tank.json",
+      "category": "hover_vehicle",
+      "content_group": "manual",
+      "archetype": "hovercraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/heavy_hover_tank.json",
+      "baseline_budget": 248,
+      "budget": 248,
+      "budget_multiplier": 1,
+      "baseline_triangles": 96,
+      "baseline_sha256": "cb23d6c3486160773476e175eb6330d5ab2d2e8d1fb48a3876a548c56cf3e355",
+      "bounds": {
+        "low": [
+          -3.9,
+          0.0,
+          -6.5
+        ],
+        "high": [
+          3.9,
+          3.7,
+          3.75
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "hovercraft",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "interceptor",
+      "file": "meshes/interceptor.json",
+      "category": "fighter",
+      "content_group": "manual",
+      "archetype": "aircraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/interceptor.json",
+      "baseline_budget": 248,
+      "budget": 248,
+      "budget_multiplier": 1,
+      "baseline_triangles": 100,
+      "baseline_sha256": "937407e411630d1e5f0531508b92d245170e794ab5dec67f18be12079d83365b",
+      "bounds": {
+        "low": [
+          -7.0,
+          0.0,
+          -8.0
+        ],
+        "high": [
+          7.0,
+          3.279423,
+          6.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "aircraft",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "ion_disruptor_installation",
+      "file": "meshes/ion_disruptor_installation.json",
+      "category": "installation",
+      "content_group": "core_base",
+      "archetype": "installation",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/ion_disruptor_installation.json",
+      "baseline_budget": 208,
+      "budget": 208,
+      "budget_multiplier": 1,
+      "baseline_triangles": 184,
+      "baseline_sha256": "a53c500243fc38aefdb9de1214dc799663c4b8049d6537d88843af3d940db6a1",
+      "bounds": {
+        "low": [
+          -4.629575429023336,
+          0.0,
+          -7.068674283434486
+        ],
+        "high": [
+          4.629575429023336,
+          6.614746837374936,
+          3.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "installation",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "ion_disruptor_installation_alt",
+      "file": "meshes/ion_disruptor_installation_alt.json",
+      "category": "installation",
+      "content_group": "core_alternate",
+      "archetype": "installation",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/ion_disruptor_installation_alt.json",
+      "baseline_budget": 416,
+      "budget": 416,
+      "budget_multiplier": 1,
+      "baseline_triangles": 220,
+      "baseline_sha256": "46e09777d0a14da7f5220dc47f032238ab4cd338ba8bd3394cbbf4a0287f64dd",
+      "bounds": {
+        "low": [
+          -4.629575,
+          0.0,
+          -7.068674
+        ],
+        "high": [
+          4.629575,
+          6.614747,
+          3.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "installation",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "ion_emplacement",
+      "file": "meshes/ion_emplacement.json",
+      "category": "installation",
+      "content_group": "core_base",
+      "archetype": "installation",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/ion_emplacement.json",
+      "baseline_budget": 150,
+      "budget": 150,
+      "budget_multiplier": 1,
+      "baseline_triangles": 144,
+      "baseline_sha256": "2a2e9618ba34675bd67a46716efb21ef17f13cfe2ba42e0d3fddda820e6f0f39",
+      "bounds": {
+        "low": [
+          -4.629575429023336,
+          0.0,
+          -7.068674283434486
+        ],
+        "high": [
+          4.629575429023336,
+          5.029803963133585,
+          3.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "installation",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "ion_emplacement_alt",
+      "file": "meshes/ion_emplacement_alt.json",
+      "category": "installation",
+      "content_group": "core_alternate",
+      "archetype": "installation",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/ion_emplacement_alt.json",
+      "baseline_budget": 300,
+      "budget": 300,
+      "budget_multiplier": 1,
+      "baseline_triangles": 180,
+      "baseline_sha256": "18b61e78be4782192e4ecaafaecc34f8a5e6f2916c33fc44017237b1d443b298",
+      "bounds": {
+        "low": [
+          -4.629575,
+          0.0,
+          -7.068674
+        ],
+        "high": [
+          4.629575,
+          5.029804,
+          3.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "installation",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_baron",
+      "file": "meshes/kaiju_baron.json",
+      "category": "organic_kaiju",
+      "content_group": "core_base",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_baron.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "budget_multiplier": 2,
+      "baseline_triangles": 302,
+      "baseline_sha256": "44f4d5a016b94680bfa3f671ef61cbbf2a80710544f5c1ffc1e72763be220a1b",
+      "bounds": {
+        "low": [
+          -8.093196961916071,
+          0.0,
+          -4.919104613610225
+        ],
+        "high": [
+          8.093196961916071,
+          15.675,
+          7.56193316918909
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_baron_alt",
+      "file": "meshes/kaiju_baron_alt.json",
+      "category": "organic_kaiju",
+      "content_group": "core_alternate",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_baron_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "budget_multiplier": 2,
+      "baseline_triangles": 326,
+      "baseline_sha256": "f90fda76f3cffe8d2c468ff1118fc297c60ade720466d626d09a38c4ceb99242",
+      "bounds": {
+        "low": [
+          -8.093197,
+          0.0,
+          -4.919105
+        ],
+        "high": [
+          8.093197,
+          15.675,
+          7.561933
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_broodqueen",
+      "file": "meshes/kaiju_broodqueen.json",
+      "category": "organic_kaiju",
+      "content_group": "manual",
+      "archetype": "crawler",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_broodqueen.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "budget_multiplier": 2,
+      "baseline_triangles": 384,
+      "baseline_sha256": "60390c500e6aa464ac85eeee80337a943f1f445b641d7b738dbdf60c52947e31",
+      "bounds": {
+        "low": [
+          -12.094616,
+          0.0,
+          -4.1
+        ],
+        "high": [
+          12.094616,
+          17.03018,
+          7.56491
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_dismantler",
+      "file": "meshes/kaiju_dismantler.json",
+      "category": "organic_kaiju",
+      "content_group": "manual",
+      "archetype": "crawler",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_dismantler.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "budget_multiplier": 2,
+      "baseline_triangles": 328,
+      "baseline_sha256": "144da41087be761f648a06f2c3d1a81ef6726bba67d764ea2661a106c694c13c",
+      "bounds": {
+        "low": [
+          -2.398,
+          0.0,
+          -4.1
+        ],
+        "high": [
+          2.65,
+          16.6,
+          10.0
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_drone",
+      "file": "meshes/kaiju_drone.json",
+      "category": "organic_kaiju",
+      "content_group": "core_base",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_drone.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "budget_multiplier": 2,
+      "baseline_triangles": 302,
+      "baseline_sha256": "88e29000b4b8b5a6e87704fa78c165b51f1340d59d771792d482b9bc7ad9f245",
+      "bounds": {
+        "low": [
+          -5.209351744893991,
+          0.0,
+          -4.1000000000000005
+        ],
+        "high": [
+          5.209351744893991,
+          12.9,
+          7.552463124824732
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_drone_alt",
+      "file": "meshes/kaiju_drone_alt.json",
+      "category": "organic_kaiju",
+      "content_group": "core_alternate",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_drone_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "budget_multiplier": 2,
+      "baseline_triangles": 326,
+      "baseline_sha256": "2261b0ea9d8ed545b743a1ff2b624d441fdb300824767fb8624b64e23e28ac94",
+      "bounds": {
+        "low": [
+          -5.209352,
+          0.0,
+          -4.1
+        ],
+        "high": [
+          5.209352,
+          12.9,
+          7.552463
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_flea",
+      "file": "meshes/kaiju_flea.json",
+      "category": "organic_kaiju",
+      "content_group": "manual",
+      "archetype": "crawler",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_flea.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "budget_multiplier": 2,
+      "baseline_triangles": 304,
+      "baseline_sha256": "786c971ffcf8ff61a84c793439634a8e41a1fb73e8f1aebb2ed1c5688730b576",
+      "bounds": {
+        "low": [
+          -3.3376,
+          0.0,
+          -3.075
+        ],
+        "high": [
+          3.3376,
+          4.152371,
+          5.642774
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_obliterator",
+      "file": "meshes/kaiju_obliterator.json",
+      "category": "organic_kaiju",
+      "content_group": "core_base",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_obliterator.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "budget_multiplier": 2,
+      "baseline_triangles": 374,
+      "baseline_sha256": "bafc783737939238b851e1b1284c119ca7efdc510199320120bb82a80461a0e5",
+      "bounds": {
+        "low": [
+          -8.851803278688523,
+          0.0,
+          -4.919615867844975
+        ],
+        "high": [
+          8.851803278688523,
+          26.99,
+          7.585466943265589
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_obliterator_alt",
+      "file": "meshes/kaiju_obliterator_alt.json",
+      "category": "organic_kaiju",
+      "content_group": "core_alternate",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_obliterator_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "budget_multiplier": 2,
+      "baseline_triangles": 398,
+      "baseline_sha256": "1c63ee3bbe61bd1b01d22660e3c181ed54d1122f60b818b78aaf1bf749ff0ab6",
+      "bounds": {
+        "low": [
+          -8.851803,
+          0.0,
+          -4.919616
+        ],
+        "high": [
+          8.851803,
+          26.99,
+          7.585467
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_spawnling",
+      "file": "meshes/kaiju_spawnling.json",
+      "category": "organic_kaiju",
+      "content_group": "core_base",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_spawnling.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "budget_multiplier": 2,
+      "baseline_triangles": 302,
+      "baseline_sha256": "9d6108dc44d1e040b405920e0ff5513cf35ab7e8f38294eaaec51df1336f05e3",
+      "bounds": {
+        "low": [
+          -3.337599550943425,
+          0.0,
+          -3.075
+        ],
+        "high": [
+          3.337599550943425,
+          4.152370897700676,
+          5.6427739313745
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_spawnling_alt",
+      "file": "meshes/kaiju_spawnling_alt.json",
+      "category": "organic_kaiju",
+      "content_group": "core_alternate",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_spawnling_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "budget_multiplier": 2,
+      "baseline_triangles": 326,
+      "baseline_sha256": "07b37123acdc326a25c202a77746dcdfba53d22ccb500459eccc5ae9b4ace0f9",
+      "bounds": {
+        "low": [
+          -3.3376,
+          0.0,
+          -3.075
+        ],
+        "high": [
+          3.3376,
+          4.152371,
+          5.642774
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_stalker",
+      "file": "meshes/kaiju_stalker.json",
+      "category": "organic_kaiju",
+      "content_group": "core_base",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_stalker.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "budget_multiplier": 2,
+      "baseline_triangles": 320,
+      "baseline_sha256": "980cf099253b3171648d61399b124d691c562802fb33ebca11a0c6dcc4fa5181",
+      "bounds": {
+        "low": [
+          -2.3979999999999997,
+          0.0,
+          -4.1000000000000005
+        ],
+        "high": [
+          2.65,
+          16.599999999999998,
+          10
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_stalker_alt",
+      "file": "meshes/kaiju_stalker_alt.json",
+      "category": "organic_kaiju",
+      "content_group": "core_alternate",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_stalker_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "budget_multiplier": 2,
+      "baseline_triangles": 344,
+      "baseline_sha256": "2f334f9d7271c99d5efa5c1ffbb9fca54ac41f2121a5d658e9bc64fd459096a3",
+      "bounds": {
+        "low": [
+          -2.398,
+          0.0,
+          -4.1
+        ],
+        "high": [
+          2.65,
+          16.6,
+          10.0
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_tunnel_wurm",
+      "file": "meshes/kaiju_tunnel_wurm.json",
+      "category": "organic_kaiju",
+      "content_group": "manual",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_tunnel_wurm.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "budget_multiplier": 2,
+      "baseline_triangles": 236,
+      "baseline_sha256": "365ba66ac267674de86e8b58cc71094963f982a7ebf52d8cc0d2b8ac15efa717",
+      "bounds": {
+        "low": [
+          -8.851803,
+          0.0,
+          -4.919616
+        ],
+        "high": [
+          8.851803,
+          26.99,
+          7.585467
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/manual-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_tyrant",
+      "file": "meshes/kaiju_tyrant.json",
+      "category": "organic_kaiju",
+      "content_group": "core_base",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_tyrant.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "budget_multiplier": 2,
+      "baseline_triangles": 356,
+      "baseline_sha256": "7a4b8b550d3b00df12c83a6752d42ae15759a1e2f4bcfecaf747bd2317d9e5cb",
+      "bounds": {
+        "low": [
+          -12.094616410852622,
+          0.0,
+          -4.1000000000000005
+        ],
+        "high": [
+          12.094616410852622,
+          17.03018013067398,
+          7.564909660137715
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "kaiju_tyrant_alt",
+      "file": "meshes/kaiju_tyrant_alt.json",
+      "category": "organic_kaiju",
+      "content_group": "core_alternate",
+      "archetype": "kaiju",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/kaiju_tyrant_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "budget_multiplier": 2,
+      "baseline_triangles": 380,
+      "baseline_sha256": "f93ecf67101c2145cd50d497ff5137f0a22e4e11168322921280a2a7af1de65a",
+      "bounds": {
+        "low": [
+          -12.094616,
+          0.0,
+          -4.1
+        ],
+        "high": [
+          12.094616,
+          17.03018,
+          7.56491
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "kaiju",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "salvager_gunship",
+      "file": "meshes/salvager_gunship.json",
+      "category": "gunship",
+      "content_group": "core_base",
+      "archetype": "aircraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/salvager_gunship.json",
+      "baseline_budget": 168,
+      "budget": 168,
+      "budget_multiplier": 1,
+      "baseline_triangles": 160,
+      "baseline_sha256": "46ebe34046e7a98f5d44922c5f3a83209dc46656b0dba94d734c0b17dea36785",
+      "bounds": {
+        "low": [
+          -7.0,
+          0.0,
+          -8.0
+        ],
+        "high": [
+          7.0,
+          3.279422863405995,
+          6.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "aircraft",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "salvager_gunship_alt",
+      "file": "meshes/salvager_gunship_alt.json",
+      "category": "gunship",
+      "content_group": "core_alternate",
+      "archetype": "aircraft",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/salvager_gunship_alt.json",
+      "baseline_budget": 336,
+      "budget": 336,
+      "budget_multiplier": 1,
+      "baseline_triangles": 196,
+      "baseline_sha256": "84e60af34a1f1dd285893238f02d954a2a1d3a33080d6d9cc1873fb952a522bd",
+      "bounds": {
+        "low": [
+          -7.0,
+          0.0,
+          -8.0
+        ],
+        "high": [
+          7.0,
+          3.279423,
+          6.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "aircraft",
+      "rig_source": "models/enemy-animation-rigs.json"
+    },
+    {
+      "id": "sentry_gun",
+      "file": "meshes/sentry_gun.json",
+      "category": "installation",
+      "content_group": "manual",
+      "archetype": "installation",
+      "baseline_file": "provenance/enemy-redesign-baseline/meshes/sentry_gun.json",
+      "baseline_budget": 300,
+      "budget": 300,
+      "budget_multiplier": 1,
+      "baseline_triangles": 128,
+      "baseline_sha256": "16228092627dfd5e64991eb34b53adb05aa22eca35cce26721aee2f92a8025f2",
+      "bounds": {
+        "low": [
+          -4.629575,
+          0.0,
+          -7.068674
+        ],
+        "high": [
+          4.629575,
+          5.029804,
+          3.5
+        ]
+      },
+      "pivot": "ground",
+      "native_role": "installation",
+      "rig_source": "models/manual-animation-rigs.json"
+    }
+  ]
+}

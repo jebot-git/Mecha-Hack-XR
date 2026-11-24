@@ -1,0 +1,658 @@
+{
+  "schema": 1,
+  "units": "triangles",
+  "source": "User-authorized Japanese mecha / BattleTech-informed mecha redesign: double each scoped current per-model cap. No paid generation is performed by this authorization manifest.",
+  "scope": "Eight player models, forty core ground mecha/robots, sixteen Mission Manual mecha and one combined form. Ships, aircraft, kaiju, installations, items and environment caps remain unchanged.",
+  "assets": [
+    {
+      "id": "chassis_brawler",
+      "file": "meshes/chassis_brawler.json",
+      "category": "player",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/chassis_brawler.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 280,
+      "baseline_sha256": "579d5f2e5b5f2a21969537f5f7a8a8a89ac2f215692bf49223185c8a79ee3121"
+    },
+    {
+      "id": "chassis_brawler_alt",
+      "file": "meshes/chassis_brawler_alt.json",
+      "category": "player",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/chassis_brawler_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 316,
+      "baseline_sha256": "5809e591b5febf36a61210ce26b7b5dd2988d40e0aa5b4449ad404d5565fef4b"
+    },
+    {
+      "id": "chassis_scout",
+      "file": "meshes/chassis_scout.json",
+      "category": "player",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/chassis_scout.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 238,
+      "baseline_sha256": "1cfbdde50a15063c186c2b65d9edc2001aed2d2dfd9647d66d1d32d045fcbc00"
+    },
+    {
+      "id": "chassis_scout_alt",
+      "file": "meshes/chassis_scout_alt.json",
+      "category": "player",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/chassis_scout_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 274,
+      "baseline_sha256": "f9d5e9383701cd233686617096a65555715bb072d792e351e431552c3a136749"
+    },
+    {
+      "id": "chassis_striker",
+      "file": "meshes/chassis_striker.json",
+      "category": "player",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/chassis_striker.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 248,
+      "baseline_sha256": "64870a78ec502904984231410e259980991a9571ee5859733cb1609d6570d838"
+    },
+    {
+      "id": "chassis_striker_alt",
+      "file": "meshes/chassis_striker_alt.json",
+      "category": "player",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/chassis_striker_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 284,
+      "baseline_sha256": "59c698b6f9a878548bed73276f0b6979d50e2e075f20a393e66d74e244ea3c39"
+    },
+    {
+      "id": "chassis_titan",
+      "file": "meshes/chassis_titan.json",
+      "category": "player",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/chassis_titan.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 280,
+      "baseline_sha256": "41d8bd7650401942c001a55629520f2ae7a6dd9947b7a9b10c6f4692d168dda4"
+    },
+    {
+      "id": "chassis_titan_alt",
+      "file": "meshes/chassis_titan_alt.json",
+      "category": "player",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/chassis_titan_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 316,
+      "baseline_sha256": "f884a210aaf92f413456f1a09cef29f86b16db2ab5726b81fe480c2dc2d61a31"
+    },
+    {
+      "id": "jump_pod",
+      "file": "meshes/jump_pod.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/jump_pod.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 196,
+      "baseline_sha256": "6219288c43eab9eb1a8b15b217cf08007abca080730b692b40df6eceeda56a4d"
+    },
+    {
+      "id": "jump_pod_alt",
+      "file": "meshes/jump_pod_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/jump_pod_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 232,
+      "baseline_sha256": "4c83269de83b7568eaa52b75a68a1428d131dfe7d20147503385b75ee633afd4"
+    },
+    {
+      "id": "labor_bot",
+      "file": "meshes/labor_bot.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/labor_bot.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 280,
+      "baseline_sha256": "41346fb5163bef875bbe16ac81f8dbaebb9efb64cd96bad7b8adb744120b7c01"
+    },
+    {
+      "id": "labor_bot_alt",
+      "file": "meshes/labor_bot_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/labor_bot_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 316,
+      "baseline_sha256": "a830350924be2bae0c6ca197cc85110d968541d95904fd49a8afb85db9478eea"
+    },
+    {
+      "id": "mecha_recruit",
+      "file": "meshes/mecha_recruit.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/mecha_recruit.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 276,
+      "baseline_sha256": "a562773a8b4d30c3b61af27b24344a07e4b25b28f378ead830a88747c19684aa"
+    },
+    {
+      "id": "mecha_recruit_alt",
+      "file": "meshes/mecha_recruit_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/mecha_recruit_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 312,
+      "baseline_sha256": "2afc4a7d1e42e6e293334c438c002c75b2ad3cbf47bdb26155b05d4e05de7d9b"
+    },
+    {
+      "id": "mecha_sniper",
+      "file": "meshes/mecha_sniper.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/mecha_sniper.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 312,
+      "baseline_sha256": "aba360972a70aa9de09a18a800952049e5ac0aabf5770bf0d5410168d2d35b17"
+    },
+    {
+      "id": "mecha_sniper_alt",
+      "file": "meshes/mecha_sniper_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/mecha_sniper_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 348,
+      "baseline_sha256": "cecc81f84c28ebd86a2ba12ab8d3ab5645c0468518c96e58a9d3c5b5e6fc8f82"
+    },
+    {
+      "id": "frontier_patrol_mecha",
+      "file": "meshes/frontier_patrol_mecha.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/frontier_patrol_mecha.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 300,
+      "baseline_sha256": "fed7533644cd4e56d7d43d261fce89941862ca85bb499258b81759219df8f6e1"
+    },
+    {
+      "id": "frontier_patrol_mecha_alt",
+      "file": "meshes/frontier_patrol_mecha_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/frontier_patrol_mecha_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 336,
+      "baseline_sha256": "7458b2e97517e72b3232a9c5709a9dc6e91ed5c8580620d1a737c617e3ade78a"
+    },
+    {
+      "id": "mechwalker",
+      "file": "meshes/mechwalker.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/mechwalker.json",
+      "baseline_budget": 266,
+      "budget": 532,
+      "baseline_triangles": 248,
+      "baseline_sha256": "739d205594cb3c493b5a2f2943e4210ca26a5e6b2c214bec369c4d99715f59ca"
+    },
+    {
+      "id": "mechwalker_alt",
+      "file": "meshes/mechwalker_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/mechwalker_alt.json",
+      "baseline_budget": 532,
+      "budget": 1064,
+      "baseline_triangles": 284,
+      "baseline_sha256": "98866b8e08e4a6eed2c532f69681084fe6a24d1fddb85b6b55f82cdaac756af2"
+    },
+    {
+      "id": "salvager_berserker",
+      "file": "meshes/salvager_berserker.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/salvager_berserker.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 292,
+      "baseline_sha256": "6a1a7c6868836b616526174c88656b72bbf55f70899e9f13f9c6368050512262"
+    },
+    {
+      "id": "salvager_berserker_alt",
+      "file": "meshes/salvager_berserker_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/salvager_berserker_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 328,
+      "baseline_sha256": "6aba4b460f24dc7e8b06cc93a69e7973a69c0a62cf17ae91915c51ba9f22d835"
+    },
+    {
+      "id": "heavy_construction_bot",
+      "file": "meshes/heavy_construction_bot.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/heavy_construction_bot.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 292,
+      "baseline_sha256": "eaa2a04f560a9df0f5ce68a0bb4ec133cd78bf37a43a170f519651541094b111"
+    },
+    {
+      "id": "heavy_construction_bot_alt",
+      "file": "meshes/heavy_construction_bot_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/heavy_construction_bot_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 328,
+      "baseline_sha256": "b7eb6034b631fa985797c3a74710870f0140740ebc017248a6438c895ac0b8b5"
+    },
+    {
+      "id": "mecha_ace",
+      "file": "meshes/mecha_ace.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/mecha_ace.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 312,
+      "baseline_sha256": "84e277513694a2d6780dc5a0e90e375a64bd8781f4b144839d98d8bf0585ce57"
+    },
+    {
+      "id": "mecha_ace_alt",
+      "file": "meshes/mecha_ace_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/mecha_ace_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 348,
+      "baseline_sha256": "e316b3244e3bd326742d3aebb6280a05cd77389b62055d9c28dd4ced8d6335de"
+    },
+    {
+      "id": "mechwalker_disabler",
+      "file": "meshes/mechwalker_disabler.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/mechwalker_disabler.json",
+      "baseline_budget": 266,
+      "budget": 532,
+      "baseline_triangles": 256,
+      "baseline_sha256": "29a310f64e882aebe181b5ee9e80bac31bcf638b0b68f2cc2e75239d18253298"
+    },
+    {
+      "id": "mechwalker_disabler_alt",
+      "file": "meshes/mechwalker_disabler_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/mechwalker_disabler_alt.json",
+      "baseline_budget": 532,
+      "budget": 1064,
+      "baseline_triangles": 292,
+      "baseline_sha256": "ecbf0ba0931b1f3f4aae331c3a6b90e6e20975ee090d299b5c942a8f854ac681"
+    },
+    {
+      "id": "aeon_mecha",
+      "file": "meshes/aeon_mecha.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/aeon_mecha.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 310,
+      "baseline_sha256": "38d84a56d9f086f6c2d50239698fbb39af57ab13c8d3c558de9b0522e30fca6e"
+    },
+    {
+      "id": "aeon_mecha_alt",
+      "file": "meshes/aeon_mecha_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/aeon_mecha_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 346,
+      "baseline_sha256": "53fe29a91d5e5fafe2d3fa5feaf4063bfc6eff6c2a0e8140bb1610cbb63e4e51"
+    },
+    {
+      "id": "jump_pod_heavy",
+      "file": "meshes/jump_pod_heavy.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/jump_pod_heavy.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 260,
+      "baseline_sha256": "581a44469ea282fc4cc149c9e4050fc0931c204279cc188cf34fd3e378628f4a"
+    },
+    {
+      "id": "jump_pod_heavy_alt",
+      "file": "meshes/jump_pod_heavy_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/jump_pod_heavy_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 296,
+      "baseline_sha256": "55feee77ccf178a897fe2a3295e696f7b79af430af83d1f5e6f5071ff87fa880"
+    },
+    {
+      "id": "salvager_vandal",
+      "file": "meshes/salvager_vandal.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/salvager_vandal.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 372,
+      "baseline_sha256": "067a2525e289f6ad7d739e81a7001a6ed088fed5d2b2a0ef60d770dfa9ba6628"
+    },
+    {
+      "id": "salvager_vandal_alt",
+      "file": "meshes/salvager_vandal_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/salvager_vandal_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 408,
+      "baseline_sha256": "c1697b827052f564494aa99aacd48ed0c6a4dd309c923c21a848c07a0b91e602"
+    },
+    {
+      "id": "frontier_patrol_sergeant",
+      "file": "meshes/frontier_patrol_sergeant.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/frontier_patrol_sergeant.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 318,
+      "baseline_sha256": "f3f698ff61d501aa85daa91a71c2485207c7e0b80027f987dc5954491329d7dd"
+    },
+    {
+      "id": "frontier_patrol_sergeant_alt",
+      "file": "meshes/frontier_patrol_sergeant_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/frontier_patrol_sergeant_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 354,
+      "baseline_sha256": "b08b83e79a9abd8dbbde00b0c32de6a8f259aeb3bc255e1531acdddca07da3e0"
+    },
+    {
+      "id": "jump_pod_field_commander",
+      "file": "meshes/jump_pod_field_commander.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/jump_pod_field_commander.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 214,
+      "baseline_sha256": "883b7b8c4fd2c704e021c1c8625772f8a0d090fb2238f91ffcd00cd212b98304"
+    },
+    {
+      "id": "jump_pod_field_commander_alt",
+      "file": "meshes/jump_pod_field_commander_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/jump_pod_field_commander_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 250,
+      "baseline_sha256": "ace8f3d1afbc36063c0c40069b44ec77d5750c614fce18e72fd7e850bb92662d"
+    },
+    {
+      "id": "salvager_thunderer",
+      "file": "meshes/salvager_thunderer.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/salvager_thunderer.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 372,
+      "baseline_sha256": "a607313dbf79f28adba502de50562427ca4e0b5f7b315a7c22a23e304a66a8b4"
+    },
+    {
+      "id": "salvager_thunderer_alt",
+      "file": "meshes/salvager_thunderer_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/salvager_thunderer_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 408,
+      "baseline_sha256": "0eeda4086272a392fb16963eeeebffb90bf2e57a4a034e3e59428079c6702586"
+    },
+    {
+      "id": "siege_mecha",
+      "file": "meshes/siege_mecha.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/siege_mecha.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 296,
+      "baseline_sha256": "d70165465eae3215bbb965609bbacfb156e4339e51b062cb043bc0edd5bf0846"
+    },
+    {
+      "id": "siege_mecha_alt",
+      "file": "meshes/siege_mecha_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/siege_mecha_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 332,
+      "baseline_sha256": "47947b47602558d0cb1ee00062914a82e7357a3f33ea6ba333eead90eb3dea1a"
+    },
+    {
+      "id": "rogue_commander",
+      "file": "meshes/rogue_commander.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/rogue_commander.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 324,
+      "baseline_sha256": "59008292e1a40014e17917b3dc30e098b9d72bd5f9434bcf1823135e415585fc"
+    },
+    {
+      "id": "rogue_commander_alt",
+      "file": "meshes/rogue_commander_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/rogue_commander_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 360,
+      "baseline_sha256": "d55382d98fcd152824165b2900d3d0d89968aae26a6bd1123ed8a82493700f05"
+    },
+    {
+      "id": "salvager_hydra",
+      "file": "meshes/salvager_hydra.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/salvager_hydra.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 320,
+      "baseline_sha256": "bb60acb2fdec4cced344acbb48d03558fe6ae5ed5095c5374f799f2ba53da533"
+    },
+    {
+      "id": "salvager_hydra_alt",
+      "file": "meshes/salvager_hydra_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/salvager_hydra_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 356,
+      "baseline_sha256": "8c6c087b99e38a53314a831b4771409e7166829f1e5ee0734ff09bb6c2d1109b"
+    },
+    {
+      "id": "experimental_mecha_zero",
+      "file": "meshes/experimental_mecha_zero.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/experimental_mecha_zero.json",
+      "baseline_budget": 376,
+      "budget": 752,
+      "baseline_triangles": 344,
+      "baseline_sha256": "fa4d9ff48e7cf6b6788a5d003249ccc582a7f54fa54e9aa5a1cc7a60363bac92"
+    },
+    {
+      "id": "experimental_mecha_zero_alt",
+      "file": "meshes/experimental_mecha_zero_alt.json",
+      "category": "core",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/experimental_mecha_zero_alt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 380,
+      "baseline_sha256": "a9fcad3b9f4bf022e566eb606d5654e8d7cde49be568a534293ae3754c435814"
+    },
+    {
+      "id": "swarm_drone",
+      "file": "meshes/swarm_drone.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/swarm_drone.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 260,
+      "baseline_sha256": "a48c9b8839d473275f6da1a129c4cb5f2c7ff1715480b4f984d8e77718f66018"
+    },
+    {
+      "id": "aeon_diode",
+      "file": "meshes/aeon_diode.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/aeon_diode.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 260,
+      "baseline_sha256": "0416621c092fdbc8ce44a627ce60a11aaf0da233893b77da05dd31d3663204a4"
+    },
+    {
+      "id": "neo_knight",
+      "file": "meshes/neo_knight.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/neo_knight.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 256,
+      "baseline_sha256": "77c95aede718ba9c9bcd88eeb85a468f763c8fddcd281fd8259e6ed33f2b2f37"
+    },
+    {
+      "id": "terran_grunt",
+      "file": "meshes/terran_grunt.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/terran_grunt.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 272,
+      "baseline_sha256": "150f838d496d4ae21b03e18d478b9fc5020da069921314cfdcc70380c3401771"
+    },
+    {
+      "id": "veriform_mecha",
+      "file": "meshes/veriform_mecha.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/veriform_mecha.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 252,
+      "baseline_sha256": "bcb5cb7e1588576a887a29d5e94b2b577efb2aa19c7b0306191c2249559ab715"
+    },
+    {
+      "id": "verilian_guardian",
+      "file": "meshes/verilian_guardian.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/verilian_guardian.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 236,
+      "baseline_sha256": "e010555794b7955f90a3efc0cba4bfb329d4e05ab9a73d45473771da7e4c87cf"
+    },
+    {
+      "id": "funnel_drone_mecha",
+      "file": "meshes/funnel_drone_mecha.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/funnel_drone_mecha.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 288,
+      "baseline_sha256": "6ad3e6ebe4f512de6eb6794d8e4ebab6c3e0acd8e8286a6b41d79090c8af8ca9"
+    },
+    {
+      "id": "thunder_cannon_mecha",
+      "file": "meshes/thunder_cannon_mecha.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/thunder_cannon_mecha.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 248,
+      "baseline_sha256": "dd4f7e0e2b3ae97f1b5b3cf424b8566635ada6d266e1e63fa067f3728f8003a0"
+    },
+    {
+      "id": "verilian_goliath",
+      "file": "meshes/verilian_goliath.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/verilian_goliath.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 276,
+      "baseline_sha256": "7604c4910064a3890521dbceae3a60063ff3cb0f8bdc42933a45ed6f8d98d77a"
+    },
+    {
+      "id": "combiner_mecha",
+      "file": "meshes/combiner_mecha.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/combiner_mecha.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 300,
+      "baseline_sha256": "dd5d228a73e610d50620309a887208111d3c64f4d5cdc37d9283c2b1aaf4d378"
+    },
+    {
+      "id": "aeon_primarch",
+      "file": "meshes/aeon_primarch.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/aeon_primarch.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 256,
+      "baseline_sha256": "662f6c3faa604b5d8d02f8a7b881a2d01656b800e105c7f1bb03360e5a92f102"
+    },
+    {
+      "id": "neo_paladin",
+      "file": "meshes/neo_paladin.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/neo_paladin.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 280,
+      "baseline_sha256": "41e7e4be56926ba501f9f695cf8138c49a221a0dd62e41fc41cd6b3cb2994712"
+    },
+    {
+      "id": "terran_mammoth",
+      "file": "meshes/terran_mammoth.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/terran_mammoth.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 312,
+      "baseline_sha256": "01d0a7d250aaa4066e766059ab61b66b43fbb1c86ca9d6bf877a1d9004534176"
+    },
+    {
+      "id": "aegis_mecha",
+      "file": "meshes/aegis_mecha.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/aegis_mecha.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 260,
+      "baseline_sha256": "16ba8caac352dd4166d4ff5dd28c4f9adf9696b9a9d0ed3defbdf3e166bed093"
+    },
+    {
+      "id": "gladius_mecha",
+      "file": "meshes/gladius_mecha.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/gladius_mecha.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 256,
+      "baseline_sha256": "ed987ccc016247e12a3660db12c58619e4346bb7af038f84fe5428db68a15ee7"
+    },
+    {
+      "id": "verilian_gargantuan",
+      "file": "meshes/verilian_gargantuan.json",
+      "category": "manual",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/verilian_gargantuan.json",
+      "baseline_budget": 752,
+      "budget": 1504,
+      "baseline_triangles": 324,
+      "baseline_sha256": "d56ad5c84416723302cc4b749254c0487217d18be03e77365e23f8778f76c919"
+    },
+    {
+      "id": "combiner_mecha_combined",
+      "file": "meshes/combiner_mecha_combined.json",
+      "category": "form",
+      "baseline_file": "provenance/mecha-redesign-baseline/meshes/combiner_mecha_combined.json",
+      "baseline_budget": 502,
+      "budget": 1004,
+      "baseline_triangles": 364,
+      "baseline_sha256": "82e4c2335b600e9e81ebce8e5f1a0711c36c2eac181010bb51631a5d8ea17c0c"
+    }
+  ]
+}

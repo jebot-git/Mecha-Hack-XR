@@ -1,0 +1,99 @@
+[
+  {
+    "name": "llvm-mingw",
+    "url": "https://github.com/mstorsjo/llvm-mingw/releases/download/20261020/llvm-mingw-20261020-ucrt-ubuntu-22.04-x86_64.tar.xz",
+    "sha256": "55064b60b991a1e1e8090b8c2f84e82b22cfe5903d12c159d65064cf5e8ae335",
+    "upstream_digest": "55064b60b991a1e1e8090b8c2f84e82b22cfe5903d12c159d65064cf5e8ae335",
+    "bytes": 84017268,
+    "directory": "llvm-mingw",
+    "archive": "llvm-mingw-20261020-ucrt-ubuntu-22.04-x86_64.tar.xz"
+  },
+  {
+    "name": "sdl2",
+    "url": "https://github.com/libsdl-org/SDL/releases/download/release-2.32.10/SDL2-2.32.10.tar.gz",
+    "sha256": "5f5993c530f084535c65a6879e9b26ad441169b3e25d789d83287040a9ca5165",
+    "upstream_digest": null,
+    "bytes": 7630262,
+    "directory": "sdl2",
+    "archive": "SDL2-2.32.10.tar.gz"
+  },
+  {
+    "name": "enet",
+    "url": "https://codeload.github.com/lsalzman/enet/tar.gz/refs/tags/v1.3.18",
+    "sha256": "28603c895f9ed24a846478180ee72c7376b39b4bb1287b73877e5eae7d96b0dd",
+    "upstream_digest": null,
+    "bytes": 82923,
+    "directory": "enet",
+    "archive": "v1.3.18"
+  },
+  {
+    "name": "opus",
+    "url": "https://downloads.xiph.org/releases/opus/opus-1.6.tar.gz",
+    "sha256": "b7637334527201fdfd6dd6a02e67aceffb0e5e60155bbd89175647a80301c92c",
+    "upstream_digest": null,
+    "bytes": 36317446,
+    "directory": "opus",
+    "archive": "opus-1.6.tar.gz"
+  },
+  {
+    "name": "json",
+    "url": "https://codeload.github.com/nlohmann/json/tar.gz/refs/tags/v3.12.0",
+    "sha256": "4b92eb0c06d10683f7447ce9406cb97cd4b453be18d7279320f7b2f025c10187",
+    "upstream_digest": null,
+    "bytes": 9678593,
+    "directory": "json",
+    "archive": "v3.12.0"
+  },
+  {
+    "name": "openxr",
+    "url": "https://codeload.github.com/KhronosGroup/OpenXR-SDK/tar.gz/refs/tags/release-1.1.65",
+    "sha256": "27aa797baf680c5f836b6138e78e59e2f72d6becfef6d4587ed9a57756d6d3b3",
+    "upstream_digest": null,
+    "bytes": 1001972,
+    "directory": "openxr",
+    "archive": "release-1.1.65"
+  },
+  {
+    "name": "glew",
+    "url": "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.tgz",
+    "sha256": "d4fc82893cfb00109578d0a1a2337fb8ca335b3ceccf97b97e5cc7f08e4353e1",
+    "upstream_digest": null,
+    "bytes": 835861,
+    "directory": "glew",
+    "archive": "glew-2.2.0.tgz"
+  },
+  {
+    "name": "openxr-android",
+    "directory": "openxr-android",
+    "url": "https://repo.maven.apache.org/maven2/org/khronos/openxr/openxr_loader_for_android/1.1.62/openxr_loader_for_android-1.1.62.aar",
+    "sha256": "c03c689fed9a48f9394af953660982c998b00f6d2d2d8d150bc3f890c75a7465",
+    "archive": "openxr_loader_for_android-1.1.62.aar"
+  },
+  {
+    "name": "jplspatial",
+    "url": "https://codeload.github.com/Jaytheway/JPLSpatial/tar.gz/4c72cdcdc6509b331edf0891d4ca29767e59e03b",
+    "sha256": "de05b6cbdc372f54ed75e6498e1d4b3e3df9a1f01a3f5aaac777f24ba79a65c1",
+    "bytes": 24202386,
+    "directory": "jplspatial",
+    "archive": "jplspatial-4c72cdcdc650.tar.gz",
+    "revision": "4c72cdcdc6509b331edf0891d4ca29767e59e03b"
+  },
+  {
+    "name": "libmysofa",
+    "url": "https://codeload.github.com/hoene/libmysofa/tar.gz/648eed03472e6720a1ea45d1a1f86c4efb569ff9",
+    "sha256": "7e0e7462732363b50cf35f93bca701abba7da7ae4e91366cdd924ca56db9f8e3",
+    "bytes": 208460104,
+    "directory": "libmysofa",
+    "archive": "libmysofa-648eed03472e.tar.gz",
+    "revision": "648eed03472e6720a1ea45d1a1f86c4efb569ff9"
+  },
+  {
+    "name": "zlib",
+    "url": "https://codeload.github.com/madler/zlib/tar.gz/51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf",
+    "sha256": "d9e270d46252734aa49770fbc544125391617956266f220bd63216c834f3a522",
+    "bytes": 1572004,
+    "directory": "zlib",
+    "archive": "zlib-51b7f2abdade.tar.gz",
+    "revision": "51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf"
+  }
+]

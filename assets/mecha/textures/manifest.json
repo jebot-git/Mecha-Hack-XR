@@ -1,0 +1,1134 @@
+{
+  "schema": 1,
+  "name": "psx",
+  "width": 256,
+  "height": 256,
+  "rgba": "psx-atlas.rgba",
+  "png": "psx-atlas.png",
+  "raw_orientation": "bottom-row-first",
+  "uv_orientation": "standard V-up; identical native/Blender",
+  "filter": "NEAREST_MAG_NEAREST_MIP_LINEAR_MIN",
+  "max_mip_level": 8,
+  "gutter": 2,
+  "content_size": 28,
+  "tile_size": 32,
+  "tiles": [
+    {
+      "index": 0,
+      "name": "armor_plate",
+      "cell": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "content": [
+        2,
+        2,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 1,
+      "name": "armor_rivets",
+      "cell": [
+        32,
+        0,
+        32,
+        32
+      ],
+      "content": [
+        34,
+        2,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 2,
+      "name": "armor_vents",
+      "cell": [
+        64,
+        0,
+        32,
+        32
+      ],
+      "content": [
+        66,
+        2,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 3,
+      "name": "paint_chipped",
+      "cell": [
+        96,
+        0,
+        32,
+        32
+      ],
+      "content": [
+        98,
+        2,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 4,
+      "name": "weld_seams",
+      "cell": [
+        128,
+        0,
+        32,
+        32
+      ],
+      "content": [
+        130,
+        2,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 5,
+      "name": "brushed_alloy",
+      "cell": [
+        160,
+        0,
+        32,
+        32
+      ],
+      "content": [
+        162,
+        2,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 6,
+      "name": "ceramic_panels",
+      "cell": [
+        192,
+        0,
+        32,
+        32
+      ],
+      "content": [
+        194,
+        2,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 7,
+      "name": "warning_stripes",
+      "cell": [
+        224,
+        0,
+        32,
+        32
+      ],
+      "content": [
+        226,
+        2,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 8,
+      "name": "bulkhead",
+      "cell": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "content": [
+        2,
+        34,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 9,
+      "name": "tunnel_concrete",
+      "cell": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "content": [
+        34,
+        34,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 10,
+      "name": "hangar_panel",
+      "cell": [
+        64,
+        32,
+        32,
+        32
+      ],
+      "content": [
+        66,
+        34,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 11,
+      "name": "deck_grate",
+      "cell": [
+        96,
+        32,
+        32,
+        32
+      ],
+      "content": [
+        98,
+        34,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 12,
+      "name": "roof_seams",
+      "cell": [
+        128,
+        32,
+        32,
+        32
+      ],
+      "content": [
+        130,
+        34,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 13,
+      "name": "cargo_ribs",
+      "cell": [
+        160,
+        32,
+        32,
+        32
+      ],
+      "content": [
+        162,
+        34,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 14,
+      "name": "service_access",
+      "cell": [
+        192,
+        32,
+        32,
+        32
+      ],
+      "content": [
+        194,
+        34,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 15,
+      "name": "door_lock",
+      "cell": [
+        224,
+        32,
+        32,
+        32
+      ],
+      "content": [
+        226,
+        34,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 16,
+      "name": "screen_scan",
+      "cell": [
+        0,
+        64,
+        32,
+        32
+      ],
+      "content": [
+        2,
+        66,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 17,
+      "name": "circuit_array",
+      "cell": [
+        32,
+        64,
+        32,
+        32
+      ],
+      "content": [
+        34,
+        66,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 18,
+      "name": "energy_cell",
+      "cell": [
+        64,
+        64,
+        32,
+        32
+      ],
+      "content": [
+        66,
+        66,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 19,
+      "name": "reactor_coils",
+      "cell": [
+        96,
+        64,
+        32,
+        32
+      ],
+      "content": [
+        98,
+        66,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 20,
+      "name": "rubber_joint",
+      "cell": [
+        128,
+        64,
+        32,
+        32
+      ],
+      "content": [
+        130,
+        66,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 21,
+      "name": "gun_receiver",
+      "cell": [
+        160,
+        64,
+        32,
+        32
+      ],
+      "content": [
+        162,
+        66,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 22,
+      "name": "barrel_slots",
+      "cell": [
+        192,
+        64,
+        32,
+        32
+      ],
+      "content": [
+        194,
+        66,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 23,
+      "name": "blade_edge",
+      "cell": [
+        224,
+        64,
+        32,
+        32
+      ],
+      "content": [
+        226,
+        66,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 24,
+      "name": "organic_scale",
+      "cell": [
+        0,
+        96,
+        32,
+        32
+      ],
+      "content": [
+        2,
+        98,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 25,
+      "name": "organic_vein",
+      "cell": [
+        32,
+        96,
+        32,
+        32
+      ],
+      "content": [
+        34,
+        98,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 26,
+      "name": "dorsal_ridge",
+      "cell": [
+        64,
+        96,
+        32,
+        32
+      ],
+      "content": [
+        66,
+        98,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 27,
+      "name": "bone_cracks",
+      "cell": [
+        96,
+        96,
+        32,
+        32
+      ],
+      "content": [
+        98,
+        98,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 28,
+      "name": "tooth_ridges",
+      "cell": [
+        128,
+        96,
+        32,
+        32
+      ],
+      "content": [
+        130,
+        98,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 29,
+      "name": "skin_mottles",
+      "cell": [
+        160,
+        96,
+        32,
+        32
+      ],
+      "content": [
+        162,
+        98,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 30,
+      "name": "wing_membrane",
+      "cell": [
+        192,
+        96,
+        32,
+        32
+      ],
+      "content": [
+        194,
+        98,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 31,
+      "name": "acid_glands",
+      "cell": [
+        224,
+        96,
+        32,
+        32
+      ],
+      "content": [
+        226,
+        98,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 32,
+      "name": "rock_strata",
+      "cell": [
+        0,
+        128,
+        32,
+        32
+      ],
+      "content": [
+        2,
+        130,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 33,
+      "name": "rock_fracture",
+      "cell": [
+        32,
+        128,
+        32,
+        32
+      ],
+      "content": [
+        34,
+        130,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 34,
+      "name": "sand_ripples",
+      "cell": [
+        64,
+        128,
+        32,
+        32
+      ],
+      "content": [
+        66,
+        130,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 35,
+      "name": "soil_clods",
+      "cell": [
+        96,
+        128,
+        32,
+        32
+      ],
+      "content": [
+        98,
+        130,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 36,
+      "name": "ice_fissures",
+      "cell": [
+        128,
+        128,
+        32,
+        32
+      ],
+      "content": [
+        130,
+        130,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 37,
+      "name": "crater_scars",
+      "cell": [
+        160,
+        128,
+        32,
+        32
+      ],
+      "content": [
+        162,
+        130,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 38,
+      "name": "asteroid_pits",
+      "cell": [
+        192,
+        128,
+        32,
+        32
+      ],
+      "content": [
+        194,
+        130,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 39,
+      "name": "scrap_streaks",
+      "cell": [
+        224,
+        128,
+        32,
+        32
+      ],
+      "content": [
+        226,
+        130,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 40,
+      "name": "foliage_veins",
+      "cell": [
+        0,
+        160,
+        32,
+        32
+      ],
+      "content": [
+        2,
+        162,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 41,
+      "name": "bark_ridges",
+      "cell": [
+        32,
+        160,
+        32,
+        32
+      ],
+      "content": [
+        34,
+        162,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 42,
+      "name": "coral_polyps",
+      "cell": [
+        64,
+        160,
+        32,
+        32
+      ],
+      "content": [
+        66,
+        162,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 43,
+      "name": "kelp_ribs",
+      "cell": [
+        96,
+        160,
+        32,
+        32
+      ],
+      "content": [
+        98,
+        162,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 44,
+      "name": "frond_fibres",
+      "cell": [
+        128,
+        160,
+        32,
+        32
+      ],
+      "content": [
+        130,
+        162,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 45,
+      "name": "wood_grain",
+      "cell": [
+        160,
+        160,
+        32,
+        32
+      ],
+      "content": [
+        162,
+        162,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 46,
+      "name": "dry_cracks",
+      "cell": [
+        192,
+        160,
+        32,
+        32
+      ],
+      "content": [
+        194,
+        162,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 47,
+      "name": "algae",
+      "cell": [
+        224,
+        160,
+        32,
+        32
+      ],
+      "content": [
+        226,
+        162,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 48,
+      "name": "concrete_windows",
+      "cell": [
+        0,
+        192,
+        32,
+        32
+      ],
+      "content": [
+        2,
+        194,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 49,
+      "name": "concrete_cracks",
+      "cell": [
+        32,
+        192,
+        32,
+        32
+      ],
+      "content": [
+        34,
+        194,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 50,
+      "name": "industrial_brick",
+      "cell": [
+        64,
+        192,
+        32,
+        32
+      ],
+      "content": [
+        66,
+        194,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 51,
+      "name": "floor_tiles",
+      "cell": [
+        96,
+        192,
+        32,
+        32
+      ],
+      "content": [
+        98,
+        194,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 52,
+      "name": "grid_wire",
+      "cell": [
+        128,
+        192,
+        32,
+        32
+      ],
+      "content": [
+        130,
+        194,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 53,
+      "name": "tank_plates",
+      "cell": [
+        160,
+        192,
+        32,
+        32
+      ],
+      "content": [
+        162,
+        194,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 54,
+      "name": "engine_intake",
+      "cell": [
+        192,
+        192,
+        32,
+        32
+      ],
+      "content": [
+        194,
+        194,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 55,
+      "name": "hull_hatches",
+      "cell": [
+        224,
+        192,
+        32,
+        32
+      ],
+      "content": [
+        226,
+        194,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 56,
+      "name": "reuse_office",
+      "cell": [
+        0,
+        224,
+        32,
+        32
+      ],
+      "content": [
+        2,
+        226,
+        28,
+        28
+      ],
+      "reuse_source_tile": 18
+    },
+    {
+      "index": 57,
+      "name": "reuse_warehouse",
+      "cell": [
+        32,
+        224,
+        32,
+        32
+      ],
+      "content": [
+        34,
+        226,
+        28,
+        28
+      ],
+      "reuse_source_tile": 21
+    },
+    {
+      "index": 58,
+      "name": "reuse_radome",
+      "cell": [
+        64,
+        224,
+        32,
+        32
+      ],
+      "content": [
+        66,
+        226,
+        28,
+        28
+      ],
+      "reuse_source_tile": 25
+    },
+    {
+      "index": 59,
+      "name": "reuse_relay",
+      "cell": [
+        96,
+        224,
+        32,
+        32
+      ],
+      "content": [
+        98,
+        226,
+        28,
+        28
+      ],
+      "reuse_source_tile": 27
+    },
+    {
+      "index": 60,
+      "name": "mech_unit_mark",
+      "cell": [
+        128,
+        224,
+        32,
+        32
+      ],
+      "content": [
+        130,
+        226,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 61,
+      "name": "arrow_stencil",
+      "cell": [
+        160,
+        224,
+        32,
+        32
+      ],
+      "content": [
+        162,
+        226,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 62,
+      "name": "repair_cross",
+      "cell": [
+        192,
+        224,
+        32,
+        32
+      ],
+      "content": [
+        194,
+        226,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    },
+    {
+      "index": 63,
+      "name": "numbered_cargo",
+      "cell": [
+        224,
+        224,
+        32,
+        32
+      ],
+      "content": [
+        226,
+        226,
+        28,
+        28
+      ],
+      "reuse_source_tile": null
+    }
+  ],
+  "color": "neutral RGB detail multiplied by existing face colors",
+  "rgba_sha256": "a27d7114e28633f7ec0c90ed0c0446276cf3409b6cffd3b8836d1057b17dd64b",
+  "png_sha256": "50457c684e970d33cf0c577dc000ad3f5a4f3219d0882df84dd8d4aeafd7c64f",
+  "reuse": {
+    "source": "original-art-replacement-v4/textures/atlas-day.png",
+    "sha256": "751fce2662d29206f8949b9d52e2398a2240cf7f7d576f7cf792687002081019",
+    "tiles": [
+      {
+        "destination": "reuse_office",
+        "source_index": 18
+      },
+      {
+        "destination": "reuse_warehouse",
+        "source_index": 21
+      },
+      {
+        "destination": "reuse_radome",
+        "source_index": 25
+      },
+      {
+        "destination": "reuse_relay",
+        "source_index": 27
+      }
+    ],
+    "transform": "112px original authored tile content nearest-downsampled28px; luminance normalized48..252 and neutral RGB; no retail pixels."
+  },
+  "authorship": "Original deterministic material patterns plus four transformed patterns from the authorized original IS replacement library; source unchanged.",
+  "alpha_usage": "emission",
+  "max_sample_lod": 5
+}

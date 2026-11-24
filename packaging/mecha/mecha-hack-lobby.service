@@ -1,0 +1,14 @@
+[Unit]
+Description=Mecha Hack XR public co-op lobby
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=%h/mecha-hack-xr/current
+ExecStart=%h/mecha-hack-xr/current/bin/mecha-hack-server --bind 0.0.0.0 --port 29597 --assets assets/mecha
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=default.target

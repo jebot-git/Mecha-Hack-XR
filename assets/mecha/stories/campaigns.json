@@ -1,0 +1,3442 @@
+{
+  "schema": 1,
+  "setting": "Lodestar Alpha",
+  "format": "nine contracts and a separate finale",
+  "authority": "Original game campaign proposals grounded in the supplied books; not additional published Mecha Hack canon",
+  "sources": [
+    {
+      "id": "core",
+      "file": "MechaHack v1.2.pdf",
+      "pages": "39-41",
+      "use": "Lodestar history, faction identities, named leaders and locations"
+    },
+    {
+      "id": "manual",
+      "file": "mecha-hack_mission-manual-v1-2.pdf",
+      "pages": "4-9,12-55,97-105",
+      "use": "Setting, campaign combinations, mission hooks, obstacles and consequences"
+    }
+  ],
+  "guardrails": [
+    "All player action stays inside mecha; boarding uses mecha-sized hangars and service galleries.",
+    "The Voidmaw are a devouring threat, never a contracting employer.",
+    "Slipstar has no Verilian Tunnels; transit there uses ships, docks and surface routes.",
+    "The One-Mind remains unidentified; no branch declares a canonical answer.",
+    "New contacts, operations and local outcomes are original game material. Published leaders are neither killed nor replaced."
+  ],
+  "campaigns": [
+    {
+      "id": "workers-signal",
+      "title": "The Workers' Signal",
+      "premise": "A repair-yard distress call exposes a struggle over who owns the infrastructure that keeps a liberated district alive.",
+      "question": "Who gets to decide what liberation costs?",
+      "setting": "Terran districts on Aeon Prime; later operations use nearby orbital depots.",
+      "threads": [
+        {
+          "id": "shelter",
+          "label": "Keep People Supplied",
+          "intent": "Protect the district before buying another offensive.",
+          "employer": 1,
+          "adversary": 0,
+          "established": "Local crews can sustain the evacuation corridors.",
+          "neglected": "Shelters depend on a single exposed supply route.",
+          "tradeoff": "Other districts wait while this route is protected."
+        },
+        {
+          "id": "evidence",
+          "label": "Publish the Ledger",
+          "intent": "Recover proof and let the districts judge their patrons.",
+          "employer": 1,
+          "adversary": 0,
+          "established": "Independent relays can distribute the recovered records.",
+          "neglected": "Claims about ownership remain easy to deny.",
+          "tradeoff": "The occupation keeps working machinery while copies are secured."
+        },
+        {
+          "id": "leverage",
+          "label": "Seize the Machinery",
+          "intent": "Turn the occupiers' production chain against them.",
+          "employer": 2,
+          "adversary": 0,
+          "established": "Captured yards can support a disciplined counterstroke.",
+          "neglected": "The district faces an intact enemy production line.",
+          "tradeoff": "A stronger patron gains a claim on the yards."
+        }
+      ],
+      "cast": [
+        {
+          "id": "dara-ven",
+          "name": "Dara Ven",
+          "faction": 1,
+          "want": "Keep the repair crews fed and self-governing.",
+          "contradiction": "Will accept a royal escort but refuses its permanent garrison.",
+          "voice": "Concrete costs; names every crew before every machine."
+        },
+        {
+          "id": "oren-sile",
+          "name": "Oren Sile",
+          "faction": 2,
+          "want": "Secure an enforceable local ceasefire.",
+          "contradiction": "Treats protection as a debt while sincerely protecting workers.",
+          "voice": "Formal promises followed by exact conditions."
+        },
+        {
+          "id": "vesk-ara",
+          "name": "Vesk Ara",
+          "faction": 0,
+          "want": "Keep the requisition network functioning.",
+          "contradiction": "Offers lawful rations while treating labor as another component.",
+          "voice": "Administrative precision; no invented One-Mind revelations."
+        }
+      ],
+      "beats": [
+        {
+          "title": "The Yard Calls Back",
+          "mission": "academy_terran",
+          "situation": "A yard broadcasts on an abandoned maintenance frequency.",
+          "clue": "A requisition order values working reactors above their crews.",
+          "offers": [
+            {
+              "title": "Bring the Yard Home",
+              "variant": 2,
+              "briefing": "Dara needs the training convoy brought through the scrap lanes.",
+              "result": "The district gains a reliable transport crew.",
+              "objective": 2
+            },
+            {
+              "title": "Read the Wreck Tags",
+              "variant": 0,
+              "briefing": "Recover the yard cores before their ownership records are wiped.",
+              "result": "Recovered tags expose the first requisition link.",
+              "objective": 4
+            },
+            {
+              "title": "Break the Yard Lock",
+              "variant": 1,
+              "briefing": "Clear the machines enforcing the yard lockdown.",
+              "result": "The occupation loses its nearest collection point.",
+              "objective": 0
+            }
+          ],
+          "stage": 1,
+          "question": "What must the first independent repair yard keep: its convoy, its records, or control of its gates?",
+          "source_page": 38,
+          "source_title": "PILOT ACADEMY: TERRAN COLLECTIVE"
+        },
+        {
+          "title": "Fuel Is a Vote",
+          "mission": "defending_kuro",
+          "situation": "A biofuel station becomes the price of a new local alliance.",
+          "clue": "The same shipment has been promised to two garrisons.",
+          "offers": [
+            {
+              "title": "Last Bus from Kuro",
+              "variant": 1,
+              "briefing": "Escort the evacuation convoy; its fuel reserve cannot cover a second run.",
+              "result": "Civilian crews begin sharing safe routes.",
+              "objective": 2
+            },
+            {
+              "title": "Keep the Pump Speaking",
+              "variant": 0,
+              "briefing": "Hold the station while its operators transmit their delivery records.",
+              "result": "The fuel ledger acquires independent witnesses.",
+              "objective": 1
+            },
+            {
+              "title": "No More Collections",
+              "variant": 2,
+              "briefing": "Stop the force advancing on the captured requisition officer.",
+              "result": "The district keeps a bargaining piece out of enemy hands.",
+              "objective": 6
+            }
+          ],
+          "stage": 2,
+          "question": "Will Kuro's fuel protect evacuees, public testimony, or a bargaining position?",
+          "source_page": 18,
+          "source_title": "DEFENDING KURO STATION"
+        },
+        {
+          "title": "A Name on Every Crate",
+          "mission": "interception_red_zone",
+          "situation": "A runaway freight line carries both stolen machinery and trapped crews.",
+          "clue": "Freight seals point to a supposedly neutral broker.",
+          "offers": [
+            {
+              "title": "Crew Before Cargo",
+              "variant": 2,
+              "briefing": "Recover the escape capsules scattered along the freight route.",
+              "result": "Repair crews return to work on their own terms.",
+              "objective": 4
+            },
+            {
+              "title": "A Train with Witnesses",
+              "variant": 1,
+              "briefing": "Escort the intercepted transport to a siding where its records can be checked.",
+              "result": "The intact manifests connect the broker to the occupation.",
+              "objective": 2
+            },
+            {
+              "title": "Cut the Collection Line",
+              "variant": 0,
+              "briefing": "Destroy the power relays feeding the runaway freight route.",
+              "result": "The collection network loses a major artery.",
+              "objective": 5
+            }
+          ],
+          "stage": 3,
+          "question": "Which part of the freight seizure can the district afford to lose?",
+          "source_page": 28,
+          "source_title": "INTERCEPTION: RED ZONE"
+        },
+        {
+          "title": "The Broker Denies Everything",
+          "mission": "cozen_job",
+          "situation": "A broker denies the reported cargo diversion and jettisons a new cargo trail rather than submit to inspection.",
+          "clue": "A ledger fragment also implicates one of the district's would-be allies.",
+          "offers": [
+            {
+              "title": "Recover the Ration Cases",
+              "variant": 0,
+              "briefing": "Secure the jettisoned cases and carry them back in your mecha.",
+              "result": "Dara can promise another week of supplies.",
+              "objective": 4
+            },
+            {
+              "title": "Scan the Flight Plan",
+              "variant": 1,
+              "briefing": "Scan the fallen cargo for its navigation records.",
+              "result": "The inquiry reaches beyond a single occupation commander.",
+              "objective": 3
+            },
+            {
+              "title": "Burn the Brokers Reserve",
+              "variant": 2,
+              "briefing": "Destroy the exposed ship stores before the broker retrieves them.",
+              "result": "The broker loses the means to finance an immediate reprisal.",
+              "objective": 5
+            }
+          ],
+          "stage": 4,
+          "question": "Can the broker keep selling the same cargo once the squad chooses what to preserve?",
+          "source_page": 17,
+          "source_title": "THE COZEN JOB"
+        },
+        {
+          "title": "Whose Banner Covers Us",
+          "mission": "long_live_king",
+          "situation": "A Neo envoy offers the district protection with a clause nobody announced over the radio.",
+          "clue": "Protection would transfer control of district power distribution.",
+          "offers": [
+            {
+              "title": "Keep the Freighter Free",
+              "variant": 2,
+              "briefing": "Escort the captured freighter past the royal cordon.",
+              "result": "The district retains an independent supply route.",
+              "objective": 2
+            },
+            {
+              "title": "A Witness under Armor",
+              "variant": 1,
+              "briefing": "Disable the royal command machine and recover its controller intact.",
+              "result": "The protection clause can be challenged with direct testimony.",
+              "objective": 9
+            },
+            {
+              "title": "Hold the Rally Ground",
+              "variant": 0,
+              "briefing": "Reach the resistance rally and prevent its dispersal.",
+              "result": "The district enters negotiations with a defensible position.",
+              "objective": 8
+            }
+          ],
+          "stage": 5,
+          "question": "Will the district's protection agreement preserve its independence or replace one owner with another?",
+          "source_page": 31,
+          "source_title": "LONG LIVE THE KING",
+          "employer_faction": 1,
+          "opponent_faction": 2,
+          "opponent_role": "a Neo cordon whose protection terms the district contests"
+        },
+        {
+          "title": "The Price of Working Power",
+          "mission": "meltdown",
+          "situation": "Overloaded generators threaten the very yards the squad has secured.",
+          "clue": "The overload is consistent with deliberate remote requisition.",
+          "offers": [
+            {
+              "title": "Keep the Coolant Moving",
+              "variant": 2,
+              "briefing": "Hold the cooling installation through the shutdown.",
+              "result": "The district keeps usable power instead of a victory crater.",
+              "objective": 1
+            },
+            {
+              "title": "People Carry the Evidence",
+              "variant": 1,
+              "briefing": "Recover personnel capsules from the reactor exclusion zone.",
+              "result": "Operators can explain the remote override sequence.",
+              "objective": 4
+            },
+            {
+              "title": "Deny the Overload",
+              "variant": 0,
+              "briefing": "Destroy unstable reactor stores before they breach.",
+              "result": "The occupation cannot trigger a larger industrial collapse.",
+              "objective": 5
+            }
+          ],
+          "stage": 6,
+          "question": "What survives an industrial emergency when preserving the plant, the operators and containment require different operations?",
+          "source_page": 33,
+          "source_title": "MELTDOWN"
+        },
+        {
+          "title": "The Line Answers Back",
+          "mission": "rise_up",
+          "situation": "Other crews now use the first distress frequency to request support.",
+          "clue": "The requests are coordinated, but not by a single new leader.",
+          "offers": [
+            {
+              "title": "Hold the Workers Rally",
+              "variant": 2,
+              "briefing": "Reach the labor force and defend its rallying point.",
+              "result": "Separate crews begin supporting one another.",
+              "objective": 8
+            },
+            {
+              "title": "The Relay Must Last",
+              "variant": 0,
+              "briefing": "Occupy the communications array while the districts compare demands.",
+              "result": "The councils hear one another without an official intermediary.",
+              "objective": 7
+            },
+            {
+              "title": "Take the Enforcer Intact",
+              "variant": 1,
+              "briefing": "Disable the enforcer commander and recover its pilot.",
+              "result": "The uprising gains leverage before the next assault.",
+              "objective": 9
+            }
+          ],
+          "stage": 7,
+          "question": "Will the uprising gain mutual support, a common voice, or a captured enforcer?",
+          "source_page": 43,
+          "source_title": "RISE UP"
+        },
+        {
+          "title": "The Occupier Wants a Symbol",
+          "mission": "phoenix_peak",
+          "situation": "A strike on a shelter uplink could turn the entire campaign into a warning.",
+          "clue": "The target is the district assembly record, not a weapons cache.",
+          "offers": [
+            {
+              "title": "Bring the Shelter Home",
+              "variant": 0,
+              "briefing": "Recover the shelter capsule before the next strike.",
+              "result": "The district keeps its evacuation organizers.",
+              "objective": 4
+            },
+            {
+              "title": "Save the Prototype Record",
+              "variant": 1,
+              "briefing": "Recover the prototype carrying the assembly transmission log.",
+              "result": "The district retains a record no single patron can edit.",
+              "objective": 4
+            },
+            {
+              "title": "Keep the Uplink Alive",
+              "variant": 2,
+              "briefing": "Protect the transmission mast through the emergency broadcast.",
+              "result": "The enemy fails to impose a single account of the uprising.",
+              "objective": 1
+            }
+          ],
+          "stage": 8,
+          "question": "Can the district protect its people and its public account before the next strike?",
+          "source_page": 23,
+          "source_title": "FALL OF PHOENIX PEAK"
+        },
+        {
+          "title": "Before the Yard Gates Open",
+          "mission": "foundry",
+          "situation": "The occupation prepares one last machine to retake the repair district.",
+          "clue": "Its assembly schedule confirms that the final assault is imminent.",
+          "offers": [
+            {
+              "title": "Keep Something Worth Repairing",
+              "variant": 0,
+              "briefing": "Recover the surviving machine instead of leaving only molten scrap.",
+              "result": "The district can repair what it has won.",
+              "objective": 4
+            },
+            {
+              "title": "Clear the Rival Salvagers",
+              "variant": 1,
+              "briefing": "Remove the rival force attempting to seize the assembly records.",
+              "result": "The evidence remains outside the returning occupiers' control.",
+              "objective": 0
+            },
+            {
+              "title": "Stop the Last Assembly",
+              "variant": 2,
+              "briefing": "Destroy the assembly stores feeding the final counterattack.",
+              "result": "The final enemy enters battle without its industrial reserve.",
+              "objective": 5
+            }
+          ],
+          "stage": 9,
+          "question": "What reserve should the district carry into the occupiers' final counterattack?",
+          "source_page": 24,
+          "source_title": "THE FOUNDRY"
+        }
+      ],
+      "finales": [
+        {
+          "title": "A District That Can Breathe",
+          "setup": "The final assault threatens the corridors your contracts kept open.",
+          "payoff": "The surviving network distributes power locally; Dara refuses to trade it for a new uniform.",
+          "continuation": "The district crews receive a supply appeal from Slipstar, where a blockade is turning life support into leverage.",
+          "battle": true,
+          "next_campaign": "slipstar-lifeline"
+        },
+        {
+          "title": "The Ledger Goes Public",
+          "setup": "A protected uplink must outlast the force sent to suppress the evidence.",
+          "payoff": "The records reach separate district councils. They agree on the theft, not on who should govern next.",
+          "continuation": "The disputed signatures point to damaged Aeonic records that no surviving district ledger can explain.",
+          "battle": false,
+          "next_campaign": "third-arrival"
+        },
+        {
+          "title": "The Keys to the Foundry",
+          "setup": "The enemy field commander makes a final attempt to retake the yards.",
+          "payoff": "The yards remain in allied hands. Oren presents the cost of maintaining his protection.",
+          "continuation": "The next protection claim arrives under a remnant standard, backed by an oath with competing interpretations.",
+          "battle": false,
+          "next_campaign": "crown-circuit"
+        }
+      ],
+      "source_pages": {
+        "core": [
+          39,
+          40,
+          41
+        ],
+        "manual": [
+          8,
+          9,
+          17,
+          18,
+          23,
+          24,
+          28,
+          31,
+          33,
+          38,
+          43
+        ]
+      },
+      "canon_anchors": [
+        "The Terran Collective is a workers resistance united by Thea Node; Dara Ven is an original local contact, not her replacement.",
+        "Aeon Prime is occupied former Dominion territory; this story concerns one repair district, not the liberation of the entire world."
+      ],
+      "continuity_contract": {
+        "shared_entry": "Each situation and clue is fresh briefing intelligence available on every incoming path. It does not assert that an unchosen offer succeeded.",
+        "chosen_result": "Only a completed chosen approach establishes its result. Other approaches describe foregone opportunities.",
+        "recurring_cast": "The three contacts are introduced as remote interlocutors; no later beat assumes that an optional rescue recovered one of them.",
+        "scope": "Endings resolve a local campaign pressure. They do not replace published leaders or settle the whole war.",
+        "factions": "A same-faction opponent is a named local detachment, exercise cadre or disputed custodian. It does not mean the entire faction has changed sides.",
+        "tradeoffs": "Thread tradeoffs describe attention and dependency costs; they do not promise unsupported bonus objectives, timers, dialogue checks or off-screen deaths."
+      }
+    },
+    {
+      "id": "crown-circuit",
+      "title": "Crown and Circuit",
+      "premise": "A remnant knightly command asks the squad to recover symbols of legitimacy that are also working pieces of a defense network.",
+      "question": "Does an oath protect people or the right to command them?",
+      "setting": "Fortress Husqvarna and occupied former Dominion territory.",
+      "threads": [
+        {
+          "id": "shelter",
+          "label": "Keep the Oath",
+          "intent": "Protect the people named in the oath, even when orders disagree.",
+          "employer": 2,
+          "adversary": 0,
+          "established": "Refugees and knightly escorts can organize their own withdrawal.",
+          "neglected": "Royal protection depends on an increasingly narrow cordon.",
+          "tradeoff": "The command reserve waits while evacuees receive protection."
+        },
+        {
+          "id": "evidence",
+          "label": "Test the Claim",
+          "intent": "Recover evidence before accepting a claim of rightful command.",
+          "employer": 1,
+          "adversary": 0,
+          "established": "Independent testimony constrains the next command council.",
+          "neglected": "Ceremonial claims outrun the available evidence.",
+          "tradeoff": "Military readiness receives less attention than testimony."
+        },
+        {
+          "id": "leverage",
+          "label": "Restore the Standard",
+          "intent": "Secure strategic assets for a disciplined remnant command.",
+          "employer": 2,
+          "adversary": 0,
+          "established": "The remnant can mount a coordinated counterattack.",
+          "neglected": "The remaining knights lack a common operational reserve.",
+          "tradeoff": "A stronger command reserve can deepen dependence on its officers."
+        }
+      ],
+      "cast": [
+        {
+          "id": "maelin-rook",
+          "name": "Maelin Rook",
+          "faction": 2,
+          "want": "Fulfil a defensive oath without sacrificing its dependents.",
+          "contradiction": "Will disobey an order but will not casually renounce the dynasty.",
+          "voice": "Precise vows; anger appears as increasingly short sentences."
+        },
+        {
+          "id": "sena-marr",
+          "name": "Sena Marr",
+          "faction": 1,
+          "want": "Keep refugees from becoming collateral in a restoration.",
+          "contradiction": "Needs knightly transport she does not trust politically.",
+          "voice": "Direct questions about who is actually aboard."
+        },
+        {
+          "id": "cairn-vell",
+          "name": "Cairn Vell",
+          "faction": 2,
+          "want": "Preserve a usable chain of command.",
+          "contradiction": "Confuses institutional survival with public consent.",
+          "voice": "Polished ceremony over practical urgency."
+        }
+      ],
+      "beats": [
+        {
+          "title": "The Trial Has a Witness",
+          "mission": "academy_neo",
+          "situation": "A routine trial becomes a test of who receives protection.",
+          "clue": "The exercise roster omits the support crews.",
+          "offers": [
+            {
+              "title": "Guard the Other Trainee",
+              "variant": 2,
+              "briefing": "Reach the allied trainee and hold the rally point.",
+              "result": "Maelin sees the squad honor a practical oath.",
+              "objective": 8
+            },
+            {
+              "title": "Mark the Tournament Ground",
+              "variant": 1,
+              "briefing": "Hold the tournament marker while the exercise record is preserved.",
+              "result": "Sena gains a verifiable record of the trial.",
+              "objective": 7
+            },
+            {
+              "title": "Take the Champion Intact",
+              "variant": 0,
+              "briefing": "Disable the rival machine without destroying its cockpit.",
+              "result": "Cairn gains a champion who can still answer orders.",
+              "objective": 9
+            }
+          ],
+          "stage": 1,
+          "question": "What does the trial reward: protecting a trainee, preserving a public marker, or taking the champion intact?",
+          "source_page": 37,
+          "source_title": "PILOT ACADEMY: NEO DOMINION",
+          "employer_faction": 2,
+          "opponent_faction": 2,
+          "opponent_role": "the academy exercise cadre"
+        },
+        {
+          "title": "A Passage for the Unsworn",
+          "mission": "breaking_blockade",
+          "situation": "A cordon separates refugee transports from a knightly escort.",
+          "clue": "The cordon recognizes insignia before distress calls.",
+          "offers": [
+            {
+              "title": "Map the Safe Gap",
+              "variant": 0,
+              "briefing": "Survey the radar network before the next refugee run.",
+              "result": "The convoy gains a route outside the insignia system.",
+              "objective": 3
+            },
+            {
+              "title": "Take the Cordon Voice",
+              "variant": 1,
+              "briefing": "Disable the blockade commander for recovery.",
+              "result": "The cordon orders can be questioned directly.",
+              "objective": 9
+            },
+            {
+              "title": "Silence the Battery Stores",
+              "variant": 2,
+              "briefing": "Destroy the artillery stores maintaining the cordon.",
+              "result": "The remnant gains room to assemble its fleet.",
+              "objective": 5
+            }
+          ],
+          "stage": 2,
+          "question": "Which part of the blockade must yield before people without insignia can pass?",
+          "source_page": 14,
+          "source_title": "BREAKING THE BLOCKADE"
+        },
+        {
+          "title": "What the Wreck Remembers",
+          "mission": "assault_moroo",
+          "situation": "A crashed retreat transport leaves survivors and a city rally point under threat.",
+          "clue": "Its command record conflicts with the public account of the retreat.",
+          "offers": [
+            {
+              "title": "Recover the Retreat Survivors",
+              "variant": 0,
+              "briefing": "Extract survivor capsules from the crashed transport.",
+              "result": "Transport crews can still guide the next evacuation.",
+              "objective": 4
+            },
+            {
+              "title": "Recover the Command Witness",
+              "variant": 1,
+              "briefing": "Disable the hostile commander and recover its pilot.",
+              "result": "The retreat account gains a witness who can answer for the orders.",
+              "objective": 9
+            },
+            {
+              "title": "Hold the City Rally",
+              "variant": 2,
+              "briefing": "Reach the city garrison and hold its central rally point.",
+              "result": "The remnant retains a staging position for its next defense.",
+              "objective": 8
+            }
+          ],
+          "stage": 3,
+          "question": "Which part of the failed retreat can the remnant reclaim: its survivors, the command witness, or the city rally?",
+          "source_page": 13,
+          "source_title": "ASSAULT ON MOROO"
+        },
+        {
+          "title": "Two Versions of Valor",
+          "mission": "clash_titans",
+          "situation": "A rival knight challenges the squad over the contested retreat record.",
+          "clue": "The rival obeyed an order intended to be secret.",
+          "offers": [
+            {
+              "title": "Stand Beside the Rival",
+              "variant": 2,
+              "briefing": "Reach the rival and hold a joint defensive position.",
+              "result": "The oath becomes a shared duty instead of a duel.",
+              "objective": 8
+            },
+            {
+              "title": "Keep the Duel Broadcasting",
+              "variant": 1,
+              "briefing": "Hold the rival occupied while the record is transmitted.",
+              "result": "The dispute can no longer be confined to officers.",
+              "objective": 7
+            },
+            {
+              "title": "Take the Challenge",
+              "variant": 0,
+              "briefing": "Disable the rival without destroying its cockpit.",
+              "result": "Cairn keeps the command dispute within knightly procedure.",
+              "objective": 9
+            }
+          ],
+          "stage": 4,
+          "question": "Can the rival be confronted without making another enemy of someone bound by the same oath?",
+          "source_page": 16,
+          "source_title": "CLASH OF THE TITANS",
+          "employer_faction": 2,
+          "opponent_faction": 2,
+          "opponent_role": "a rival remnant detachment contesting the retreat record"
+        },
+        {
+          "title": "A Throne Is Not a Fuel Pump",
+          "mission": "defending_kuro",
+          "situation": "A station commander demands allegiance in exchange for evacuation fuel.",
+          "clue": "The fuel was already paid for by the departing communities.",
+          "offers": [
+            {
+              "title": "Escort the Paying Passengers",
+              "variant": 1,
+              "briefing": "Bring the civilian convoy through the station cordon.",
+              "result": "The refugees retain their right to the purchased fuel.",
+              "objective": 2
+            },
+            {
+              "title": "Hold the Accounts Office",
+              "variant": 0,
+              "briefing": "Protect the installation while its delivery accounts are copied.",
+              "result": "The station bargain can be challenged in public.",
+              "objective": 1
+            },
+            {
+              "title": "Keep the Officer Secure",
+              "variant": 2,
+              "briefing": "Prevent the enemy reaching the captured officer.",
+              "result": "The remnant retains leverage over the fuel route.",
+              "objective": 6
+            }
+          ],
+          "stage": 5,
+          "question": "Does the fuel station owe its first duty to the people who paid or to the commander who controls it?",
+          "source_page": 18,
+          "source_title": "DEFENDING KURO STATION",
+          "employer_faction": 2,
+          "opponent_faction": 2,
+          "opponent_role": "the station commander's local remnant detachment"
+        },
+        {
+          "title": "The Ship with No Audience",
+          "mission": "seize_ronin",
+          "situation": "A warship offers a mobile command post and room for thousands of evacuees.",
+          "clue": "The cargo allocation leaves little space for passengers.",
+          "offers": [
+            {
+              "title": "Cover the Passenger Route",
+              "variant": 1,
+              "briefing": "Escort the escape transport through the contested shipyard.",
+              "result": "The departing convoy retains a route out.",
+              "objective": 2
+            },
+            {
+              "title": "Recover the Restrained Witness",
+              "variant": 2,
+              "briefing": "Recover the restrained prisoner capsule from the hull.",
+              "result": "Sena gains a witness outside the command circle.",
+              "objective": 4
+            },
+            {
+              "title": "Keep the Ronin Powered",
+              "variant": 0,
+              "briefing": "Protect the ship power core through capture.",
+              "result": "The remnant gains a functioning staging vessel.",
+              "objective": 1
+            }
+          ],
+          "stage": 6,
+          "question": "Will the Ronin become a passenger route, a source of testimony, or a functioning command ship?",
+          "source_page": 47,
+          "source_title": "SEIZE THE RONIN"
+        },
+        {
+          "title": "The Standard in the Snow",
+          "mission": "verglas",
+          "situation": "A frozen station shelters technicians who can restore the defense network.",
+          "clue": "Their work contracts include compulsory military service.",
+          "offers": [
+            {
+              "title": "Bring the Technicians Through",
+              "variant": 0,
+              "briefing": "Escort the scientists through the frozen industrial zone.",
+              "result": "The technicians reach safety with witnesses.",
+              "objective": 2
+            },
+            {
+              "title": "Recover the Work Contracts",
+              "variant": 1,
+              "briefing": "Recover the evidence caches before their destruction.",
+              "result": "The compulsory service clause becomes a live dispute.",
+              "objective": 4
+            },
+            {
+              "title": "Remove the Explosive Reserve",
+              "variant": 2,
+              "briefing": "Destroy the stores threatening the frozen station.",
+              "result": "The remnant gains usable infrastructure instead of an icebound grave.",
+              "objective": 5
+            }
+          ],
+          "stage": 7,
+          "question": "What must be secured before the frozen stations compulsory service clause can be challenged?",
+          "source_page": 27,
+          "source_title": "INSURGENCY AT VERGLAS"
+        },
+        {
+          "title": "The Wrong Order Arrives",
+          "mission": "long_live_king",
+          "situation": "A sealed order demands a withdrawal that would abandon the next convoy.",
+          "clue": "Its authentication is valid; its judgment is still contestable.",
+          "offers": [
+            {
+              "title": "Escort the Unscheduled Freighter",
+              "variant": 2,
+              "briefing": "Bring the captured freighter out of the contested territory.",
+              "result": "Maelin acts on the protective part of the oath.",
+              "objective": 2
+            },
+            {
+              "title": "Recover the Orders Controller",
+              "variant": 1,
+              "briefing": "Disable the command machine and retrieve its controller.",
+              "result": "The disputed order can be examined without guessing its author.",
+              "objective": 9
+            },
+            {
+              "title": "Hold the Remnant Rally",
+              "variant": 0,
+              "briefing": "Reach the rally point and keep the formation intact.",
+              "result": "Cairn can present a coherent defense to the next assault.",
+              "objective": 8
+            }
+          ],
+          "stage": 8,
+          "question": "Which duty takes precedence when an authenticated withdrawal order abandons a convoy?",
+          "source_page": 31,
+          "source_title": "LONG LIVE THE KING",
+          "employer_faction": 2,
+          "opponent_faction": 2,
+          "opponent_role": "the command detachment enforcing the disputed withdrawal"
+        },
+        {
+          "title": "What the Shield Covers",
+          "mission": "stars_torn_asunder",
+          "situation": "The enemy prepares to force a choice between fleet cohesion and embarkation.",
+          "clue": "The final attack will follow the least protected corridor.",
+          "offers": [
+            {
+              "title": "Carry the Delegates Clear",
+              "variant": 0,
+              "briefing": "Escort the faction delegates out of the battle zone.",
+              "result": "The evacuation compact remains possible.",
+              "objective": 2
+            },
+            {
+              "title": "Survey the Converging Front",
+              "variant": 1,
+              "briefing": "Scan the warship power network from your mecha.",
+              "result": "The remnant enters the final operation with verified positions.",
+              "objective": 3
+            },
+            {
+              "title": "Recover the Diplomatic Reserve",
+              "variant": 2,
+              "briefing": "Recover the diplomatic archive capsules from the converging battle.",
+              "result": "The remnant retains leverage for its final defensive agreement.",
+              "objective": 4
+            }
+          ],
+          "stage": 9,
+          "question": "What can the squad preserve for the last defense without assuming that military authority is public consent?",
+          "source_page": 50,
+          "source_title": "THE STARS TORN ASUNDER"
+        }
+      ],
+      "finales": [
+        {
+          "title": "The Oath Has Passengers",
+          "setup": "The final force approaches the embarkation corridors.",
+          "payoff": "Maelin keeps the evacuation compact. No victory here grants the squad the throne of Lodestar.",
+          "continuation": "The protected refugee convoy needs supplies at Slipstar, where the next safe berth lies behind a blockade.",
+          "battle": true,
+          "next_campaign": "slipstar-lifeline"
+        },
+        {
+          "title": "A Claim with Witnesses",
+          "setup": "The final enemy tries to destroy the records before judgment.",
+          "payoff": "The surviving witnesses force a public dispute over command; Ilyn Acharis remains the exiled prince.",
+          "continuation": "The remnant hearing requires a missing Aeonic record whose surviving copies disagree.",
+          "battle": false,
+          "next_campaign": "third-arrival"
+        },
+        {
+          "title": "A Standard Still Flying",
+          "setup": "The last assault concentrates against the restored defensive network.",
+          "payoff": "The knights retain a defensible position, but the demands of those they protected remain.",
+          "continuation": "A distant fortress requests a mobile command ship, and the only available hull has competing owners.",
+          "battle": false,
+          "next_campaign": "borrowed-sky"
+        }
+      ],
+      "source_pages": {
+        "core": [
+          39,
+          40,
+          41
+        ],
+        "manual": [
+          8,
+          9,
+          13,
+          14,
+          16,
+          18,
+          27,
+          31,
+          37,
+          47,
+          50
+        ]
+      },
+      "canon_anchors": [
+        "The Neo Dominion remains loyal to the exiled Prince Ilyn Acharis and House Acharis.",
+        "Fortress Husqvarna is the prince's floating stronghold, protected by adapted Aeonic shield technology; local officers do not inherit the throne through these contracts."
+      ],
+      "continuity_contract": {
+        "shared_entry": "Each situation and clue is fresh briefing intelligence available on every incoming path. It does not assert that an unchosen offer succeeded.",
+        "chosen_result": "Only a completed chosen approach establishes its result. Other approaches describe foregone opportunities.",
+        "recurring_cast": "The three contacts are introduced as remote interlocutors; no later beat assumes that an optional rescue recovered one of them.",
+        "scope": "Endings resolve a local campaign pressure. They do not replace published leaders or settle the whole war.",
+        "factions": "A same-faction opponent is a named local detachment, exercise cadre or disputed custodian. It does not mean the entire faction has changed sides.",
+        "tradeoffs": "Thread tradeoffs describe attention and dependency costs; they do not promise unsupported bonus objectives, timers, dialogue checks or off-screen deaths."
+      }
+    },
+    {
+      "id": "third-arrival",
+      "title": "The Third Arrival",
+      "premise": "A damaged Aeonic relay contains contradictory accounts of the delayed colony ship, and every faction wants to control the survivors' account.",
+      "question": "Can a history be recovered without becoming another instrument of conquest?",
+      "setting": "Aeon Prime, relay stations and mecha-sized wreck interiors.",
+      "threads": [
+        {
+          "id": "shelter",
+          "label": "Shelter the Disconnected",
+          "intent": "Protect people who can no longer rely on their old command links.",
+          "employer": 0,
+          "adversary": 2,
+          "established": "Disconnected crews can maintain their own safe channels.",
+          "neglected": "Isolated crews remain dependent on a commanding patron.",
+          "tradeoff": "Some damaged records stay exposed while crews are moved."
+        },
+        {
+          "id": "evidence",
+          "label": "Keep the Contradictions",
+          "intent": "Preserve incompatible records until they can be examined together.",
+          "employer": 1,
+          "adversary": 0,
+          "established": "Independent copies make a single official history harder to impose.",
+          "neglected": "The surviving records can still be selectively edited.",
+          "tradeoff": "The command route receives less protection while copies are secured."
+        },
+        {
+          "id": "leverage",
+          "label": "Control the Relays",
+          "intent": "Secure the machinery that decides whose orders arrive.",
+          "employer": 0,
+          "adversary": 2,
+          "established": "A controlled relay chain can sustain the final deployment.",
+          "neglected": "A rival can still sever the fleet by taking one relay.",
+          "tradeoff": "A functional relay can preserve the custody the crews distrust."
+        }
+      ],
+      "cast": [
+        {
+          "id": "ilex-seven",
+          "name": "Ilex Seven",
+          "faction": 0,
+          "want": "Recover the voices of a disconnected crew.",
+          "contradiction": "Defends their humanity while accepting much of Aeonic command practice.",
+          "voice": "Precise collective terms, then an unexpectedly personal correction."
+        },
+        {
+          "id": "mina-tal",
+          "name": "Mina Tal",
+          "faction": 1,
+          "want": "Preserve testimony without handing a fresh weapon to the invaders.",
+          "contradiction": "Will shelter an Aeon but will not excuse the occupation.",
+          "voice": "Names sources and separates observation from inference."
+        },
+        {
+          "id": "seret-ka",
+          "name": "Seret Ka",
+          "faction": 0,
+          "want": "Restore a relay chain before hostile forces exploit it.",
+          "contradiction": "Regards contradictory records as a military vulnerability.",
+          "voice": "Short diagnostic phrases and exact limits."
+        }
+      ],
+      "beats": [
+        {
+          "title": "An Order without a Sender",
+          "mission": "academy_aeonic",
+          "situation": "An exercise relay issues a second incompatible command.",
+          "clue": "Neither command reveals who or what the One-Mind is.",
+          "offers": [
+            {
+              "title": "Keep the Training Relay",
+              "variant": 2,
+              "briefing": "Protect the exercise uplink until the disconnected crews clear it.",
+              "result": "The crews retain a route out of the test zone.",
+              "objective": 1
+            },
+            {
+              "title": "Trace the Duplicate Order",
+              "variant": 0,
+              "briefing": "Scan the course markers for the second command sequence.",
+              "result": "Mina receives two independently recorded orders.",
+              "objective": 3
+            },
+            {
+              "title": "Secure the Relay Ace",
+              "variant": 1,
+              "briefing": "Disable the academy ace and recover its command controller.",
+              "result": "Seret gains a working command interface.",
+              "objective": 9
+            }
+          ],
+          "stage": 1,
+          "question": "What should survive two incompatible orders: the disconnected crews, both readings, or the command interface?",
+          "source_page": 36,
+          "source_title": "PILOT ACADEMY: AEONIC PRIMACY",
+          "employer_faction": 0,
+          "opponent_faction": 0,
+          "opponent_role": "the academy live-exercise cadre"
+        },
+        {
+          "title": "A Survivor Is Not a Specimen",
+          "mission": "anathema",
+          "situation": "A missing experimental pilot has become valuable to competing collectors.",
+          "clue": "The pilot can identify a relay route, not the origin of Aeonic authority.",
+          "offers": [
+            {
+              "title": "Recover the Missing Pilot",
+              "variant": 0,
+              "briefing": "Recover the pilot's sealed capsule from the utility district.",
+              "result": "A living witness reaches the disconnected crews.",
+              "objective": 4
+            },
+            {
+              "title": "Clear the Witness Route",
+              "variant": 1,
+              "briefing": "Remove the machines preventing access to the witness district.",
+              "result": "Independent recovery teams can examine the site.",
+              "objective": 0
+            },
+            {
+              "title": "Break the Collector Network",
+              "variant": 2,
+              "briefing": "Destroy the command stores supplying the collectors.",
+              "result": "The rival collection chain loses its local base.",
+              "objective": 5
+            }
+          ],
+          "stage": 2,
+          "question": "Can the experimental pilot be recovered without treating a person as another research specimen?",
+          "source_page": 12,
+          "source_title": "ANATHEMA"
+        },
+        {
+          "title": "What the Eclipse Kept",
+          "mission": "salvaging_eclipse",
+          "situation": "A wreck contains barrier keys alongside records of a broken retreat.",
+          "clue": "The keys can verify access but cannot authenticate the oldest logs.",
+          "offers": [
+            {
+              "title": "Bring the Transport Clear",
+              "variant": 2,
+              "briefing": "Escort the survivor transport away from the wreck.",
+              "result": "The crews keep their evacuation team.",
+              "objective": 2
+            },
+            {
+              "title": "Read the Barrier Memory",
+              "variant": 1,
+              "briefing": "Scan the barrier controllers for access history.",
+              "result": "The archive gains a record from a different system.",
+              "objective": 3
+            },
+            {
+              "title": "Recover the Wreck Weapon",
+              "variant": 0,
+              "briefing": "Recover the capital-ship salvage before rival crews seize it.",
+              "result": "Seret secures leverage for the next relay passage.",
+              "objective": 4
+            }
+          ],
+          "stage": 3,
+          "question": "Which part of the Eclipse will let a disputed account survive its next owner?",
+          "source_page": 44,
+          "source_title": "SALVAGING THE ECLIPSE"
+        },
+        {
+          "title": "The Cold Archive",
+          "mission": "verglas",
+          "situation": "Researchers at a frozen station disagree about the records they have preserved.",
+          "clue": "Their disagreement predates the current relay damage.",
+          "offers": [
+            {
+              "title": "Escort the Researchers",
+              "variant": 0,
+              "briefing": "Bring the scientists through the frozen industrial zone.",
+              "result": "The argument survives with its participants.",
+              "objective": 2
+            },
+            {
+              "title": "Recover Both Accounts",
+              "variant": 1,
+              "briefing": "Recover the evidence caches before either is destroyed.",
+              "result": "Contradictory records remain available for comparison.",
+              "objective": 4
+            },
+            {
+              "title": "Deny the Station Demolition",
+              "variant": 2,
+              "briefing": "Destroy the stores that could erase the entire station.",
+              "result": "The relay campaign retains a usable staging post.",
+              "objective": 5
+            }
+          ],
+          "stage": 4,
+          "question": "Will the frozen archive keep its disputing researchers, their incompatible records, or its usable infrastructure?",
+          "source_page": 27,
+          "source_title": "INSURGENCY AT VERGLAS"
+        },
+        {
+          "title": "The Hub Offers Certainty",
+          "mission": "severed_connection",
+          "situation": "A network hub offers to reconcile the conflicting reports now reaching the disconnected crews.",
+          "clue": "The reconciliation would overwrite records that fail its checks.",
+          "offers": [
+            {
+              "title": "Take the Interceptor Alive",
+              "variant": 1,
+              "briefing": "Disable the interceptor and retrieve its pilot before the upload.",
+              "result": "The crews gain someone who can question the overwrite order.",
+              "objective": 9
+            },
+            {
+              "title": "Copy before Consensus",
+              "variant": 2,
+              "briefing": "Download the relay data with the mecha scanner.",
+              "result": "The unmerged accounts survive outside the hub.",
+              "objective": 3
+            },
+            {
+              "title": "Cut the Overwrite Power",
+              "variant": 0,
+              "briefing": "Destroy the exposed hub power centers.",
+              "result": "The overwrite stops, at the price of a damaged command route.",
+              "objective": 5
+            }
+          ],
+          "stage": 5,
+          "question": "Who gets to decide which observations the hub's reconciliation is allowed to erase?",
+          "source_page": 48,
+          "source_title": "SEVERED CONNECTION",
+          "employer_faction": 0,
+          "opponent_faction": 0,
+          "opponent_role": "a relay custody detachment enforcing the overwrite"
+        },
+        {
+          "title": "The Price of a Clean Signal",
+          "mission": "nanovore",
+          "situation": "Nanotech cleanup routines spread into occupied industrial districts.",
+          "clue": "Their control signature resembles the relay correction process.",
+          "offers": [
+            {
+              "title": "Retrieve the Sealed Pods",
+              "variant": 2,
+              "briefing": "Recover survivors from the factory evacuation pods.",
+              "result": "More crews can testify to what the cleanup changed.",
+              "objective": 4
+            },
+            {
+              "title": "Trace the Factory Pattern",
+              "variant": 1,
+              "briefing": "Survey the outbreak sites using sealed onboard instruments.",
+              "result": "The archive gains a reproducible technical comparison.",
+              "objective": 3
+            },
+            {
+              "title": "Reach the Restart Unit",
+              "variant": 0,
+              "briefing": "Secure the factory control unit through its restart.",
+              "result": "A working installation can support the isolated fleet.",
+              "objective": 8
+            }
+          ],
+          "stage": 6,
+          "question": "What can be preserved when the cleanup process spreads beyond the machines it was meant to repair?",
+          "source_page": 42,
+          "source_title": "RISE OF THE NANOVORE",
+          "employer_faction": 0,
+          "opponent_faction": 0,
+          "opponent_role": "compromised cleanup machines at an Aeonic installation"
+        },
+        {
+          "title": "The Ronin Has Room",
+          "mission": "seize_ronin",
+          "situation": "A prison ship could carry the disconnected crews beyond the contested relay net.",
+          "clue": "Its power controls also hold the prisoner's release record.",
+          "offers": [
+            {
+              "title": "Cover the Escape Transport",
+              "variant": 1,
+              "briefing": "Escort the escape transport through the shipyard.",
+              "result": "The disconnected crews gain a mobile refuge.",
+              "objective": 2
+            },
+            {
+              "title": "Recover the Prisoner Record",
+              "variant": 2,
+              "briefing": "Retrieve the restrained prisoner capsule from the hull.",
+              "result": "The archive gains a witness with independent custody records.",
+              "objective": 4
+            },
+            {
+              "title": "Keep the Ship Powered",
+              "variant": 0,
+              "briefing": "Protect the ship core during capture.",
+              "result": "The relay force gains a functioning staging vessel.",
+              "objective": 1
+            }
+          ],
+          "stage": 7,
+          "question": "Will the prison ship provide a way out, an independent witness, or a controlled relay base?",
+          "source_page": 47,
+          "source_title": "SEIZE THE RONIN"
+        },
+        {
+          "title": "An Answer Too Convenient",
+          "mission": "voidbringer",
+          "situation": "A hostile simulator presents a complete explanation for the missing centuries.",
+          "clue": "Its certainty is manufactured inside a weapon system.",
+          "offers": [
+            {
+              "title": "Find the Exit Markers",
+              "variant": 0,
+              "briefing": "Navigate the mecha maze to establish an extraction route.",
+              "result": "The crews escape without accepting the simulation as history.",
+              "objective": 3
+            },
+            {
+              "title": "Take the Simulator Controller",
+              "variant": 1,
+              "briefing": "Disable the simulator command machine for recovery.",
+              "result": "The manufactured explanation becomes examinable evidence.",
+              "objective": 9
+            },
+            {
+              "title": "Break the Projected Giant",
+              "variant": 2,
+              "briefing": "Defeat the giant and the machines maintaining its threat.",
+              "result": "The rival loses a means of controlling the inquiry.",
+              "objective": 0
+            }
+          ],
+          "stage": 8,
+          "question": "Can the squad escape a weapon that offers certainty without accepting its account as history?",
+          "source_page": 55,
+          "source_title": "VOIDBRINGERS TORMENT"
+        },
+        {
+          "title": "The Last Copy Is a Person",
+          "mission": "search_rescue",
+          "situation": "The final relay attack traps the researchers who can explain the contradictory logs.",
+          "clue": "What they know cannot be replaced by one more checksum.",
+          "offers": [
+            {
+              "title": "Bring the District Pods Out",
+              "variant": 0,
+              "briefing": "Collect evacuation pods from the ruined approaches.",
+              "result": "The crews reach the final rendezvous with their own people.",
+              "objective": 4
+            },
+            {
+              "title": "Recover the Archive Custodian",
+              "variant": 1,
+              "briefing": "Retrieve the laboratory capsule before the site collapses.",
+              "result": "The inquiry retains a custodian who can explain its limits.",
+              "objective": 4
+            },
+            {
+              "title": "Read the Attacker Remains",
+              "variant": 2,
+              "briefing": "Scan the kaiju remains at the disrupted relay site.",
+              "result": "The last deployment gains a practical threat assessment.",
+              "objective": 3
+            }
+          ],
+          "stage": 9,
+          "question": "Who or what must reach the final rendezvous for the recovered records to remain meaningful?",
+          "source_page": 45,
+          "source_title": "SEARCH AND RESCUE"
+        }
+      ],
+      "finales": [
+        {
+          "title": "A Channel of Their Own",
+          "setup": "The last attack converges on the disconnected crews' rendezvous.",
+          "payoff": "The crews preserve a channel outside the contested relay chain; their account remains one account among several.",
+          "continuation": "A second damaged ship answers with timestamps that contradict its own recorded departure.",
+          "battle": true,
+          "next_campaign": "broken-horizon"
+        },
+        {
+          "title": "More Than One Record",
+          "setup": "A rival tries to destroy the independent record copies.",
+          "payoff": "The surviving accounts establish a real contradiction, not the identity of the One-Mind.",
+          "continuation": "A distant test receiver repeats one archival date while contradicting the route that should have carried it.",
+          "battle": false,
+          "next_campaign": "broken-horizon"
+        },
+        {
+          "title": "The Relay Remains",
+          "setup": "The final enemy tries to sever the newly secured command route.",
+          "payoff": "The relay survives under contested custody. Access has been won; authority has not been proved.",
+          "continuation": "A relay claimant demands control of disputed records aboard a ship whose ownership is itself contested.",
+          "battle": false,
+          "next_campaign": "borrowed-sky"
+        }
+      ],
+      "source_pages": {
+        "core": [
+          39,
+          40,
+          41
+        ],
+        "manual": [
+          8,
+          9,
+          12,
+          27,
+          36,
+          42,
+          44,
+          45,
+          47,
+          48,
+          55
+        ]
+      },
+      "canon_anchors": [
+        "The Aeons are human descendants of the delayed third colony ship, using advanced alien technology.",
+        "The nature of the One-Mind is unresolved in the setting. Contradictory logs in this original story do not establish its identity.",
+        "The local overwrite system is an original installation, not an explanation of the One-Mind's nature."
+      ],
+      "continuity_contract": {
+        "shared_entry": "Each situation and clue is fresh briefing intelligence available on every incoming path. It does not assert that an unchosen offer succeeded.",
+        "chosen_result": "Only a completed chosen approach establishes its result. Other approaches describe foregone opportunities.",
+        "recurring_cast": "The three contacts are introduced as remote interlocutors; no later beat assumes that an optional rescue recovered one of them.",
+        "scope": "Endings resolve a local campaign pressure. They do not replace published leaders or settle the whole war.",
+        "factions": "A same-faction opponent is a named local detachment, exercise cadre or disputed custodian. It does not mean the entire faction has changed sides.",
+        "tradeoffs": "Thread tradeoffs describe attention and dependency costs; they do not promise unsupported bonus objectives, timers, dialogue checks or off-screen deaths."
+      }
+    },
+    {
+      "id": "under-open-war",
+      "title": "Beneath the Open War",
+      "premise": "Routine maintenance reveals a growing Voidmaw incursion beneath battlefields the human factions are too busy contesting to secure.",
+      "question": "What must be saved when every side calls its own front the only real war?",
+      "setting": "Aeon Prime service depths, quarantine districts and a remote frozen research site.",
+      "threads": [
+        {
+          "id": "shelter",
+          "label": "Keep a Way Out",
+          "intent": "Secure shelters and extraction corridors before the next breach.",
+          "employer": 1,
+          "adversary": 3,
+          "established": "Evacuation crews know several routes out of the threatened districts.",
+          "neglected": "The threatened districts depend on a shrinking corridor.",
+          "tradeoff": "Support sites may remain intact beyond the evacuation corridor."
+        },
+        {
+          "id": "evidence",
+          "label": "Read the Incursion",
+          "intent": "Preserve observations and warning networks instead of guessing at the hive.",
+          "employer": 0,
+          "adversary": 3,
+          "established": "Independent sensors reveal the next concentration of kaiju.",
+          "neglected": "The approaching threat remains badly mapped.",
+          "tradeoff": "Some evacuation work waits for a clearer threat picture."
+        },
+        {
+          "id": "leverage",
+          "label": "Close the Feeding Line",
+          "intent": "Destroy the resources sustaining the expanding incursion.",
+          "employer": 2,
+          "adversary": 3,
+          "established": "The enemy reaches the final battle without its nearest support sites.",
+          "neglected": "The final concentration still draws on intact feeding sites.",
+          "tradeoff": "Useful observations can be lost with the support sites."
+        }
+      ],
+      "cast": [
+        {
+          "id": "bo-arness",
+          "name": "Bo Arness",
+          "faction": 1,
+          "want": "Get maintenance crews out before the fronts collapse above them.",
+          "contradiction": "Still hopes ordinary repair work can solve an extraordinary invasion.",
+          "voice": "Work orders, warning distances and the names of missing crews."
+        },
+        {
+          "id": "quill-esh",
+          "name": "Quill Esh",
+          "faction": 0,
+          "want": "Measure the incursion well enough to stop another uncontrolled opening.",
+          "contradiction": "Seeks control of a system whose full ecology remains unknown.",
+          "voice": "Separates readings from explanations."
+        },
+        {
+          "id": "lady-vaira",
+          "name": "Lady Vaira",
+          "faction": 2,
+          "want": "Build a defensible boundary around the exposed settlements.",
+          "contradiction": "May abandon a position too soon to preserve a larger force.",
+          "voice": "Maps every promise onto a defensive line."
+        }
+      ],
+      "beats": [
+        {
+          "title": "It Is Not a Broken Pump",
+          "mission": "sewer_duty",
+          "situation": "A maintenance shift stops answering from the service depths.",
+          "clue": "The damage follows a route rather than an isolated equipment failure.",
+          "offers": [
+            {
+              "title": "Keep the Service Unit Alive",
+              "variant": 2,
+              "briefing": "Defend the fusion service unit through the incursion.",
+              "result": "The crews retain light and an extraction point.",
+              "objective": 1
+            },
+            {
+              "title": "Check the Generator Chain",
+              "variant": 0,
+              "briefing": "Scan the sewer generators from your mecha.",
+              "result": "The first movement pattern is recorded.",
+              "objective": 3
+            },
+            {
+              "title": "Clear the Access Depths",
+              "variant": 1,
+              "briefing": "Remove the creatures and machines blocking the service route.",
+              "result": "The incursion loses its nearest access pocket.",
+              "objective": 0
+            }
+          ],
+          "stage": 1,
+          "question": "Is the maintenance failure best answered by keeping the lights on, recording a route, or clearing the service depths?",
+          "source_page": 46,
+          "source_title": "SEWER DUTY"
+        },
+        {
+          "title": "A Boundary Drawn Too Late",
+          "mission": "phase_line_talon",
+          "situation": "Contamination crosses a district boundary while commanders debate its meaning.",
+          "clue": "The movement continues through machines that no longer answer normal orders.",
+          "offers": [
+            {
+              "title": "Recover the District Pods",
+              "variant": 0,
+              "briefing": "Extract survivor pods from the affected district.",
+              "result": "Bo can establish a corridor around the quarantine line.",
+              "objective": 4
+            },
+            {
+              "title": "Sample the Crossing Points",
+              "variant": 1,
+              "briefing": "Survey the contaminated sites with sealed mecha instruments.",
+              "result": "Quill can compare movement across independent sites.",
+              "objective": 3
+            },
+            {
+              "title": "Hold the Quarantine Edge",
+              "variant": 2,
+              "briefing": "Stop infected machines crossing the defended boundary.",
+              "result": "Vaira gains time to assemble a real defense.",
+              "objective": 6
+            }
+          ],
+          "stage": 2,
+          "question": "Can the quarantine protect people before the competing commands agree on what crossed it?",
+          "source_page": 35,
+          "source_title": "PHASE LINE: TALON"
+        },
+        {
+          "title": "A Refuge under Rubble",
+          "mission": "search_rescue",
+          "situation": "A collapsed district contains civilians, researchers and kaiju remains.",
+          "clue": "The remains explain the route of the incursion better than its purpose.",
+          "offers": [
+            {
+              "title": "Bring the Civilian Pods Out",
+              "variant": 0,
+              "briefing": "Recover civilian capsules from the rubble field.",
+              "result": "The next evacuation begins with experienced guides.",
+              "objective": 4
+            },
+            {
+              "title": "Keep the Researcher Alive",
+              "variant": 1,
+              "briefing": "Recover the laboratory capsule before the next collapse.",
+              "result": "The observers retain someone who knows the instruments.",
+              "objective": 4
+            },
+            {
+              "title": "Read the Remains",
+              "variant": 2,
+              "briefing": "Scan the kaiju remains using sealed onboard probes.",
+              "result": "The defense gains a practical way to distinguish larger threats.",
+              "objective": 3
+            }
+          ],
+          "stage": 3,
+          "question": "Which recovery can still change the next evacuation: civilians, a researcher, or a practical reading of the remains?",
+          "source_page": 45,
+          "source_title": "SEARCH AND RESCUE"
+        },
+        {
+          "title": "The Ice Was a Seal",
+          "mission": "frozen_king",
+          "situation": "A remote frozen site has been treated as a supply of specimens.",
+          "clue": "Its oldest containment pattern points away from a natural grave.",
+          "offers": [
+            {
+              "title": "Extract the Missing Researcher",
+              "variant": 0,
+              "briefing": "Recover the researcher capsule from the ice.",
+              "result": "The evacuation network gains a witness from the frozen site.",
+              "objective": 4
+            },
+            {
+              "title": "Scan without Thawing",
+              "variant": 1,
+              "briefing": "Scan the preserved kaiju using sealed instruments.",
+              "result": "The observers keep data without claiming to understand the hive.",
+              "objective": 3
+            },
+            {
+              "title": "Deny the Containment Stores",
+              "variant": 2,
+              "briefing": "Destroy the research stores feeding further excavation.",
+              "result": "The incursion loses an avoidable source of new exposure.",
+              "objective": 5
+            }
+          ],
+          "stage": 4,
+          "question": "What can the squad learn or preserve without opening the frozen containment any farther?",
+          "source_page": 54,
+          "source_title": "TOMB OF THE FROZEN KING"
+        },
+        {
+          "title": "A Giant inside the Weather",
+          "mission": "leviathan_mist",
+          "situation": "An obscured giant advances beneath weather that hides its exact course.",
+          "clue": "Its course intersects the evacuation routes already opened.",
+          "offers": [
+            {
+              "title": "Find the Lost Survey Crew",
+              "variant": 1,
+              "briefing": "Retrieve the survey team capsules from the mist.",
+              "result": "The corridor keeps guides who have seen the giant directly.",
+              "objective": 4
+            },
+            {
+              "title": "Map the Giant",
+              "variant": 0,
+              "briefing": "Survey the giant and locate its practical weak points.",
+              "result": "The final warning network gains a verified target profile.",
+              "objective": 3
+            },
+            {
+              "title": "Break the Mist Front",
+              "variant": 2,
+              "briefing": "Defeat the giant and its defenders.",
+              "result": "The local pressure falls before the next movement begins.",
+              "objective": 0
+            }
+          ],
+          "stage": 5,
+          "question": "How should the defense confront a giant whose route is hidden by weather?",
+          "source_page": 30,
+          "source_title": "LEVIATHAN IN THE MIST"
+        },
+        {
+          "title": "The Refinery Is Not Neutral",
+          "mission": "drop_leviathan",
+          "situation": "A refinery experiment becomes a defensive choke point.",
+          "clue": "A weapon trial has been drawing the threat toward occupied ground.",
+          "offers": [
+            {
+              "title": "Reach the Cut-Off Squad",
+              "variant": 0,
+              "briefing": "Reinforce the pinned frontline team.",
+              "result": "The corridor keeps a functioning rearguard.",
+              "objective": 8
+            },
+            {
+              "title": "Survey the Experiment Sites",
+              "variant": 2,
+              "briefing": "Scan the refinery trial sites before they are overrun.",
+              "result": "The warning network gains a traceable cause of the diversion.",
+              "objective": 3
+            },
+            {
+              "title": "Recover the Battery Missiles",
+              "variant": 1,
+              "briefing": "Recover the prototype missiles from the exposed battery.",
+              "result": "The defense gains a limited reserve for the next attack.",
+              "objective": 4
+            }
+          ],
+          "stage": 6,
+          "question": "Can the refinery trial be contained without abandoning the squad already pinned there?",
+          "source_page": 19,
+          "source_title": "DROP ZONE: LEVIATHAN"
+        },
+        {
+          "title": "Every Command Wants the Sample",
+          "mission": "eruption_extinction",
+          "situation": "Competing commands race for samples while a hot zone destabilizes.",
+          "clue": "Keeping the site intact and keeping the samples are different goals.",
+          "offers": [
+            {
+              "title": "Hold the Control Station",
+              "variant": 1,
+              "briefing": "Protect the control station through stabilization.",
+              "result": "The corridor avoids a preventable environmental collapse.",
+              "objective": 1
+            },
+            {
+              "title": "Recover the Sealed Samples",
+              "variant": 2,
+              "briefing": "Retrieve the sealed samples from the hot zone.",
+              "result": "The observers can compare them away from the threatened district.",
+              "objective": 4
+            },
+            {
+              "title": "Erase the Exposed Stores",
+              "variant": 0,
+              "briefing": "Destroy the exposed research stores before eruption.",
+              "result": "The local feeding and collection chain is severed.",
+              "objective": 5
+            }
+          ],
+          "stage": 7,
+          "question": "Which promise should take priority when a hot research site cannot preserve everything at once?",
+          "source_page": 22,
+          "source_title": "ERUPTION EXTINCTION"
+        },
+        {
+          "title": "The Fronts Meet",
+          "mission": "stars_torn_asunder",
+          "situation": "Human fleets converge while the incursion reaches their contested routes.",
+          "clue": "No single faction can safely claim all the approaching space.",
+          "offers": [
+            {
+              "title": "Carry the Delegates Clear",
+              "variant": 0,
+              "briefing": "Escort the faction delegates through the battle zone.",
+              "result": "A temporary corridor compact becomes possible.",
+              "objective": 2
+            },
+            {
+              "title": "Read the Warship Grid",
+              "variant": 1,
+              "briefing": "Scan the alien warship power network.",
+              "result": "The warning reaches commands that distrust one another.",
+              "objective": 3
+            },
+            {
+              "title": "Recover the Diplomatic Pods",
+              "variant": 2,
+              "briefing": "Retrieve archive capsules from the converging battle.",
+              "result": "Vaira gains leverage to hold a common defensive line.",
+              "objective": 4
+            }
+          ],
+          "stage": 8,
+          "question": "What temporary common ground can rival fleets establish while the incursion crosses their routes?",
+          "source_page": 50,
+          "source_title": "THE STARS TORN ASUNDER"
+        },
+        {
+          "title": "The Last Warning Beacon",
+          "mission": "dethrone_queen",
+          "situation": "The largest concentration approaches the boundary the squad has helped define.",
+          "clue": "Its support sites are local vulnerabilities, not an explanation of the whole hive.",
+          "offers": [
+            {
+              "title": "Keep the Boundary Clear",
+              "variant": 2,
+              "briefing": "Stop spawned creatures reaching the civilian boundary.",
+              "result": "The final evacuation remains viable.",
+              "objective": 6
+            },
+            {
+              "title": "Break the Brood Screen",
+              "variant": 0,
+              "briefing": "Defeat the brood defenders and record their approach from your cockpit.",
+              "result": "The final force knows which threat reaches it first.",
+              "objective": 0
+            },
+            {
+              "title": "Cut the Spawning Nodes",
+              "variant": 1,
+              "briefing": "Destroy the resource nodes sustaining the concentration.",
+              "result": "The approaching predator loses a nearby reserve.",
+              "objective": 5
+            }
+          ],
+          "stage": 9,
+          "question": "Will the last preparation preserve the civilian boundary, break the brood screen, or cut its support nodes?",
+          "source_page": 52,
+          "source_title": "DETHRONE THE QUEEN"
+        }
+      ],
+      "finales": [
+        {
+          "title": "The Corridor Holds",
+          "setup": "The final assault converges on the evacuation line built against the incursion.",
+          "payoff": "The route holds long enough for the exposed communities to leave; the wider hive remains a threat.",
+          "continuation": "The evacuated communities need a supply berth at Slipstar; the danger there is an armed blockade, not a tunnel opening.",
+          "battle": true,
+          "next_campaign": "slipstar-lifeline"
+        },
+        {
+          "title": "A Warning That Arrives",
+          "setup": "The last attack threatens the observation network before its warning can spread.",
+          "payoff": "The warning reaches rival commands at once. Agreement about the danger does not erase their war.",
+          "continuation": "An unmapped incursion route leads to instruments reporting a journey before its recorded departure.",
+          "battle": false,
+          "next_campaign": "broken-horizon"
+        },
+        {
+          "title": "The Hungry Front Breaks",
+          "setup": "The last hostile concentration pushes through the contested support sites.",
+          "payoff": "The local defense gains breathing room, leaving dangerous pockets rather than a universal cure.",
+          "continuation": "Maintenance crews under the next feeding ground demand control of the yards they must keep repairing.",
+          "battle": false,
+          "next_campaign": "workers-signal"
+        }
+      ],
+      "source_pages": {
+        "core": [
+          39,
+          40,
+          41
+        ],
+        "manual": [
+          8,
+          9,
+          19,
+          22,
+          30,
+          35,
+          45,
+          46,
+          50,
+          52,
+          54
+        ]
+      },
+      "canon_anchors": [
+        "Reopening the Verilian Tunnels released the Voidmaw, which threaten all three human factions.",
+        "Voidmaw behavior in this story remains a local practical threat; no employer, negotiator or universal hive explanation is invented."
+      ],
+      "continuity_contract": {
+        "shared_entry": "Each situation and clue is fresh briefing intelligence available on every incoming path. It does not assert that an unchosen offer succeeded.",
+        "chosen_result": "Only a completed chosen approach establishes its result. Other approaches describe foregone opportunities.",
+        "recurring_cast": "The three contacts are introduced as remote interlocutors; no later beat assumes that an optional rescue recovered one of them.",
+        "scope": "Endings resolve a local campaign pressure. They do not replace published leaders or settle the whole war.",
+        "factions": "A same-faction opponent is a named local detachment, exercise cadre or disputed custodian. It does not mean the entire faction has changed sides.",
+        "tradeoffs": "Thread tradeoffs describe attention and dependency costs; they do not promise unsupported bonus objectives, timers, dialogue checks or off-screen deaths."
+      }
+    },
+    {
+      "id": "slipstar-lifeline",
+      "title": "The Slipstar Lifeline",
+      "premise": "A blockade turns Slipstar's working life-support system into a series of impossible promises, one shipment short of keeping every dome alive.",
+      "question": "Who controls scarcity once the blockade has been broken?",
+      "setting": "Slipstar domes, orbital freight routes and off-moon depots. There are no portals on Slipstar.",
+      "threads": [
+        {
+          "id": "shelter",
+          "label": "Keep the Domes Breathing",
+          "intent": "Spend operational freedom on habitation and civilian transport.",
+          "employer": 1,
+          "adversary": 0,
+          "established": "Dome crews can share emergency reserves across the surface.",
+          "neglected": "Life support remains dependent on one exposed delivery chain.",
+          "tradeoff": "The blockade's resupply chain remains a later problem."
+        },
+        {
+          "id": "evidence",
+          "label": "Account for Every Shipment",
+          "intent": "Expose where the missing capacity actually goes.",
+          "employer": 1,
+          "adversary": 0,
+          "established": "Independent manifests can challenge the next emergency requisition.",
+          "neglected": "The official shortage remains difficult to question.",
+          "tradeoff": "A missing shipment can stay missing while its record is secured."
+        },
+        {
+          "id": "leverage",
+          "label": "Break the Orbital Grip",
+          "intent": "Secure batteries and supply reserves for a final counterattack.",
+          "employer": 2,
+          "adversary": 0,
+          "established": "Surface and orbital batteries can cover the final supply window.",
+          "neglected": "The blockade retains its nearest replenishment reserve.",
+          "tradeoff": "Military protection creates another claim on scarce reserve power."
+        }
+      ],
+      "cast": [
+        {
+          "id": "hessa-dorn",
+          "name": "Hessa Dorn",
+          "faction": 1,
+          "want": "Keep every habitation dome above minimum power.",
+          "contradiction": "Accepts military rationing but demands an expiration date.",
+          "voice": "Exact reserves followed by a sharply personal question."
+        },
+        {
+          "id": "tevin-pell",
+          "name": "Tevin Pell",
+          "faction": 1,
+          "want": "Prove that the shortage is partly manufactured.",
+          "contradiction": "Will risk a shipment to preserve its record.",
+          "voice": "Asks for crate numbers, never comforting estimates."
+        },
+        {
+          "id": "ser-brann",
+          "name": "Ser Brann",
+          "faction": 2,
+          "want": "Exchange convoy protection for a durable defensive agreement.",
+          "contradiction": "His help is real; his definition of a temporary garrison is elastic.",
+          "voice": "Courteous logistics language with a military conclusion."
+        }
+      ],
+      "beats": [
+        {
+          "title": "A Breath on Credit",
+          "mission": "zura_station",
+          "situation": "A dome service station reports one reserve twice.",
+          "clue": "The duplicate allocation is a problem of custody, not a portal malfunction.",
+          "offers": [
+            {
+              "title": "Hold the Life-Support Plant",
+              "variant": 0,
+              "briefing": "Defend the station plant until it stabilizes.",
+              "result": "Hessa can rebalance emergency reserves.",
+              "objective": 1
+            },
+            {
+              "title": "Recover the Sealed Accounts",
+              "variant": 2,
+              "briefing": "Recover the diplomatic capsules carrying delivery records.",
+              "result": "Tevin gains the first independent allocation record.",
+              "objective": 4
+            },
+            {
+              "title": "Escort the Reserve Transport",
+              "variant": 1,
+              "briefing": "Escort the evacuation transport through the station approach.",
+              "result": "The defense gains a protected supply route.",
+              "objective": 2
+            }
+          ],
+          "stage": 1,
+          "question": "Which part of a duplicated reserve allocation can the domes secure before the next shortage?",
+          "source_page": 51,
+          "source_title": "RESCUE ZURA STATION"
+        },
+        {
+          "title": "The First Blockade Run",
+          "mission": "breaking_blockade",
+          "situation": "A supply convoy cannot reach the surface under ordinary escort.",
+          "clue": "The cordon resupplies from a depot outside Slipstar's orbit.",
+          "offers": [
+            {
+              "title": "Survey a Convoy Gap",
+              "variant": 0,
+              "briefing": "Map the cordon radar so a supply run can be attempted.",
+              "result": "The dome crews gain a usable delivery window.",
+              "objective": 3
+            },
+            {
+              "title": "Recover the Cordon Commander",
+              "variant": 1,
+              "briefing": "Disable the commander for recovery with its controller intact.",
+              "result": "The blockade orders become examinable evidence.",
+              "objective": 9
+            },
+            {
+              "title": "Destroy the Resupply Stores",
+              "variant": 2,
+              "briefing": "Destroy the stores keeping the blockade batteries supplied.",
+              "result": "The enemy must ration its next interception.",
+              "objective": 5
+            }
+          ],
+          "stage": 2,
+          "question": "How can a supply window be opened without leaving the blockade free to close it again?",
+          "source_page": 14,
+          "source_title": "BREAKING THE BLOCKADE"
+        },
+        {
+          "title": "Medicine Is Not Ballast",
+          "mission": "precious_cargo",
+          "situation": "A convoy captain is ordered to trade medicine for ammunition space.",
+          "clue": "The order was issued before anyone counted the patients.",
+          "offers": [
+            {
+              "title": "Bring the Medicine Through",
+              "variant": 0,
+              "briefing": "Escort the medicine convoy across the fleet debris.",
+              "result": "The dome hospitals retain their reserve.",
+              "objective": 2
+            },
+            {
+              "title": "Protect the Cargo Record",
+              "variant": 1,
+              "briefing": "Defend the stranded depot while its manifest is copied.",
+              "result": "The missing allocation can be traced.",
+              "objective": 1
+            },
+            {
+              "title": "Stop the Freight Interceptors",
+              "variant": 2,
+              "briefing": "Stop attackers reaching the freighters.",
+              "result": "Ser Brann can establish a guarded orbital route.",
+              "objective": 6
+            }
+          ],
+          "stage": 3,
+          "question": "Who should decide whether a convoy carries medicine, evidence, or military security?",
+          "source_page": 52,
+          "source_title": "DEFEND PRECIOUS CARGO"
+        },
+        {
+          "title": "The Surface Route Still Exists",
+          "mission": "interception_red_zone",
+          "situation": "A surface freight line goes out of control between habitation domes.",
+          "clue": "The fault follows an unauthorized remote command.",
+          "offers": [
+            {
+              "title": "Recover the Freight Crew",
+              "variant": 2,
+              "briefing": "Retrieve crew capsules along the surface route.",
+              "result": "The domes keep experienced freight operators.",
+              "objective": 4
+            },
+            {
+              "title": "Escort the Evidence Train",
+              "variant": 1,
+              "briefing": "Bring the intercepted transport to a safe siding.",
+              "result": "The controller record survives independent inspection.",
+              "objective": 2
+            },
+            {
+              "title": "Cut the Runaway Relays",
+              "variant": 0,
+              "briefing": "Destroy the power relays driving the runaway convoy.",
+              "result": "The defense removes a remote attack on its surface logistics.",
+              "objective": 5
+            }
+          ],
+          "stage": 4,
+          "question": "Can the surface freight route be secured without losing the operators or its command record?",
+          "source_page": 28,
+          "source_title": "INTERCEPTION: RED ZONE"
+        },
+        {
+          "title": "A Cruiser Killer Needs Power",
+          "mission": "face_keros",
+          "situation": "A heavy battery draws current from a civilian reserve circuit.",
+          "clue": "The battery network can be isolated without explaining away the shortage.",
+          "offers": [
+            {
+              "title": "Defend the Targeting Crew",
+              "variant": 2,
+              "briefing": "Protect the allied targeting station through its firing cycle.",
+              "result": "The dome route gains a defended interception window.",
+              "objective": 1
+            },
+            {
+              "title": "Trace the Battery Feedback",
+              "variant": 1,
+              "briefing": "Scan the cannon network to identify its feedback route.",
+              "result": "Tevin can show where the missing reserve was diverted.",
+              "objective": 3
+            },
+            {
+              "title": "Deny the Hostile Nodes",
+              "variant": 0,
+              "briefing": "Destroy hostile cannon power nodes before their next discharge.",
+              "result": "The blockade loses a protected firing position.",
+              "objective": 5
+            }
+          ],
+          "stage": 5,
+          "question": "What must be preserved when a cruiser-killer battery draws on the reserves it should protect?",
+          "source_page": 52,
+          "source_title": "FACE THE KEROS"
+        },
+        {
+          "title": "The Reserve Goes Critical",
+          "mission": "meltdown",
+          "situation": "Emergency overload threatens a surface reserve installation.",
+          "clue": "The automatic shutdown would leave a distant dome without backup.",
+          "offers": [
+            {
+              "title": "Hold the Cooling Plant",
+              "variant": 2,
+              "briefing": "Protect the cooling station through shutdown.",
+              "result": "Hessa retains usable infrastructure.",
+              "objective": 1
+            },
+            {
+              "title": "Recover the Operator Capsules",
+              "variant": 1,
+              "briefing": "Recover personnel capsules from the exclusion zone.",
+              "result": "The operators can identify the remote override.",
+              "objective": 4
+            },
+            {
+              "title": "Destroy the Unstable Stores",
+              "variant": 0,
+              "briefing": "Destroy unstable stores before they breach.",
+              "result": "The final defense avoids a larger reserve collapse.",
+              "objective": 5
+            }
+          ],
+          "stage": 6,
+          "question": "What can the reserve installation retain after its emergency shutdown?",
+          "source_page": 33,
+          "source_title": "MELTDOWN"
+        },
+        {
+          "title": "An Offer from the Knights",
+          "mission": "stop_skirmish",
+          "situation": "A proposed convoy agreement triggers a clash between rival escorts.",
+          "clue": "Both sides describe the same protection route as their exclusive right.",
+          "offers": [
+            {
+              "title": "Secure the Ceasefire Ground",
+              "variant": 1,
+              "briefing": "Reach the allied beacon and secure the area.",
+              "result": "Civilian transports gain a temporary safe crossing.",
+              "objective": 8
+            },
+            {
+              "title": "Hold the Truce Broadcast",
+              "variant": 2,
+              "briefing": "Keep the broadcast relay alive while terms are transmitted.",
+              "result": "The agreement can be heard outside the officer channel.",
+              "objective": 7
+            },
+            {
+              "title": "Recover the Rival Commander",
+              "variant": 0,
+              "briefing": "Disable the rival commander before the skirmish spreads.",
+              "result": "The military patrons enter the next stage with clear leverage.",
+              "objective": 9
+            }
+          ],
+          "stage": 7,
+          "question": "Will the convoy compact protect a shared crossing, a public truce, or an enforceable military bargain?",
+          "source_page": 51,
+          "source_title": "STOP THE SKIRMISH",
+          "employer_faction": 1,
+          "opponent_faction": 2,
+          "opponent_role": "a Neo escort detachment disputing the convoy compact"
+        },
+        {
+          "title": "The Depot beyond the Moon",
+          "mission": "cozen_job",
+          "situation": "A jettisoned cargo trail leads to an off-moon reserve depot.",
+          "clue": "The depot still lists supplies recorded as delivered to Slipstar.",
+          "offers": [
+            {
+              "title": "Bring the Missing Cargo Home",
+              "variant": 0,
+              "briefing": "Recover the jettisoned cargo for the dome reserve.",
+              "result": "The dome crews gain breathing room.",
+              "objective": 4
+            },
+            {
+              "title": "Scan the False Delivery Trail",
+              "variant": 1,
+              "briefing": "Scan the fallen cargo for navigation records.",
+              "result": "The false deliveries can be reconstructed.",
+              "objective": 3
+            },
+            {
+              "title": "Deny the Depot Stores",
+              "variant": 2,
+              "briefing": "Destroy exposed ship stores feeding the blockade.",
+              "result": "The enemy loses its immediate replacement reserve.",
+              "objective": 5
+            }
+          ],
+          "stage": 8,
+          "question": "What does the squad bring back from an off-moon depot still holding supplies recorded as delivered?",
+          "source_page": 17,
+          "source_title": "THE COZEN JOB"
+        },
+        {
+          "title": "The Last Supply Window",
+          "mission": "orions_arrow",
+          "situation": "A hostile strike package threatens the opening of the final convoy route.",
+          "clue": "Its arrival is timed to the supply window, not a tunnel opening.",
+          "offers": [
+            {
+              "title": "Keep the Interceptor Battery",
+              "variant": 2,
+              "briefing": "Defend the interception battery until it can fire.",
+              "result": "The last convoy can attempt its run.",
+              "objective": 1
+            },
+            {
+              "title": "Recover the Guidance Record",
+              "variant": 1,
+              "briefing": "Recover the guidance package from the asteroid facility.",
+              "result": "The final operation gains a verified approach record.",
+              "objective": 4
+            },
+            {
+              "title": "Break the Strike Stores",
+              "variant": 0,
+              "briefing": "Destroy the armed warhead stores before the timed impact.",
+              "result": "The final convoy avoids the planned first strike.",
+              "objective": 5
+            }
+          ],
+          "stage": 9,
+          "question": "Which preparation gives the last convoy its best chance before the timed strike arrives?",
+          "source_page": 34,
+          "source_title": "ORIONS ARROW"
+        }
+      ],
+      "finales": [
+        {
+          "title": "A Window for Every Dome",
+          "setup": "The final assault converges on the supply window your contracts preserved.",
+          "payoff": "The domes receive separate reserves rather than a single gatekeeper's promise. Slipstar remains free of Verilian Tunnels.",
+          "continuation": "The next supply agreement depends on repair-yard workers demanding a charter of their own.",
+          "battle": true,
+          "next_campaign": "workers-signal"
+        },
+        {
+          "title": "The Shortage Has an Address",
+          "setup": "The final enemy tries to silence the manifest relay.",
+          "payoff": "The records identify the missing capacity and its buyers. They do not make fuel or food unlimited.",
+          "continuation": "The brokers oldest manifests refer to a delayed colony ship and records that disagree about its arrival.",
+          "battle": false,
+          "next_campaign": "third-arrival"
+        },
+        {
+          "title": "The Blockade Loses Its Grip",
+          "setup": "The final enemy attempts to retake the battery route.",
+          "payoff": "The supply window remains defended, while Hessa demands the garrison agreement be renegotiated.",
+          "continuation": "A royal escort claims the next convoy route under an oath its passengers have never been asked to accept.",
+          "battle": false,
+          "next_campaign": "crown-circuit"
+        }
+      ],
+      "source_pages": {
+        "core": [
+          39,
+          40,
+          41
+        ],
+        "manual": [
+          8,
+          9,
+          14,
+          17,
+          28,
+          33,
+          34,
+          51,
+          52
+        ]
+      },
+      "canon_anchors": [
+        "Slipstar is the Terran Collective moon-base, with habitation domes and CK-90 anti-cruiser defenses.",
+        "The core book explicitly describes Slipstar as devoid of Verilian Tunnels. All transit here is through surface routes, ships or orbital sites."
+      ],
+      "continuity_contract": {
+        "shared_entry": "Each situation and clue is fresh briefing intelligence available on every incoming path. It does not assert that an unchosen offer succeeded.",
+        "chosen_result": "Only a completed chosen approach establishes its result. Other approaches describe foregone opportunities.",
+        "recurring_cast": "The three contacts are introduced as remote interlocutors; no later beat assumes that an optional rescue recovered one of them.",
+        "scope": "Endings resolve a local campaign pressure. They do not replace published leaders or settle the whole war.",
+        "factions": "A same-faction opponent is a named local detachment, exercise cadre or disputed custodian. It does not mean the entire faction has changed sides.",
+        "tradeoffs": "Thread tradeoffs describe attention and dependency costs; they do not promise unsupported bonus objectives, timers, dialogue checks or off-screen deaths."
+      }
+    },
+    {
+      "id": "borrowed-sky",
+      "title": "Borrowed Sky",
+      "premise": "The squad survives by taking useful pieces from larger ships, until a chain of ownership claims makes its next refuge the most contested machine in the system.",
+      "question": "Can a crew own its escape without becoming someone else's privateer?",
+      "setting": "Shipyards, capital-ship wrecks and mecha-sized docking galleries; every boarding phase stays in the cockpit.",
+      "threads": [
+        {
+          "id": "shelter",
+          "label": "Carry the Crew",
+          "intent": "Secure escape craft, recovery pods and room for passengers.",
+          "employer": 1,
+          "adversary": 0,
+          "established": "Independent crews can support the rendezvous without a single owner.",
+          "neglected": "Passengers depend on borrowed ships and revocable promises.",
+          "tradeoff": "The crews gain an exit before the salvage claim is fully settled."
+        },
+        {
+          "id": "evidence",
+          "label": "Keep the Salvage Record",
+          "intent": "Preserve access records before accepting another ownership claim.",
+          "employer": 1,
+          "adversary": 2,
+          "established": "The squad can demonstrate which claims were imposed after the salvage.",
+          "neglected": "A patron can still describe every recovered ship as stolen.",
+          "tradeoff": "Repair capacity remains disputed while custody records are preserved."
+        },
+        {
+          "id": "leverage",
+          "label": "Take the Hardpoints",
+          "intent": "Turn captured infrastructure into a defensible mobile base.",
+          "employer": 0,
+          "adversary": 2,
+          "established": "A chain of secured hardpoints can cover the final departure.",
+          "neglected": "The next refuge remains dependent on an outside fleet.",
+          "tradeoff": "Maintaining armed hardpoints creates costs the crews must keep meeting."
+        }
+      ],
+      "cast": [
+        {
+          "id": "noll-pace",
+          "name": "Noll Pace",
+          "faction": 1,
+          "want": "Get the salvage crews to a ship that can actually leave.",
+          "contradiction": "Treats an empty hold as an emergency even when it is more profitable.",
+          "voice": "Passenger counts and terse warnings about mass."
+        },
+        {
+          "id": "ree-solan",
+          "name": "Ree Solan",
+          "faction": 1,
+          "want": "Keep salvage claims from erasing the people who did the work.",
+          "contradiction": "Needs patrons to authenticate records those patrons would prefer to own.",
+          "voice": "Contract clauses answered with material evidence."
+        },
+        {
+          "id": "vek-sael",
+          "name": "Vek Sael",
+          "faction": 0,
+          "want": "Secure a mobile relay and its docking network.",
+          "contradiction": "Respects competent crews while treating their refuge as strategic property.",
+          "voice": "Names systems and ownership in the same breath."
+        }
+      ],
+      "beats": [
+        {
+          "title": "A Wreck with Room",
+          "mission": "salvaging_eclipse",
+          "situation": "The first possible refuge is a broken capital ship.",
+          "clue": "The surviving passenger list does not match the salvage contract.",
+          "offers": [
+            {
+              "title": "Escort the Wreck Survivors",
+              "variant": 2,
+              "briefing": "Bring the survivor transport out of the wreck.",
+              "result": "Noll gains a crew able to keep another ship running.",
+              "objective": 2
+            },
+            {
+              "title": "Read the Barrier Claims",
+              "variant": 1,
+              "briefing": "Scan the barrier controllers for access records.",
+              "result": "Ree can compare the contract with the wrecks actual state.",
+              "objective": 3
+            },
+            {
+              "title": "Recover the Heavy Salvage",
+              "variant": 0,
+              "briefing": "Recover the capital-ship weapon salvage.",
+              "result": "The next refuge gains a bargaining reserve.",
+              "objective": 4
+            }
+          ],
+          "stage": 1,
+          "question": "What makes the first wreck useful as a refuge: a crew, access records, or armed salvage?",
+          "source_page": 44,
+          "source_title": "SALVAGING THE ECLIPSE"
+        },
+        {
+          "title": "The Ronin Is Not Empty",
+          "mission": "seize_ronin",
+          "situation": "A prison ship has the right mass and the wrong owners.",
+          "clue": "Its power record includes the locked prisoner galleries.",
+          "offers": [
+            {
+              "title": "Cover the Escape Craft",
+              "variant": 1,
+              "briefing": "Escort the escape transport through the shipyard.",
+              "result": "The squad gains a route for passengers.",
+              "objective": 2
+            },
+            {
+              "title": "Recover the Prisoner Capsule",
+              "variant": 2,
+              "briefing": "Retrieve the restrained prisoner capsule from the hull.",
+              "result": "The record gains a witness who was not an owner.",
+              "objective": 4
+            },
+            {
+              "title": "Keep the Ronin Powered",
+              "variant": 0,
+              "briefing": "Protect the ship core through capture.",
+              "result": "The squad gains a usable staging vessel.",
+              "objective": 1
+            }
+          ],
+          "stage": 2,
+          "question": "Can the squad take useful control of the Ronin without accepting its owners' account of everyone aboard?",
+          "source_page": 47,
+          "source_title": "SEIZE THE RONIN"
+        },
+        {
+          "title": "The Cozen Contract",
+          "mission": "cozen_job",
+          "situation": "A patron asks for cargo recovery while concealing its intended destination.",
+          "clue": "The containers have already been assigned to a second buyer.",
+          "offers": [
+            {
+              "title": "Recover the Useful Cargo",
+              "variant": 0,
+              "briefing": "Secure the jettisoned cargo before it leaves the recovery area.",
+              "result": "The crews gain supplies rather than another promise.",
+              "objective": 4
+            },
+            {
+              "title": "Read the Intended Destination",
+              "variant": 1,
+              "briefing": "Scan the cargo for navigation data.",
+              "result": "The double sale becomes traceable.",
+              "objective": 3
+            },
+            {
+              "title": "Destroy the Double-Sold Stores",
+              "variant": 2,
+              "briefing": "Destroy exposed stores feeding the patron's armed collectors.",
+              "result": "The collectors lose their nearest resupply point.",
+              "objective": 5
+            }
+          ],
+          "stage": 3,
+          "question": "What remains of the Cozen contract once the squad finds a second buyer for the same cargo?",
+          "source_page": 17,
+          "source_title": "THE COZEN JOB"
+        },
+        {
+          "title": "A Lower Deck Is Still a Worksite",
+          "mission": "race_to_bottom",
+          "situation": "Rival salvagers race toward a dangerous lower service bay.",
+          "clue": "The service crew were omitted from both salvage estimates.",
+          "offers": [
+            {
+              "title": "Reach the Lower Crew",
+              "variant": 0,
+              "briefing": "Reach the workers and hold their position.",
+              "result": "Noll keeps a skilled service team out of the casualty list.",
+              "objective": 8
+            },
+            {
+              "title": "Survey the Service Depths",
+              "variant": 2,
+              "briefing": "Scan the lower activity from your cockpit.",
+              "result": "Ree gains a record of the actual worksite.",
+              "objective": 3
+            },
+            {
+              "title": "Deny Rival Extraction Stores",
+              "variant": 1,
+              "briefing": "Destroy the rival extraction stores.",
+              "result": "The rival cannot strip the refuge before the squad returns.",
+              "objective": 5
+            }
+          ],
+          "stage": 4,
+          "question": "Whose work counts when rival salvage estimates omit the lower-deck crew?",
+          "source_page": 39,
+          "source_title": "A RACE TO THE BOTTOM"
+        },
+        {
+          "title": "A Hull in Pieces",
+          "mission": "heavens_fall",
+          "situation": "A falling wreck scatters the components needed to make the refuge mobile.",
+          "clue": "The cores still carry their original access keys.",
+          "offers": [
+            {
+              "title": "Recover the Gravity Cores",
+              "variant": 1,
+              "briefing": "Secure the cores before the wreck breaks apart.",
+              "result": "The refuge gains a chance to move.",
+              "objective": 4
+            },
+            {
+              "title": "Keep the Core Archive Live",
+              "variant": 2,
+              "briefing": "Protect the ship power core through recovery.",
+              "result": "Its surviving access record can challenge the next seizure.",
+              "objective": 1
+            },
+            {
+              "title": "Clear the Fragment Guard",
+              "variant": 0,
+              "briefing": "Remove hostile machines among the fragments.",
+              "result": "The hardpoint crews gain a usable salvage perimeter.",
+              "objective": 0
+            }
+          ],
+          "stage": 5,
+          "question": "What can be preserved from a falling hull before a new claimant arrives?",
+          "source_page": 26,
+          "source_title": "HEAVENS FALL"
+        },
+        {
+          "title": "The Toll Is a Person",
+          "mission": "jailbreak",
+          "situation": "A docking authority detains an operator who can open the next gallery.",
+          "clue": "The detention is being used to turn access into ownership.",
+          "offers": [
+            {
+              "title": "Recover the Operator Capsule",
+              "variant": 0,
+              "briefing": "Extract the prisoner capsule during the hangar breakout.",
+              "result": "The crew retains an operator who can choose where to work.",
+              "objective": 4
+            },
+            {
+              "title": "Map the Docking Defenses",
+              "variant": 1,
+              "briefing": "Scan the prison defenses from the mecha galleries.",
+              "result": "Ree can document how the detention enforced the claim.",
+              "objective": 3
+            },
+            {
+              "title": "Break the Lockdown Stores",
+              "variant": 2,
+              "briefing": "Destroy the lockdown generators with your mecha.",
+              "result": "The next movement is no longer dependent on that authority.",
+              "objective": 5
+            }
+          ],
+          "stage": 6,
+          "question": "Can a detained operator choose where to work once access has been made into a toll?",
+          "source_page": 29,
+          "source_title": "JAILBREAK: HANGAR BREAKOUT"
+        },
+        {
+          "title": "The Hub Has Another Owner",
+          "mission": "severed_connection",
+          "situation": "A possible mobile refuge still answers an external relay, whichever earlier hulls the squad secured.",
+          "clue": "The next update would revoke the crews' control keys.",
+          "offers": [
+            {
+              "title": "Recover the Interceptor Pilot",
+              "variant": 1,
+              "briefing": "Disable the interceptor and secure its pilot.",
+              "result": "The crews gain someone who knows the revocation order.",
+              "objective": 9
+            },
+            {
+              "title": "Copy the Control Record",
+              "variant": 2,
+              "briefing": "Download relay data with the mecha scanner.",
+              "result": "The archive keeps the record before it changes.",
+              "objective": 3
+            },
+            {
+              "title": "Cut the Revocation Power",
+              "variant": 0,
+              "briefing": "Destroy the exposed hub power centers.",
+              "result": "The refuge escapes the immediate control update.",
+              "objective": 5
+            }
+          ],
+          "stage": 7,
+          "question": "Will the refuge retain its people, its record of custody, or freedom from an external control update?",
+          "source_page": 48,
+          "source_title": "SEVERED CONNECTION"
+        },
+        {
+          "title": "A Berth Worth Defending",
+          "mission": "zura_station",
+          "situation": "The refuge needs one final stable berth before departure.",
+          "clue": "The berth owner expects a military concession in return.",
+          "offers": [
+            {
+              "title": "Escort the Waiting Transport",
+              "variant": 1,
+              "briefing": "Bring the evacuation transport through the station approach.",
+              "result": "Passengers reach the refuge in time.",
+              "objective": 2
+            },
+            {
+              "title": "Recover the Diplomatic Capsules",
+              "variant": 2,
+              "briefing": "Recover the capsules holding the proposed berth terms.",
+              "result": "The crews can negotiate from the actual agreement.",
+              "objective": 4
+            },
+            {
+              "title": "Hold the Station Plant",
+              "variant": 0,
+              "briefing": "Defend the life-support installation until it stabilizes.",
+              "result": "The refuge gains a functioning repair stop.",
+              "objective": 1
+            }
+          ],
+          "stage": 8,
+          "question": "What does the squad secure before accepting the conditions of a final repair berth?",
+          "source_page": 51,
+          "source_title": "RESCUE ZURA STATION"
+        },
+        {
+          "title": "Every Claim Arrives at Once",
+          "mission": "halt_verilian",
+          "situation": "Rival fleets converge on the last shipyard exit.",
+          "clue": "Their fresh units arrive through a carrier route outside the refuge.",
+          "offers": [
+            {
+              "title": "Hold the Hangar Mouth",
+              "variant": 2,
+              "briefing": "Hold the carrier hangar mouth against fresh launches.",
+              "result": "The departure corridor remains usable.",
+              "objective": 7
+            },
+            {
+              "title": "Stop the Launched Screen",
+              "variant": 1,
+              "briefing": "Stop newly launched units at the defended line.",
+              "result": "The crews retain room to carry their archive clear.",
+              "objective": 6
+            },
+            {
+              "title": "Deny the Launch Stores",
+              "variant": 0,
+              "briefing": "Destroy the carrier launch-support stores.",
+              "result": "The final enemy loses a reinforcement source.",
+              "objective": 5
+            }
+          ],
+          "stage": 9,
+          "question": "Which part of the carrier cordon must fail before the crews can choose their own departure?",
+          "source_page": 53,
+          "source_title": "HALT VERILIAN REINFORCEMENTS"
+        }
+      ],
+      "finales": [
+        {
+          "title": "Departure Is a Crew Decision",
+          "setup": "The final enemy tries to close the crews' rendezvous.",
+          "payoff": "The crews leave together with their recovered vessels, owing repairs rather than permanent service.",
+          "continuation": "The unanswered distress call comes from service depths beneath an active war front.",
+          "battle": true,
+          "next_campaign": "under-open-war"
+        },
+        {
+          "title": "The Claim Cannot Be Erased",
+          "setup": "The final attack threatens the independent salvage archive.",
+          "payoff": "Multiple copies preserve the crews' account. The archive buys negotiations, not universal legal authority.",
+          "continuation": "An older salvage claim names a colony-ship archive with incompatible surviving records.",
+          "battle": false,
+          "next_campaign": "third-arrival"
+        },
+        {
+          "title": "A Harbor That Can Move",
+          "setup": "The final force attempts to retake the secured hardpoint network.",
+          "payoff": "The squad keeps a mobile refuge with enough force to resist the next seizure.",
+          "continuation": "The new harbor attracts repair crews asking who owns the machinery they have been promised they can use.",
+          "battle": false,
+          "next_campaign": "workers-signal"
+        }
+      ],
+      "source_pages": {
+        "core": [
+          39,
+          40,
+          41
+        ],
+        "manual": [
+          8,
+          9,
+          17,
+          26,
+          29,
+          39,
+          44,
+          47,
+          48,
+          51,
+          53
+        ]
+      },
+      "canon_anchors": [
+        "The Mission Manual suggests linking ship seizure and sabotage missions into a skyjacking campaign.",
+        "The original on-foot boarding possibilities are replaced by the existing cockpit-only operational adaptations."
+      ],
+      "continuity_contract": {
+        "shared_entry": "Each situation and clue is fresh briefing intelligence available on every incoming path. It does not assert that an unchosen offer succeeded.",
+        "chosen_result": "Only a completed chosen approach establishes its result. Other approaches describe foregone opportunities.",
+        "recurring_cast": "The three contacts are introduced as remote interlocutors; no later beat assumes that an optional rescue recovered one of them.",
+        "scope": "Endings resolve a local campaign pressure. They do not replace published leaders or settle the whole war.",
+        "factions": "A same-faction opponent is a named local detachment, exercise cadre or disputed custodian. It does not mean the entire faction has changed sides.",
+        "tradeoffs": "Thread tradeoffs describe attention and dependency costs; they do not promise unsupported bonus objectives, timers, dialogue checks or off-screen deaths."
+      }
+    },
+    {
+      "id": "ash-applause",
+      "title": "Ash and Applause",
+      "premise": "Arena contracts make the squad famous enough to threaten the sponsors who control the games, the repair yards and the broadcast.",
+      "question": "Who owns a victory when every witness watches through someone else's relay?",
+      "setting": "Irondeath competition grounds and supporting industrial sites, with remote handlers rather than on-foot scenes.",
+      "threads": [
+        {
+          "id": "shelter",
+          "label": "Keep the Competitors",
+          "intent": "Preserve crews and repair capacity beyond the current spectacle.",
+          "employer": 1,
+          "adversary": 2,
+          "established": "Competitor crews can organize outside the sponsors' extraction circuit.",
+          "neglected": "The competition still depends on a single controlling repair contract.",
+          "tradeoff": "The broadcast dispute may remain unresolved while crews are recovered."
+        },
+        {
+          "id": "evidence",
+          "label": "Keep the Broadcast Honest",
+          "intent": "Recover records and make the audience a witness.",
+          "employer": 1,
+          "adversary": 0,
+          "established": "Independent transmitters can preserve the final result.",
+          "neglected": "The sponsors can still edit the only surviving feed.",
+          "tradeoff": "Repair leverage receives less attention than the public record."
+        },
+        {
+          "id": "leverage",
+          "label": "Win the Leverage",
+          "intent": "Secure champions and infrastructure before challenging the sponsors.",
+          "employer": 0,
+          "adversary": 2,
+          "established": "A disciplined rival force can be met on practical terms.",
+          "neglected": "The sponsors retain their strongest operational reserve.",
+          "tradeoff": "A victorious champion can inherit the sponsors' maintenance burden."
+        }
+      ],
+      "cast": [
+        {
+          "id": "adda-rix",
+          "name": "Adda Rix",
+          "faction": 1,
+          "want": "Get competitors paid and repaired enough to leave.",
+          "contradiction": "Loves the competition while despising its debt system.",
+          "voice": "Repair invoices under deadpan race commentary."
+        },
+        {
+          "id": "pavo-lin",
+          "name": "Pavo Lin",
+          "faction": 1,
+          "want": "Keep an unedited record of the fights.",
+          "contradiction": "Needs the spectacle to hold an audience long enough to expose its owners.",
+          "voice": "Brisk calls of what the camera can actually see."
+        },
+        {
+          "id": "sevrin-vale",
+          "name": "Sevrin Vale",
+          "faction": 0,
+          "want": "Own the next successful champion network.",
+          "contradiction": "Offers genuine technical support in exchange for strategic influence.",
+          "voice": "Treats the audience as a measurable operational resource."
+        }
+      ],
+      "beats": [
+        {
+          "title": "The Entry Fee Has Teeth",
+          "mission": "enter_irondeath",
+          "situation": "The squad enters a competition whose repair agreement lasts longer than the match.",
+          "clue": "The contract includes broadcast control as well as repairs.",
+          "offers": [
+            {
+              "title": "Hold an Exit in the Arena",
+              "variant": 2,
+              "briefing": "Hold the spectacle beacon until extraction opens.",
+              "result": "Adda can bring the recovery crews through.",
+              "objective": 7
+            },
+            {
+              "title": "Read the Rival Machines",
+              "variant": 1,
+              "briefing": "Scan rival machines for their recorded combat data.",
+              "result": "Pavo gains an independent baseline for the broadcast.",
+              "objective": 3
+            },
+            {
+              "title": "Take the Opening Champion",
+              "variant": 0,
+              "briefing": "Disable the opposing champion without destroying its cockpit.",
+              "result": "The squad gains a competitor who can negotiate.",
+              "objective": 9
+            }
+          ],
+          "stage": 1,
+          "question": "What must survive the opening event besides the sponsors' preferred winner?",
+          "source_page": 20,
+          "source_title": "ENTER IRONDEATH ARENA"
+        },
+        {
+          "title": "Scoring Is Not Ownership",
+          "mission": "mecha_league",
+          "situation": "A league event gives the sponsors another way to control the repair reserve.",
+          "clue": "The scoring cores also record the repair allocations.",
+          "offers": [
+            {
+              "title": "Bring the Cores Home",
+              "variant": 0,
+              "briefing": "Recover scoring cores and carry them back.",
+              "result": "The crews can demand their share of the reserve.",
+              "objective": 4
+            },
+            {
+              "title": "Keep the Goal Recording",
+              "variant": 1,
+              "briefing": "Defend the goal installation through the match.",
+              "result": "The event record survives outside the sponsors' cut.",
+              "objective": 1
+            },
+            {
+              "title": "Take the Team Captain",
+              "variant": 2,
+              "briefing": "Disable the opposing captain for recovery.",
+              "result": "The next negotiation includes an experienced competitor.",
+              "objective": 9
+            }
+          ],
+          "stage": 2,
+          "question": "Can the competitors turn a scoring system into resources, a public record, or practical leverage?",
+          "source_page": 32,
+          "source_title": "MECHA LEAGUE"
+        },
+        {
+          "title": "A Repair Yard Behind the Banner",
+          "mission": "foundry",
+          "situation": "The repair backlog hides a second assembly operation.",
+          "clue": "The champion machines are being used to justify a military reserve.",
+          "offers": [
+            {
+              "title": "Recover a Machine Worth Repairing",
+              "variant": 0,
+              "briefing": "Recover the surviving machine from the foundry.",
+              "result": "The crews keep a repairable hull.",
+              "objective": 4
+            },
+            {
+              "title": "Clear the Archive Salvagers",
+              "variant": 1,
+              "briefing": "Remove the rival force attempting to take the assembly record.",
+              "result": "Pavo retains a traceable connection to the reserve.",
+              "objective": 0
+            },
+            {
+              "title": "Destroy the Reserve Stores",
+              "variant": 2,
+              "briefing": "Destroy assembly stores before the giant is completed.",
+              "result": "The sponsor-backed force loses a coming advantage.",
+              "objective": 5
+            }
+          ],
+          "stage": 3,
+          "question": "What is the repair yard building with the reserve it attributes to champion maintenance?",
+          "source_page": 24,
+          "source_title": "THE FOUNDRY"
+        },
+        {
+          "title": "Return Means a Longer Clock",
+          "mission": "return_irondeath",
+          "situation": "A return invitation adds race checkpoints through a live contested route, regardless of the opening events outcome.",
+          "clue": "The race clock makes emergency recovery look like a rules violation.",
+          "offers": [
+            {
+              "title": "Hold the Recovery Checkpoint",
+              "variant": 1,
+              "briefing": "Hold the final checkpoint against the rival racers.",
+              "result": "Adda can recover damaged machines.",
+              "objective": 7
+            },
+            {
+              "title": "Record Every Checkpoint",
+              "variant": 0,
+              "briefing": "Scan every checkpoint before the race clock expires.",
+              "result": "Pavo keeps an independent race record.",
+              "objective": 3
+            },
+            {
+              "title": "Take the Reigning Racer",
+              "variant": 2,
+              "briefing": "Disable the champion along the race route.",
+              "result": "The squad gains another competitor the sponsors cannot ignore.",
+              "objective": 9
+            }
+          ],
+          "stage": 4,
+          "question": "Will the race preserve recovery access, an independent checkpoint record, or a champion the sponsors need?",
+          "source_page": 40,
+          "source_title": "RETURN TO IRONDEATH ARENA"
+        },
+        {
+          "title": "A Challenge with a Camera",
+          "mission": "clash_titans",
+          "situation": "A rival challenges the squad over a result the official feed disputes.",
+          "clue": "Both pilots received different versions of the same event.",
+          "offers": [
+            {
+              "title": "Defend Beside the Rival",
+              "variant": 2,
+              "briefing": "Reach the rival and hold a joint position.",
+              "result": "Competitors can test an alliance under fire.",
+              "objective": 8
+            },
+            {
+              "title": "Keep the Challenge Visible",
+              "variant": 1,
+              "briefing": "Keep the rival occupied while the record is transmitted.",
+              "result": "The contradiction reaches the audience.",
+              "objective": 7
+            },
+            {
+              "title": "Recover the Rival Intact",
+              "variant": 0,
+              "briefing": "Disable the rival without destroying its cockpit.",
+              "result": "The challenge ends with a witness who can still answer.",
+              "objective": 9
+            }
+          ],
+          "stage": 5,
+          "question": "Can competitors settle a disputed result without trusting the only official broadcast?",
+          "source_page": 16,
+          "source_title": "CLASH OF THE TITANS"
+        },
+        {
+          "title": "The Invoice Comes Armed",
+          "mission": "interception_red_zone",
+          "situation": "An automated collection convoy carries crews and critical repair stock.",
+          "clue": "The sponsor calls the collection a voluntary transfer.",
+          "offers": [
+            {
+              "title": "Recover the Crew Capsules",
+              "variant": 2,
+              "briefing": "Retrieve trapped crew capsules from the route.",
+              "result": "Adda keeps the people behind the repairs.",
+              "objective": 4
+            },
+            {
+              "title": "Escort the Collection Record",
+              "variant": 1,
+              "briefing": "Bring the intercepted transport to a safe siding.",
+              "result": "Pavo can show what was transferred and under whose order.",
+              "objective": 2
+            },
+            {
+              "title": "Destroy the Convoy Relays",
+              "variant": 0,
+              "briefing": "Destroy the relays driving the armed collection.",
+              "result": "The sponsors lose a means of enforcing the debt.",
+              "objective": 5
+            }
+          ],
+          "stage": 6,
+          "question": "What must be recovered from a supposedly voluntary transfer enforced by an armed convoy?",
+          "source_page": 28,
+          "source_title": "INTERCEPTION: RED ZONE"
+        },
+        {
+          "title": "Revenge Has Sponsors",
+          "mission": "revenge_irondeath",
+          "situation": "The arena owners send a force to reclaim control of the games.",
+          "clue": "The sponsor record connects different events to one collection system.",
+          "offers": [
+            {
+              "title": "Recover the Sponsor Record",
+              "variant": 0,
+              "briefing": "Scan the guarded relays for the sponsor records.",
+              "result": "The crews can identify the obligations they actually accepted.",
+              "objective": 3
+            },
+            {
+              "title": "Take the Enemy Captain",
+              "variant": 1,
+              "briefing": "Disable the captain without killing the pilot.",
+              "result": "The public record gains a direct witness to the reprisal.",
+              "objective": 9
+            },
+            {
+              "title": "Defeat the Ringleader Team",
+              "variant": 2,
+              "briefing": "Defeat the ringleader fireteam and its escort.",
+              "result": "The sponsors lose their immediate enforcement reserve.",
+              "objective": 0
+            }
+          ],
+          "stage": 7,
+          "question": "Will the reprisal leave the competitors with records, a witness, or a broken enforcement team?",
+          "source_page": 41,
+          "source_title": "REVENGE OF IRONDEATH ARENA"
+        },
+        {
+          "title": "The Relay Is the Arena Now",
+          "mission": "stop_skirmish",
+          "situation": "Rival competitors converge on a relay carrying the disputed final record.",
+          "clue": "The next broadcast can preserve the dispute or erase it.",
+          "offers": [
+            {
+              "title": "Secure the Common Ground",
+              "variant": 1,
+              "briefing": "Reach the ceasefire beacon and secure the area.",
+              "result": "Competitors can bring their own repair crews.",
+              "objective": 8
+            },
+            {
+              "title": "Keep the Record on Air",
+              "variant": 2,
+              "briefing": "Hold the relay while the truce is transmitted.",
+              "result": "The final event gains an independent audience.",
+              "objective": 7
+            },
+            {
+              "title": "Take the Rival Commander",
+              "variant": 0,
+              "briefing": "Disable the commander before the battle spreads.",
+              "result": "The final deployment begins with practical leverage.",
+              "objective": 9
+            }
+          ],
+          "stage": 8,
+          "question": "Can the next event have a result that survives beyond a single relay owner's cut?",
+          "source_page": 51,
+          "source_title": "STOP THE SKIRMISH"
+        },
+        {
+          "title": "A Final Show Nobody Can Edit",
+          "mission": "take_aces",
+          "situation": "The strongest sponsor-backed machines arrive before the final event.",
+          "clue": "They intend to end the dispute before the audience assembles.",
+          "offers": [
+            {
+              "title": "Keep the Pinned Crews Alive",
+              "variant": 2,
+              "briefing": "Reinforce the pinned allies through the ace attack.",
+              "result": "The recovery network reaches the final event.",
+              "objective": 8
+            },
+            {
+              "title": "Recover the Ace Controller",
+              "variant": 0,
+              "briefing": "Disable the ace before it escapes with the event record.",
+              "result": "Pavo can preserve the last missing command link.",
+              "objective": 9
+            },
+            {
+              "title": "Defeat the Command Screen",
+              "variant": 1,
+              "briefing": "Defeat the command fireteam and its escort.",
+              "result": "The squad enters the finale without an intact enemy screen.",
+              "objective": 0
+            }
+          ],
+          "stage": 9,
+          "question": "What should reach the final event: recovery crews, a missing command link, or freedom from an enemy screen?",
+          "source_page": 53,
+          "source_title": "TAKE OUT THE ACES"
+        }
+      ],
+      "finales": [
+        {
+          "title": "An Arena with an Exit",
+          "setup": "The last sponsor-backed force tries to close the competitors' departure.",
+          "payoff": "Competitors retain their machines and the right to leave. The games may continue on different terms.",
+          "continuation": "The freed competitors find their repair crews confronting the same debt system in a district yard.",
+          "battle": true,
+          "next_campaign": "workers-signal"
+        },
+        {
+          "title": "The Result Stays on Air",
+          "setup": "The final enemy tries to silence the independent broadcast.",
+          "payoff": "The unedited result survives. Public knowledge starts an argument the squad cannot settle by winning another match.",
+          "continuation": "The sponsor archive contains disputed colony-fleet records that predate the arena circuit.",
+          "battle": false,
+          "next_campaign": "third-arrival"
+        },
+        {
+          "title": "The Champions Set Terms",
+          "setup": "The final commander makes a last attempt to reassert control of the competition.",
+          "payoff": "The sponsors must negotiate with a force they can no longer simply disqualify.",
+          "continuation": "Maintaining the champions independence requires a mobile refuge no sponsor can simply repossess.",
+          "battle": false,
+          "next_campaign": "borrowed-sky"
+        }
+      ],
+      "source_pages": {
+        "core": [
+          39,
+          40,
+          41
+        ],
+        "manual": [
+          8,
+          9,
+          16,
+          20,
+          24,
+          28,
+          32,
+          40,
+          41,
+          51,
+          53
+        ]
+      },
+      "canon_anchors": [
+        "The Mission Manual links Enter, Return and Revenge of Irondeath Arena into a campaign.",
+        "The sponsors, debt contracts and three contacts in this framework are original local material rather than new setting factions."
+      ],
+      "continuity_contract": {
+        "shared_entry": "Each situation and clue is fresh briefing intelligence available on every incoming path. It does not assert that an unchosen offer succeeded.",
+        "chosen_result": "Only a completed chosen approach establishes its result. Other approaches describe foregone opportunities.",
+        "recurring_cast": "The three contacts are introduced as remote interlocutors; no later beat assumes that an optional rescue recovered one of them.",
+        "scope": "Endings resolve a local campaign pressure. They do not replace published leaders or settle the whole war.",
+        "factions": "A same-faction opponent is a named local detachment, exercise cadre or disputed custodian. It does not mean the entire faction has changed sides.",
+        "tradeoffs": "Thread tradeoffs describe attention and dependency costs; they do not promise unsupported bonus objectives, timers, dialogue checks or off-screen deaths."
+      }
+    },
+    {
+      "id": "broken-horizon",
+      "title": "The Broken Horizon",
+      "premise": "Impossible signals link damaged test sites, stranded crews and weapons that claim to know the squad's past better than the squad does.",
+      "question": "What can be trusted when a useful answer is also a means of control?",
+      "setting": "Orbital test sites, Aeon Prime facilities and unstable Verilian approaches away from Slipstar.",
+      "threads": [
+        {
+          "id": "shelter",
+          "label": "Bring Someone Back",
+          "intent": "Prefer living witnesses and practical exits over perfect explanations.",
+          "employer": 1,
+          "adversary": 0,
+          "established": "Recovery crews can compare what each actually experienced.",
+          "neglected": "The isolated sites still depend on a single account of events.",
+          "tradeoff": "Living witnesses may return without a complete explanation."
+        },
+        {
+          "id": "evidence",
+          "label": "Keep Independent Measures",
+          "intent": "Preserve incompatible observations rather than accepting a convenient simulation.",
+          "employer": 0,
+          "adversary": 2,
+          "established": "Separate instruments can verify a usable route without solving the whole mystery.",
+          "neglected": "A single controller can still dictate the accepted explanation.",
+          "tradeoff": "A consistent measurement can still leave people waiting for recovery."
+        },
+        {
+          "id": "leverage",
+          "label": "Break the Instruments of Control",
+          "intent": "Deny systems that turn uncertainty into obedience.",
+          "employer": 2,
+          "adversary": 0,
+          "established": "The squad can contest the final control system on practical terms.",
+          "neglected": "The final force retains its strongest coercive machinery.",
+          "tradeoff": "Destroying a controller may also destroy questions it could have answered."
+        }
+      ],
+      "cast": [
+        {
+          "id": "miri-veld",
+          "name": "Miri Veld",
+          "faction": 1,
+          "want": "Recover people stranded by apparently incompatible routes.",
+          "contradiction": "Needs imperfect maps but refuses to abandon the next recovery.",
+          "voice": "Asks who got back, then asks what the instruments said."
+        },
+        {
+          "id": "ix-tal",
+          "name": "Ix Tal",
+          "faction": 0,
+          "want": "Separate reproducible measurements from a hostile explanation.",
+          "contradiction": "Believes control is possible while admitting the instruments may be compromised.",
+          "voice": "Conditional claims and explicit confidence limits."
+        },
+        {
+          "id": "ser-elan",
+          "name": "Ser Elan",
+          "faction": 2,
+          "want": "Prevent a weaponized false history from commanding the remnant.",
+          "contradiction": "Would rather destroy a useful system than cede authority to it.",
+          "voice": "Quiet formal statements followed by a decisive physical demand."
+        }
+      ],
+      "beats": [
+        {
+          "title": "The First Impossible Timestamp",
+          "mission": "chaos_stratus",
+          "situation": "A test station records a transport departure before its launch command.",
+          "clue": "The discrepancy is measurable; its interpretation is not yet established.",
+          "offers": [
+            {
+              "title": "Escort the Research Transport",
+              "variant": 1,
+              "briefing": "Bring the research team transport clear of the station.",
+              "result": "Miri retains living witnesses to the trial.",
+              "objective": 2
+            },
+            {
+              "title": "Recover the Prototype Engine",
+              "variant": 0,
+              "briefing": "Recover the prototype from the station before it is lost.",
+              "result": "Ix gains a component that can be tested elsewhere.",
+              "objective": 4
+            },
+            {
+              "title": "Keep the Core Stable",
+              "variant": 2,
+              "briefing": "Defend the station core until relief arrives.",
+              "result": "The squad keeps control of a functioning test site.",
+              "objective": 1
+            }
+          ],
+          "stage": 1,
+          "question": "What can the station preserve before anyone mistakes an impossible timestamp for an explanation?",
+          "source_page": 15,
+          "source_title": "CHAOS AT STRATUS"
+        },
+        {
+          "title": "Elsewhere Has a Return Route",
+          "mission": "elsewhere_infinitum",
+          "situation": "The next deployment finds a route that does not match its departure record.",
+          "clue": "Several markers stay consistent even when the horizon does not.",
+          "offers": [
+            {
+              "title": "Recover the Stranded Crews",
+              "variant": 1,
+              "briefing": "Recover allied pods and return to the extraction marker.",
+              "result": "The recovery network gains witnesses from the crossing.",
+              "objective": 4
+            },
+            {
+              "title": "Find the Stable Markers",
+              "variant": 0,
+              "briefing": "Scan the route markers through the distorted terrain.",
+              "result": "The instruments gain a repeatable partial route.",
+              "objective": 3
+            },
+            {
+              "title": "Destroy the Hostile Anchors",
+              "variant": 2,
+              "briefing": "Destroy the anchors sustaining the hostile rift.",
+              "result": "The controller loses a local means of confinement.",
+              "objective": 5
+            }
+          ],
+          "stage": 2,
+          "question": "Can the squad establish a usable return route without first solving why the horizon disagrees with its records?",
+          "source_page": 21,
+          "source_title": "ELSEWHERE INFINITUM"
+        },
+        {
+          "title": "A Wreck with Two Arrivals",
+          "mission": "heavens_fall",
+          "situation": "A fallen ship contains conflicting arrival records.",
+          "clue": "The cores agree on their work done, not on the displayed chronology.",
+          "offers": [
+            {
+              "title": "Recover the Gravity Cores",
+              "variant": 1,
+              "briefing": "Recover the cores before the wreck breaks apart.",
+              "result": "The recovery network retains a chance to move.",
+              "objective": 4
+            },
+            {
+              "title": "Keep the Core Record Live",
+              "variant": 2,
+              "briefing": "Protect the power core through emergency recovery.",
+              "result": "The inquiry gains records from a different system.",
+              "objective": 1
+            },
+            {
+              "title": "Remove the Wreck Guard",
+              "variant": 0,
+              "briefing": "Clear hostile machines from the fragments.",
+              "result": "The squad denies control of a useful recovery site.",
+              "objective": 0
+            }
+          ],
+          "stage": 3,
+          "question": "Which part of a wreck can support a comparison between two incompatible arrivals?",
+          "source_page": 26,
+          "source_title": "HEAVENS FALL"
+        },
+        {
+          "title": "An Explanation in a Weapon",
+          "mission": "voidbringer",
+          "situation": "A simulator offers to resolve every contradiction if the squad obeys.",
+          "clue": "Its apparent explanation is part of a hostile scenario.",
+          "offers": [
+            {
+              "title": "Find the Mecha Exit",
+              "variant": 0,
+              "briefing": "Navigate the maze to its escape markers.",
+              "result": "The crews gain an exit they can actually use.",
+              "objective": 3
+            },
+            {
+              "title": "Recover the Simulator Command",
+              "variant": 1,
+              "briefing": "Disable the simulator command machine.",
+              "result": "Ix can examine the explanation as an artifact.",
+              "objective": 9
+            },
+            {
+              "title": "Defeat the Projected Giant",
+              "variant": 2,
+              "briefing": "Defeat the giant and its projected defenders.",
+              "result": "The squad removes the threat enforcing obedience.",
+              "objective": 0
+            }
+          ],
+          "stage": 4,
+          "question": "Can the squad leave a hostile simulation without granting its explanation authority over their own observations?",
+          "source_page": 55,
+          "source_title": "VOIDBRINGERS TORMENT"
+        },
+        {
+          "title": "The Researcher Says No",
+          "mission": "search_rescue",
+          "situation": "A researcher trapped in a ruined lab refuses the only official account.",
+          "clue": "The disagreement rests on measurements copied before the last reset.",
+          "offers": [
+            {
+              "title": "Recover the Civilian Pods",
+              "variant": 0,
+              "briefing": "Recover civilian evacuation capsules from the rubble.",
+              "result": "The witness network survives the laboratory collapse.",
+              "objective": 4
+            },
+            {
+              "title": "Recover the Researcher Capsule",
+              "variant": 1,
+              "briefing": "Recover the researcher capsule from the ruined laboratory.",
+              "result": "The original measurement method remains examinable.",
+              "objective": 4
+            },
+            {
+              "title": "Scan the Remaining Specimens",
+              "variant": 2,
+              "briefing": "Scan the kaiju remains with sealed instruments.",
+              "result": "The next defense gains a practical threat comparison.",
+              "objective": 3
+            }
+          ],
+          "stage": 5,
+          "question": "What can be recovered from a laboratory whose researcher rejects the official account?",
+          "source_page": 45,
+          "source_title": "SEARCH AND RESCUE"
+        },
+        {
+          "title": "Water Still Has Weight",
+          "mission": "grand_theft_mariner",
+          "situation": "A submerged base provides a physically different test of the signal.",
+          "clue": "Independent pressure readings contradict the convenient simulated route.",
+          "offers": [
+            {
+              "title": "Recover the Escape Capsules",
+              "variant": 2,
+              "briefing": "Recover allied capsules from the flooded base.",
+              "result": "The crews can compare experiences outside the simulator.",
+              "objective": 4
+            },
+            {
+              "title": "Read the Submerged Relays",
+              "variant": 1,
+              "briefing": "Scan the relays for their access records.",
+              "result": "Ix gains an independent pressure-site measurement.",
+              "objective": 3
+            },
+            {
+              "title": "Deny the Submerged Stores",
+              "variant": 0,
+              "briefing": "Destroy the stores supporting the hostile base.",
+              "result": "The controller loses another isolated instrument site.",
+              "objective": 5
+            }
+          ],
+          "stage": 6,
+          "question": "Can a submerged site provide a physically independent comparison before its systems are lost?",
+          "source_page": 25,
+          "source_title": "GRAND THEFT MARINER"
+        },
+        {
+          "title": "A Pattern That Eats Its Witnesses",
+          "mission": "symbiotic_superdestroyer",
+          "situation": "Synthetic infection threatens the devices needed to compare the earlier readings.",
+          "clue": "The pattern can be observed without declaring it the origin of the Voidmaw.",
+          "offers": [
+            {
+              "title": "Hold the Sampling Beacon",
+              "variant": 1,
+              "briefing": "Hold the sampling beacon while sealed instruments work.",
+              "result": "The recovery crews keep a usable comparison point.",
+              "objective": 7
+            },
+            {
+              "title": "Trace the Sealed Site",
+              "variant": 2,
+              "briefing": "Scan the synthetic infection through the test site.",
+              "result": "The inquiry preserves a reproducible observation.",
+              "objective": 3
+            },
+            {
+              "title": "Destroy the Nanobot Controller",
+              "variant": 0,
+              "briefing": "Destroy the controller and its defenders.",
+              "result": "The squad denies a means of overwriting the comparison.",
+              "objective": 0
+            }
+          ],
+          "stage": 7,
+          "question": "What observation can survive a synthetic infection that threatens the instruments themselves?",
+          "source_page": 49,
+          "source_title": "SYMBIOTIC SUPERDESTROYER"
+        },
+        {
+          "title": "The Hub Asks for the Originals",
+          "mission": "severed_connection",
+          "situation": "A command hub offers a clean route in exchange for all original records.",
+          "clue": "The offer would leave no independent comparison.",
+          "offers": [
+            {
+              "title": "Recover the Interceptor Pilot",
+              "variant": 1,
+              "briefing": "Disable the interceptor and recover its pilot.",
+              "result": "The crews retain a witness to the command demand.",
+              "objective": 9
+            },
+            {
+              "title": "Copy the Hub Record",
+              "variant": 2,
+              "briefing": "Download the relay data before it changes.",
+              "result": "Independent records survive the proposed reconciliation.",
+              "objective": 3
+            },
+            {
+              "title": "Cut the Hub Power",
+              "variant": 0,
+              "briefing": "Destroy the exposed hub power centers.",
+              "result": "The controller loses a direct coercive link.",
+              "objective": 5
+            }
+          ],
+          "stage": 8,
+          "question": "What remains independently checkable if the hub receives every original record?",
+          "source_page": 48,
+          "source_title": "SEVERED CONNECTION"
+        },
+        {
+          "title": "A Measurement Made Together",
+          "mission": "stars_torn_asunder",
+          "situation": "Rival witnesses must cross a converging battle before the final comparison.",
+          "clue": "The route can be verified without making their memories identical.",
+          "offers": [
+            {
+              "title": "Escort the Delegates",
+              "variant": 0,
+              "briefing": "Escort the faction delegates out of the battle zone.",
+              "result": "The final recovery route has living witnesses.",
+              "objective": 2
+            },
+            {
+              "title": "Scan the Common Power Grid",
+              "variant": 1,
+              "briefing": "Scan the warship network from independently logged positions.",
+              "result": "The final operation gains a shared measurement baseline.",
+              "objective": 3
+            },
+            {
+              "title": "Recover the Archive Capsules",
+              "variant": 2,
+              "briefing": "Recover diplomatic archive capsules from the contested approaches.",
+              "result": "The squad retains leverage outside the final control system.",
+              "objective": 4
+            }
+          ],
+          "stage": 9,
+          "question": "Can the rival witnesses establish a common measurement without claiming that all their memories are identical?",
+          "source_page": 50,
+          "source_title": "THE STARS TORN ASUNDER"
+        }
+      ],
+      "finales": [
+        {
+          "title": "An Exit with Witnesses",
+          "setup": "The final attack converges on the independently verified recovery route.",
+          "payoff": "The recovered crews disagree about the impossible passages, but their return is not undone as a dream.",
+          "continuation": "The distress route leads into physical service depths where missing maintenance crews face a growing incursion.",
+          "battle": true,
+          "next_campaign": "under-open-war"
+        },
+        {
+          "title": "A Route, Not an Answer",
+          "setup": "The final enemy tries to impose its complete account on the surviving instruments.",
+          "payoff": "The squad preserves a reproducible exit and contradictory records. The One-Mind remains unexplained.",
+          "continuation": "The next comparison requires a damaged Aeonic archive whose arrival dates remain disputed.",
+          "battle": false,
+          "next_campaign": "third-arrival"
+        },
+        {
+          "title": "The Controller Goes Silent",
+          "setup": "The final commander attempts to seal the squad inside its preferred account.",
+          "payoff": "The coercive system is broken locally. The cost is losing some answers alongside the controls.",
+          "continuation": "The surviving beacon belongs to competitors trapped in an arena sponsor network that controls its official record.",
+          "battle": false,
+          "next_campaign": "ash-applause"
+        }
+      ],
+      "source_pages": {
+        "core": [
+          39,
+          40,
+          41
+        ],
+        "manual": [
+          8,
+          9,
+          15,
+          21,
+          25,
+          26,
+          45,
+          48,
+          49,
+          50,
+          55
+        ]
+      },
+      "canon_anchors": [
+        "The Mission Manual proposes linking Voidbringers Torment and Elsewhere Infinitum through reality uncertainty.",
+        "The resulting mystery neither identifies the One-Mind nor retroactively cancels completed player choices as a dream."
+      ],
+      "continuity_contract": {
+        "shared_entry": "Each situation and clue is fresh briefing intelligence available on every incoming path. It does not assert that an unchosen offer succeeded.",
+        "chosen_result": "Only a completed chosen approach establishes its result. Other approaches describe foregone opportunities.",
+        "recurring_cast": "The three contacts are introduced as remote interlocutors; no later beat assumes that an optional rescue recovered one of them.",
+        "scope": "Endings resolve a local campaign pressure. They do not replace published leaders or settle the whole war.",
+        "factions": "A same-faction opponent is a named local detachment, exercise cadre or disputed custodian. It does not mean the entire faction has changed sides.",
+        "tradeoffs": "Thread tradeoffs describe attention and dependency costs; they do not promise unsupported bonus objectives, timers, dialogue checks or off-screen deaths."
+      }
+    }
+  ],
+  "review": {
+    "kind": "internal agent content and continuity review",
+    "date": "2026-11-20",
+    "human_beta_read": false,
+    "mechanical_variants_checked": 216,
+    "episode_questions_rewritten": 72,
+    "source_authority": "User-supplied core v1.2 and Mission Manual v1.2; existing native operational adaptations; original local narrative additions",
+    "copyedit_corrections": 27,
+    "manual_hook_families_checked": 48,
+    "qualitative_thread_tradeoffs": 24
+  }
+}

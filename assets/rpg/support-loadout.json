@@ -1,0 +1,18 @@
+{
+  "armor": "heavy",
+  "modules": [
+    "particle_barrier"
+  ],
+  "equipment": {
+    "left_hand": "rifle",
+    "right_hand": "empty",
+    "left_shoulder": "particle_barrier",
+    "right_shoulder": "scan",
+    "left_hip": "repair",
+    "right_hip": "boost_kit"
+  },
+  "qualities": {
+    "left_hand": "sniper"
+  },
+  "one_shot_module": "jump_jets"
+}

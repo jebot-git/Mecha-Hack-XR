@@ -1,0 +1,7 @@
+# Voidmaw field recording credits
+
+The game’s 54 close mono emitters use edits of the following CC0 field recordings.
+
+- Joseph Sardin’s recordings on BigSoundBank supplied the panting dogs, horse breathing and neighing, barn owl hiss, cat growls, donkey bray, mouth and carrot Foley, metal scrape, car window, gravel and oar strokes. Sardin and Axeline T. also recorded the sika deer whistles. [Swim strokes](https://bigsoundbank.com/rowing-quickly-s1513.html) · [Gravel](https://bigsoundbank.com/steps-on-gravels-s0510.html) · [BigSoundBank licensing](https://bigsoundbank.com/licenses.html)
+- AlanCat recorded the Steller’s jay alarm. Kalhan and sinewave1kHz recorded the two cicada performances. 13GPanska_Langerova_Lucie and BorzSounds recorded the walnut fractures. [Jay](https://freesound.org/people/AlanCat/sounds/392405/) · [Wingbeats](https://freesound.org/people/kalhan/sounds/482733/) · [Cicada](https://freesound.org/people/sinewave1kHz/sounds/207374/) · [Walnut](https://freesound.org/people/13GPanska_Langerova_Lucie/sounds/378288/) · [Nutcracker](https://freesound.org/people/BorzSounds/sounds/843306/)
+- Jan Schupke (Vehicle) supplied the mud steps, boot impact, arrow feathers, leather and air sweeps. Dr. Macak’s hot-air-balloon burner supplies the pressure layer in the maw discharge. [Tinysized SFX](https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx) · [Balloon burner](https://freesound.org/people/Dr.%20Macak/sounds/491300/) · [CC0 dedication](https://creativecommons.org/publicdomain/zero/1.0/)

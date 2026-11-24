@@ -1,0 +1,18 @@
+{
+  "armor": "light",
+  "modules": [
+    "missile_barrage"
+  ],
+  "equipment": {
+    "left_hand": "heavy_blade",
+    "right_hand": "empty",
+    "left_shoulder": "missile_barrage",
+    "right_shoulder": "scan",
+    "left_hip": "arc_grenade",
+    "right_hip": "frag_grenade"
+  },
+  "qualities": {
+    "left_hand": "chainblade"
+  },
+  "one_shot_module": "chest_beam"
+}
