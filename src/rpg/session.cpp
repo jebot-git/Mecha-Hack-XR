@@ -1457,7 +1457,8 @@ bool Session::boostMember(Member &m,const Input &in,bool movementAllowed,float d
   auto &drive=m.thrusters;
   const float water=world.waterLevelAt(world.position);
   const bool flooded=world.position.y<water;
-  const bool vacuum=zeroGravity()||biome==7||mission.recipe.location==6;
+  const bool zeroG=zeroGravity();
+  const bool vacuum=zeroG||biome==7||mission.recipe.location==6;
   const bool surfaceDrive=surfaceGravityAllowed(*this,world.bodyPoint(8))||world.gravity.active();
   const float floor=world.pilotSupportHeight(world.position);
   const float wetDepth=flooded?water-floor:0.f;
@@ -1467,10 +1468,10 @@ bool Session::boostMember(Member &m,const Input &in,bool movementAllowed,float d
   const bool fixedLift=!vacuum&&!flooded&&!world.gravity.active();
   const float verticalLimit=fixedLift?groundLiftHeight:flooded?wetDepth:36.f;
   const float maxAltitude=std::max(0.f,std::min(verticalLimit,ceiling-floor-bodyHeight));
-  const bool tilted=std::hypot(in.steer,in.forward)>.35f;
-  const bool thrust=in.thrust&&tilted&&!drive.thrustHeld;
+  const bool directed=zeroG||std::hypot(in.steer,in.forward)>.35f;
+  const bool thrust=in.thrust&&directed&&!drive.thrustHeld;
   const bool ascend=in.ascend&&!drive.ascendHeld;
-  drive.thrustHeld=in.thrust&&(tilted||drive.thrustHeld);
+  drive.thrustHeld=in.thrust&&(directed||drive.thrustHeld);
   drive.ascendHeld=in.ascend;
   const float stat=mobility(m);
   const float unrefined=mobility(m,m.sheet.refinements[size_t(PilotRefinement::Mobility)]);
@@ -1482,15 +1483,16 @@ bool Session::boostMember(Member &m,const Input &in,bool movementAllowed,float d
   bool combined=false;
   if(movementAllowed&&!m.sheet.overheated&&world.gravity.mode!=GravityMode::Pulling){
     const bool canLift=world.gravity.active()||(maxAltitude>1.f&&altitude<maxAltitude-.1f);
-    const auto planar=rotate(compose(world.gravity.frame,angles(world.chassisYaw)),
-                             unit(Vec3{in.steer,0,-in.forward}));
-    combined=canLift&&in.ascend&&in.thrust&&tilted&&(thrust||ascend);
-    if(combined)
-      launch=planar*(1.7f*speed)+world.gravity.up()*(vacuum?speed*.65f:19.f);
-    else if(ascend&&canLift)
+    const auto heading=zeroG ? rotate(world.cockpitOrientation(),direction(in.headYaw,in.headPitch))
+                             : rotate(compose(world.gravity.frame,angles(world.chassisYaw)),unit(Vec3{in.steer,0,-in.forward}));
+    combined=canLift&&in.ascend&&in.thrust&&directed&&(thrust||ascend);
+    if(combined){
+      launch=heading*(1.7f*speed);
+      if(!zeroG)launch=launch+world.gravity.up()*(vacuum?speed*.65f:19.f);
+    }else if(ascend&&canLift)
       launch=world.gravity.up()*(vacuum?speed:std::min(speed,19.f));
     else if(thrust)
-      launch=planar*speed;
+      launch=heading*speed;
   }
   const bool extend=combined&&drive.remaining>.12f&&!drive.combined;
   if(length(launch)>0&&(extend||ignite(drive,launch,combined?.56f:.32f))){
@@ -1519,11 +1521,11 @@ bool Session::boostMember(Member &m,const Input &in,bool movementAllowed,float d
     }else{
       const float upwardTime=std::min(dt,drive.liftRemaining);
       drive.liftRemaining-=upwardTime;
-      const float lift=fixedLift?(groundLiftHeight/groundLiftDuration)*upwardTime:std::max(0.f,delta.y);
+      const float lift=fixedLift?(groundLiftHeight/groundLiftDuration)*upwardTime:delta.y;
       // The charged ascent is measured from takeoff. Crossing a ledge cannot
       // shorten it just because the support under the pilot moved farther down.
       const float room=fixedLift?ceiling-world.position.y-bodyHeight:maxAltitude-altitude;
-      delta.y=std::min(lift,std::max(0.f,room));
+      delta.y=std::clamp(lift,zeroG?-altitude:0.f,std::max(0.f,room));
       if(length(delta)>0)world.movePilot(world.position+delta);
       drive.altitude=std::max(0.f,world.position.y-world.pilotSupportHeight(world.position));
     }

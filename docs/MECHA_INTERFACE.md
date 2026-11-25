@@ -16,8 +16,9 @@ to toggle the headlight in any environment. Tap the right stick up to switch
 equipped rifles between automatic fire and lower-heat precision semi-auto.
 A held firing input must be released when resuming from pause.
 
-Click and tilt the left stick to boost forward, backward or sideways. The
-cockpit meter shows one to four charges. Mobility governs capacity, recharge
+In zero G, look in the direction you want to travel and click the left stick
+to boost. Look down to descend. Elsewhere, click and tilt the left stick to
+boost forward, backward or sideways. The cockpit meter shows one to four charges. Mobility governs capacity, recharge
 rate, boost thrust and walking speed. Right stick click spends a charge to
 ascend. A mech that boosts off a ledge or loses a supporting roof falls until
 its feet reach another surface. A landing sends a short shockwave across that

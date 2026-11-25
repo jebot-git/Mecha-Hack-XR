@@ -134,6 +134,33 @@ struct MaterialStudy {
             }
         }
     }
+    static void checkEjectionMenu(Renderer& renderer){
+        World world;world.rpgPrototype=true;world.position={140,8,-260};world.chassisYaw=.8f;
+        world.lifeSpent=true;world.stepEjection(7.f);
+        Frontend menu;menu.missionCards.resize(1);menu.screen=Screen::Pause;menu.interfaceArt="defeat";
+        const auto p=world.pilotPosition();
+        const auto q=world.pilotOrientation();
+        const auto head=poseMatrix({{q.x,q.y,q.z,q.w},{p.x,p.y,p.z}});
+        glViewport(0,0,width,height);
+        for(float eye:{-.032f,.032f}){
+            const auto camera=multiply(head,translation(eye,0,0));
+            auto sample=[&]{
+                renderer.draw(world,projection({-.79f,.81f,.7f,-.7f}),camera,head,false,&menu);
+                std::vector<unsigned char> pixels(width*height*3);
+                glReadPixels(0,0,width,height,GL_RGB,GL_UNSIGNED_BYTE,pixels.data());
+                return pixels;
+            };
+            menu.menuLines.clear();
+            const auto background=sample();
+            menu.menuLines={"FIRETEAM DISABLED","A: RETURN TO HANGAR"};
+            const auto message=sample();
+            int visible=0;
+            for(size_t i=0;i<message.size();i+=3)
+                if(std::abs(int(message[i+1])-background[i+1])>50)++visible;
+            if(visible<100)throw std::runtime_error("Ejected pilot cannot read the defeat message");
+            std::cout<<"Ejected pilot eye "<<eye<<": "<<visible<<" visible text pixels\n";
+        }
+    }
     static void checkInstruments(Renderer& renderer,const fs::path& output){
         World world;world.rpgPrototype=true;world.mission=0;world.rpgMaxAp=8;
         if(!output.empty())fs::create_directories(output);
@@ -274,8 +301,9 @@ struct MaterialStudy {
 int main(int argc,char** argv){
     const bool check=argc==3 && std::string_view(argv[2])=="--check-live-textures";
     const bool waves=argc>=3 && std::string_view(argv[2])=="--check-waves";
+    const bool ejection=argc==3 && std::string_view(argv[2])=="--check-ejection-menu";
     const bool instruments=(argc==3||argc==4) && std::string_view(argv[2])=="--check-instruments";
-    if(argc!=4 && !check && !waves && !instruments){std::cerr<<"Usage: mecha-material-study <published asset root> <study dir> <output dir>\n";return 2;}
+    if(argc!=4 && !check && !waves && !instruments && !ejection){std::cerr<<"Usage: mecha-material-study <published asset root> <study dir> <output dir>\n";return 2;}
     try{
         if(SDL_Init(SDL_INIT_VIDEO)!=0)throw std::runtime_error(SDL_GetError());
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,3);SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,3);
@@ -293,7 +321,8 @@ int main(int argc,char** argv){
         iron::rpg::setOriginalAssetRoot(argv[1]);
         {
             iron::Renderer renderer(fs::path(argv[1])/"cockpit");
-            if(waves)iron::MaterialStudy::checkWaves(renderer,argc==4?fs::path(argv[3]):fs::path{});
+            if(ejection)iron::MaterialStudy::checkEjectionMenu(renderer);
+            else if(waves)iron::MaterialStudy::checkWaves(renderer,argc==4?fs::path(argv[3]):fs::path{});
             else if(instruments)iron::MaterialStudy::checkInstruments(renderer,argc==4?fs::path(argv[3]):fs::path{});
             else if(check)iron::MaterialStudy::checkLiveTextures(renderer,argv[1]);
             else iron::MaterialStudy::run(renderer,argv[2],argv[3]);

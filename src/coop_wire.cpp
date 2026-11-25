@@ -99,7 +99,7 @@ Json Transport::stats()const{return {{"sent_bytes",host->totalSentData},{"receiv
 void Transport::flush(){enet_host_flush(host);}uint16_t Transport::port()const{return host->address.port;}
 Json inputWire(const Input& in){return {{"searchlight",in.searchlight},{"thrust",in.thrust},{"ascend",in.ascend},{"fire_mode",in.fireMode},{"axes",{in.steer,in.forward,in.turn,in.headYaw,in.headPitch}},{"focused",in.focused},{"head",in.headValid},{"fire",in.fire},{"punch",in.punch},{"valid",in.handValid},{"hands",in.hands},{"poses",in.handPoses}};}
 Input inputRead(const Json& j){Input in;in.searchlight=j.value("searchlight",false);in.thrust=j.value("thrust",false);in.ascend=j.value("ascend",false);in.fireMode=j.value("fire_mode",false);auto axes=j.at("axes").get<std::array<float,5>>();for(float f:axes)if(!std::isfinite(f)||std::abs(f)>100)throw std::runtime_error("Invalid controller axis");
-    in.steer=std::clamp(axes[0],-1.f,1.f);in.forward=std::clamp(axes[1],-1.f,1.f);in.turn=std::clamp(axes[2],-1.f,1.f);in.headYaw=wrap(axes[3]);in.headPitch=std::clamp(axes[4],-1.5f,1.5f);
+    in.steer=std::clamp(axes[0],-1.f,1.f);in.forward=std::clamp(axes[1],-1.f,1.f);in.turn=std::clamp(axes[2],-1.f,1.f);in.headYaw=wrap(axes[3]);in.headPitch=std::clamp(axes[4],-pi/2,pi/2);
     in.focused=j.at("focused");in.headValid=j.at("head");in.fire=j.at("fire").get<decltype(in.fire)>();in.punch=j.at("punch").get<decltype(in.punch)>();in.handValid=j.at("valid").get<decltype(in.handValid)>();in.hands=j.at("hands").get<decltype(in.hands)>();in.handPoses=j.at("poses").get<decltype(in.handPoses)>();
     for(int h=0;h<2;++h){
         if(!in.handPoses[h].valid){in.handPoses[h]=HandPose{};in.handPoses[h].valid=false;in.handValid[h]=false;in.hands[h]={};continue;}

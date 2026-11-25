@@ -1081,7 +1081,14 @@ void Renderer::drawScene(const World& w,const Matrix& projection,const Matrix& c
     sky(w,projection,camera);
     glUseProgram(program);glBindVertexArray(vao);vp=multiply(projection,inverseRigid(camera));
     if(menu && menu->screen!=Screen::Playing) {
-        frontend(*menu,multiply(translation(w.position.x,w.position.y+12,w.position.z),rotation(w.facing())));return;
+        if(w.rpgPrototype&&w.lifeSpent){
+            const auto p=w.pilotPosition();
+            const auto q=w.pilotOrientation();
+            frontend(*menu,poseMatrix({{q.x,q.y,q.z,q.w},{p.x,p.y,p.z}}));
+        }else{
+            frontend(*menu,multiply(translation(w.position.x,w.position.y+12,w.position.z),rotation(w.facing())));
+        }
+        return;
     }
     // Preserve asymmetric XR frusta, but give the world a useful depth range.
     Matrix worldProjection=projection;constexpr float nearWorld=.75f,farWorld=3000.f;

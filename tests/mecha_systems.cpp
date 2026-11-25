@@ -195,6 +195,31 @@ int main(int argc,char **argv){
  assert(fast.body.position.y>4.f);
  for(int n=0;n<360;++n)input(high,1,Input{});
  assert(fast.body.position.y>4.f&&fast.body.rpgThrustCharge==4); // A spent pulse leaves the hull aloft in zero G.
+ // In space and derelicts the tracked gaze steers the pulse, even on a centered stick.
+ for(bool derelict:{false,true}){
+  auto flight=fixture();
+  flight.biome=derelict?3:1;
+  flight.mission.recipe.location=derelict?9:0;
+  flight.world.proceduralTerrain=true;
+  auto &pilot=flight.member(1);
+  pilot.body.position={0,18,0};pilot.body.chassisYaw=.3f;pilot.body.torsoYaw=.45f;
+  Input dive;dive.thrust=true;dive.headYaw=1.8f;dive.headPitch=-.9f;
+  const auto heading=rotate(flight.view(1).cockpitOrientation(),direction(dive.headYaw,dive.headPitch));
+  const auto start=pilot.body.position;
+  for(int n=0;n<20;++n)input(flight,1,dive);
+  const auto travel=pilot.body.position-start;
+  assert(dot(unit(travel),heading)>.995f&&travel.y<-4.f);
+  input(flight,1,Input{});
+  Input climb=dive;climb.headPitch=.9f;climb.forward=-1;
+  const auto bottom=pilot.body.position;
+  for(int n=0;n<20;++n)input(flight,1,climb);
+  assert(pilot.body.position.y>bottom.y+4.f);
+  for(int n=0;n<240;++n)input(flight,1,Input{});
+  pilot.body.position={0,2,0};
+  dive.headPitch=-pi/2;dive.ascend=derelict;
+  for(int n=0;n<45;++n)input(flight,1,dive);
+  assert(std::abs(pilot.body.position.y)<.01f&&std::hypot(pilot.body.position.x,pilot.body.position.z)<.01f);
+ }
  fast.body.position.y=0;
  high.biome=2;
  assert(!searchlightActive(high.view(1)));
