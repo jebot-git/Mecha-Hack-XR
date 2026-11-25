@@ -101,7 +101,7 @@ int main() {
     for (int p = 0; p < 4; ++p) {
       auto sheet = createSheet(Chassis(c), PilotKind(p), d);
       validate(sheet);
-      assert(sheet.level == 1 && sheet.modules.size() == 1);
+      assert(sheet.level == 1 && sheet.modules.empty());
     }
   auto sheet = createSheet(Chassis::Striker, PilotKind::Engineer, d);
   auto weak = sheet, strong = sheet;

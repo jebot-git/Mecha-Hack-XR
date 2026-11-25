@@ -3455,7 +3455,7 @@ void Session::enemiesAct(float dt) {
         displacement=forward*std::max(0.f,dot(displacement,forward));
       }
       if (airborne) {
-        float altitude = swimming?2.f:traits & Flying ? (closePursuit&&best<30?4.f:22.f) : 3.f;
+        float altitude = swimming?2.f:e.transformed?fighterCruiseHeight:traits & Flying ? (closePursuit&&best<30?4.f:22.f) : 3.f;
         Vec3 ahead=body.origin+displacement;
         float floor=world.walkableHeight(ahead);
         if (biome!=2) floor+=world.waterDepthAt(ahead);
@@ -3463,7 +3463,8 @@ void Session::enemiesAct(float dt) {
         float top=body.ai.localCenter.y+body.ai.localHalf.y;
         float nextHeight=std::min(floor+altitude,ceiling-top-.5f);
         displacement.y=std::max(floor,nextHeight)-body.origin.y;
-        if(traits&Hover)displacement.y=std::clamp(displacement.y,-3.f*dt,3.f*dt);
+        if(e.transformed)displacement.y=std::clamp(displacement.y,-14.f*dt,18.f*dt);
+        else if(traits&Hover)displacement.y=std::clamp(displacement.y,-3.f*dt,3.f*dt);
         else if(closePursuit&&traits&Flying)displacement.y=std::max(displacement.y,-14.f*dt);
       }
       Vec3 next = body.origin + displacement;
@@ -4594,6 +4595,7 @@ World Session::view(uint32_t id, const ArmRig &rig,float poseLead) const {
           result.rpgPilotStatus=ally.name+" DISABLED / AIM AND HOLD NANITES";break;
         }
       }
+      result.rpgShield=m.shield;
       result.rpgAp=m.sheet.ap;
       result.rpgMaxAp=m.sheet.maxAp;
       result.rpgArmor = 100.f*std::clamp(float(m.sheet.hp+m.sheet.ap)/

@@ -396,6 +396,24 @@ void Session::stepAmbientEncounters(float dt){
 void Session::patrolEnemy(size_t index,float dt,EnemyNavigationBudget *budget){
   auto &e=enemies[index];auto &body=world.targets[index];const auto &spec=combatSpec(e);
   if(spec.kind==EnemyKind::Installation)return;
+  const bool fighter=e.transformed||std::string_view(spec.id)=="interceptor";
+  const bool swimming=(spec.traits&Submersible)&&biome==2&&world.waterDepthAt(body.origin)>0;
+  const bool airborne=fighter||(spec.traits&(Flying|Hover))!=0||swimming;
+  const auto movePatrol=[&](Vec3 displacement){
+    if(airborne){
+      const auto ahead=body.origin+displacement;
+      const float floor=world.walkableHeight(ahead);
+      const float water=biome!=2&&fighter?world.waterDepthAt(ahead):0.f;
+      const float altitude=swimming?2.f:fighter?fighterCruiseHeight:flying(spec)?22.f:3.f;
+      const float top=body.ai.localCenter.y+body.ai.localHalf.y;
+      const float ceiling=world.interiorCeilingAt({ahead.x,floor+1,ahead.z},std::max(body.half.x,body.half.z));
+      displacement.y=std::max(floor,std::min(floor+water+altitude,ceiling-top-.5f))-body.origin.y;
+      if(fighter)displacement.y=std::clamp(displacement.y,-14.f*dt,18.f*dt);
+      else if(!swimming&&!flying(spec))displacement.y=std::clamp(displacement.y,-3.f*dt,3.f*dt);
+    }
+    if(insideArea(body.origin+displacement,missionRadius()*.97f))moveRpgEnemy(index,displacement,dt,airborne);
+  };
+  const auto holdPosition=[&]{if(fighter&&!body.ai.gravity.active())movePatrol({});};
   Vec3 destination{};
   if(e.ambient){
     const float angle=(e.patrolStep%4)*pi*.5f+float(index%7)*.3f;
@@ -403,11 +421,11 @@ void Session::patrolEnemy(size_t index,float dt,EnemyNavigationBudget *budget){
     destination={e.anchorX+std::cos(angle)*radius,body.origin.y,e.anchorZ+std::sin(angle)*radius};
     if(std::hypot(destination.x-body.origin.x,destination.z-body.origin.z)<5.f||
        !insideArea(destination,missionRadius()*.967f)||
-       (!(spec.traits&(Flying|Hover|Submersible))&&!world.groundPassable(destination,4))){++e.patrolStep;return;}
+       (!airborne&&!(spec.traits&Submersible)&&!world.groundPassable(destination,4))){++e.patrolStep;holdPosition();return;}
   }else{
-    if(e.group<0||size_t(e.group)>=mission.groups.size())return;
+    if(e.group<0||size_t(e.group)>=mission.groups.size()){holdPosition();return;}
     auto &group=mission.groups[size_t(e.group)];
-    if(group.route.empty())return;
+    if(group.route.empty()){holdPosition();return;}
     destination=point(group.route[size_t(group.cursor)%group.route.size()]);
     if(group.alert>0)for(int ally:group.actors)if(size_t(ally)<enemyMemory.size()&&enemyMemory[size_t(ally)].remaining>0){
       auto known=std::find_if(members.begin(),members.end(),[&](const Member &m){return m.id==enemyMemory[size_t(ally)].target;});
@@ -429,9 +447,7 @@ void Session::patrolEnemy(size_t index,float dt,EnemyNavigationBudget *budget){
     return;
   }
   auto delta=destination-body.origin;delta.y=0;
-  if(length(delta)<5){body.ai.velocity={};return;}
-  bool swimming=(spec.traits&Submersible)&&biome==2&&world.waterDepthAt(body.origin)>0;
-  const bool airborne=(spec.traits&(Flying|Hover))!=0||swimming;
+  if(length(delta)<5){body.ai.velocity={};holdPosition();return;}
   const bool tracked=groundDriveTank(spec);
   body.ai.airborne=airborne;
   const float speed=airborne?8.f:4.f*environmentCatalog()[biome].speed;
@@ -442,7 +458,7 @@ void Session::patrolEnemy(size_t index,float dt,EnemyNavigationBudget *budget){
   auto heading=enemyNavigationDirection(world,index,unit(delta),destination,speed,dt,airborne,navigation[index],budget);
   if(length(heading)<.00001f){
     if(e.ambient)++e.patrolStep;
-    return;
+    holdPosition();return;
   }
   if(e.ambient){
     const Vec3 home{e.anchorX,body.origin.y,e.anchorZ};
@@ -454,11 +470,7 @@ void Session::patrolEnemy(size_t index,float dt,EnemyNavigationBudget *budget){
   body.ai.weaponYaw=body.yaw;world.updateEnemyBounds(body);
   const auto forward=direction(body.yaw,0);
   auto displacement=tracked?forward*(speed*dt*std::max(0.f,dot(heading,forward))):heading*(speed*dt);
-  if(airborne){auto ahead=body.origin+displacement;float floor=world.walkableHeight(ahead);
-    float desired=floor+(swimming?2.f:flying(spec)?22.f:3.f);float top=body.ai.localCenter.y+body.ai.localHalf.y;
-    displacement.y=std::min(desired,world.interiorCeilingAt(ahead)-top-.5f)-body.origin.y;
-    if(!swimming&&!flying(spec))displacement.y=std::clamp(displacement.y,-3.f*dt,3.f*dt);}
-  if(insideArea(body.origin+displacement,missionRadius()*.97f))moveRpgEnemy(index,displacement,dt,airborne);
+  movePatrol(displacement);
 }
 void Session::stepDungeonSites(){
   for(size_t i=0;i<mission.depots.size();++i){

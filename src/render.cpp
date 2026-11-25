@@ -187,9 +187,9 @@ bool Renderer::visibleWorld(const Model& model,const Matrix& pose)const{
     if(!worldPass)return true;
     auto local=(model.low+model.high)*.5f;auto center=point(multiply(worldView,pose),{local.x,local.y,local.z});
     float scale=0;for(int c=0;c<3;++c)scale=std::max(scale,std::hypot(pose[c*4],pose[c*4+1],pose[c*4+2]));
-    return visibleWorldSphere({center[0],center[1],center[2]},length(model.high-model.low)*.5f*scale);
+    return visibleViewSphere({center[0],center[1],center[2]},length(model.high-model.low)*.5f*scale);
 }
-bool Renderer::visibleWorldSphere(Vec3 center,float radius) const{
+bool Renderer::visibleViewSphere(Vec3 center,float radius) const{
     const float depth=-center.z;
     if(depth+radius<worldNear-.02f||depth-radius>worldFar+.02f)return false;
     for(const auto plane:worldFrustum)if(dot(plane,center)<-radius-.02f)return false;
@@ -279,7 +279,8 @@ void Renderer::drawMechaWave(const Projectile& shot,const Matrix& camera){
     // The edge of the bright core matches the collision radius. Layer two
     // keeps its distinct diamond silhouette when colours are hard to see.
     const float radius=rpg::mechaWaveRadius;
-    if(!visibleWorldSphere(shot.position,radius*2.2f))return;
+    const auto viewPosition=point(worldView,{shot.position.x,shot.position.y,shot.position.z});
+    if(!visibleViewSphere({viewPosition[0],viewPosition[1],viewPosition[2]},radius*2.2f))return;
     const bool amber=shot.visual==ProjectileVisual::WaveA;
     const Vec3 rim=amber?Vec3{1,.40f,.08f}:Vec3{.13f,.81f,1};
     const Vec3 core=amber?Vec3{1,.94f,.65f}:Vec3{.83f,1,1};

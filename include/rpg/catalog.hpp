@@ -3,6 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <span>
 namespace iron::rpg {
+inline constexpr float fighterCruiseHeight=32.f;
 inline constexpr int encounterThreatLimit(int tier,int stage=1){return tier>=2?12:4+3*tier+(stage-1)/3;}
 inline constexpr int maxInitialEnemies=48,maxEncounterEnemies=64,maxEncounterTargets=1536;
 enum class EnemyKind {

@@ -34,7 +34,7 @@ def stage_game(stage, runtime, deps):
         if source.is_file():
             shutil.copy2(source, notices / (name + '.txt'))
     (stage / 'README.txt').write_text(
-        'Mecha Hack XR 0.2.0\n\nStart in XR with two tracked controllers. In the hangar, '
+        'Mecha Hack XR 0.2.1\n\nStart in XR with two tracked controllers. In the hangar, '
         'Online Co-op Lobby connects to the public server. The first pilot hosts. '
         'Use the same menu entry to leave. Offline play is the default.\n'
         'Game UDP 29597. Voice UDP 29598.\n')

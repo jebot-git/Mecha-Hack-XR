@@ -32,6 +32,7 @@ struct HandPose {
     Quaternion grip{},aim{};
     bool valid=true;
 };
+inline constexpr Vec3 cockpitNeutralController(int hand){return {hand?.40f:-.40f,-.13f,-.75f};}
 struct ArmRest { Vec3 shoulder,elbow,wrist; };
 struct ArmRig {
     float trackingScale=6,upperLength=2.1f,foreLength=1.8f;

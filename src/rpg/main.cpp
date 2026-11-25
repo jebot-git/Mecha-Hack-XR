@@ -187,7 +187,7 @@ int main(int argc, char **argv) {
       } else if (a == "--pilot") {
         auto p = value();
         pilot=-1;
-        for(int i=0;i<int(PilotKind::Count);++i)if(p==pilotId(PilotKind(i)))pilot=i;
+        for(int i=0;i<playablePilotCount;++i)if(p==pilotId(PilotKind(i)))pilot=i;
         if(pilot<0)
           throw std::runtime_error("Unknown pilot");
       } else if (a == "--help") {
@@ -195,7 +195,7 @@ int main(int argc, char **argv) {
             << "mecha-hack-xr [--desktop|--xr] [--host|--join HOST:PORT] "
                "[--port 29597] [--name NAME]\n  [--chassis "
                "brawler|scout|striker|titan|auxiliary|colossus|hybrid|vanguard] [--pilot "
-               "commander|engineer|maverick|quipster|bionic|merc|vet|pariah]\n  [--loadout FILE.json] "
+               "commander|engineer|maverick|quipster]\n  [--loadout FILE.json] "
                "[--assets PATH] [--profiles DIRECTORY] [--mission 1..9] "
                "\nVR controls: left stick moves or navigates; right stick turns torso; "
                "triggers use hands; Y/B shoulders; X/A hips; controller swing punches.\n"
@@ -333,7 +333,7 @@ int main(int argc, char **argv) {
       bool running=true,paused=false,focused=true,anchored=false,configured=false;
       float headYaw = 0, headPitch = 0, referenceYaw = 0, accumulator = 0;
       XrVector3f anchor{};
-      const std::array<Vec3,2> hands{{{-.4f,-.13f,-.75f},{.4f,-.13f,-.75f}}};
+      const std::array<Vec3,2> hands{cockpitNeutralController(0),cockpitNeutralController(1)};
       std::string status;
       unsigned frames = 0;
       bool pauseHeld=true,awaitCombatRelease=false,headlightDown=false,stickModeUp=false,rightStickArmed=false;
@@ -840,9 +840,7 @@ int main(int argc, char **argv) {
         }
         renderer.updateCockpit(world,cockpitDt,(current.phase == Phase::Combat || current.phase == Phase::Complete || ejectionActive) && !paused);
         auto pilotArt=[&](const Sheet &sheet){
-          static constexpr std::array<int,8> helmets{0,1,2,3,1,2,0,3};
-          static_assert(helmets.size()==size_t(PilotKind::Count));
-          frontend.pilotPortrait=helmets.at(size_t(sheet.pilot));
+          frontend.pilotPortrait=int(playablePilot(sheet.pilot));
           frontend.serviceRank=uniformRank(sheet);
           frontend.pilotHonours=sheet.career.heroFactions;
         };

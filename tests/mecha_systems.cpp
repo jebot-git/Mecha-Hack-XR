@@ -21,11 +21,10 @@ static Session fixture(){
 static Json read(const std::filesystem::path &path){std::ifstream f(path);Json j;f>>j;return j;}
 static Vec3 vector(const Json &j){return {j[0],j[1],j[2]};}
 static void manualRoster(Dice &dice){
- // Pilots retain the core and Mission Manual passive attribute bonuses. Secondary pilot
- // powers are excluded, including the old command forms and allied targets.
- constexpr int bonuses[][4]={{2,0,0,1},{0,1,2,0},{1,2,0,0},{0,0,1,2},{0,1,2,0},{2,0,0,1},{1,1,0,1},{1,0,0,2}};
+ // Only the four illustrated pilot roles participate in new character creation.
+ constexpr int bonuses[][4]={{2,0,0,1},{0,1,2,0},{1,2,0,0},{0,0,1,2}};
  Dice baselineDice{119};auto baseline=createSheet(Chassis::Striker,PilotKind::Commander,baselineDice);
- for(int kind=0;kind<int(PilotKind::Count);++kind){
+ for(int kind=0;kind<playablePilotCount;++kind){
   Dice creation{119};auto sheet=createSheet(Chassis::Striker,PilotKind(kind),creation);
   for(int attribute=0;attribute<4;++attribute)assert(sheet.attributes[attribute]-bonuses[kind][attribute]==baseline.attributes[attribute]-bonuses[0][attribute]);
   auto s=fixture();auto &m=s.member(1);m.sheet.pilot=PilotKind(kind);m.sheet.hp=std::max(1,m.sheet.maxHp-3);
@@ -122,8 +121,9 @@ int main(int argc,char **argv){
  shop.command(1,{{"op","trade"},{"action","buy"},{"gear","rifle"}});assert(buyer.sheet.credits==160&&buyer.sheet.owned[size_t(Gear::Rifle)]==2);
  shop.command(1,{{"op","trade"},{"action","sell"},{"gear","rifle"}});assert(buyer.sheet.credits==180);
  auto before=Json(buyer.sheet);assert(rejects([&]{shop.command(1,{{"op","trade"},{"action","sell"},{"gear","rifle"}});}));assert(Json(buyer.sheet)==before);
- shop.command(1,{{"op","trade"},{"action","buy"},{"gear","repair"}});assert(buyer.sheet.inventory[size_t(Gear::Repair)]==1);
- shop.command(1,{{"op","trade"},{"action","sell"},{"gear","repair"}});assert(buyer.sheet.inventory[size_t(Gear::Repair)]==0&&buyer.sheet.credits==180-gearInfo(Gear::Repair).cost+gearInfo(Gear::Repair).cost/2);
+ const auto initialNanites=buyer.sheet.inventory[size_t(Gear::Repair)];
+ shop.command(1,{{"op","trade"},{"action","buy"},{"gear","repair"}});assert(buyer.sheet.inventory[size_t(Gear::Repair)]==initialNanites+1);
+ shop.command(1,{{"op","trade"},{"action","sell"},{"gear","repair"}});assert(buyer.sheet.inventory[size_t(Gear::Repair)]==initialNanites&&buyer.sheet.credits==180-gearInfo(Gear::Repair).cost+gearInfo(Gear::Repair).cost/2);
  shop.phase=Phase::Combat;assert(rejects([&]{shop.command(1,{{"op","trade"},{"action","buy"},{"gear","repair"}});}));
  // Contract reward depends on the mission and is paid once, on final success.
  std::set<int> rewards;GameSettings settings;settings.maps=1;settings.enemy=3;settings.enemyCount=1;
@@ -247,6 +247,11 @@ int main(int argc,char **argv){
   assert(pilot.shield==3&&pilot.sheet.ap==5);
   hit(Weapon::Rail,Quality::Thermal);
   assert(pilot.shield==1&&pilot.sheet.ap==5);
+  Session replica;replica.readSnapshot(shielded.snapshot());
+  for(const auto *session:{&shielded,&replica}){
+   const auto cockpit=session->view(1);
+   assert(cockpit.rpgShield==1&&cockpit.rpgAp==5&&cockpit.rpgMaxAp==7);
+  }
  }
  // Radar detection survives visual camouflage and contains only a bearing at long range.
  auto sensed=fixture();

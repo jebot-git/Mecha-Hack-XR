@@ -33,43 +33,33 @@ const char *chassisPowerDescription(Chassis c){
   chassisInfo(c);return descriptions[int(c)];
 }
 const char *pilotId(PilotKind p){
-  static constexpr std::array ids={"commander","engineer","maverick","quipster","bionic","merc","vet","pariah"};
-  static_assert(ids.size()==size_t(PilotKind::Count));return ids.at(size_t(p));
+  static constexpr std::array ids={"commander","engineer","maverick","quipster"};
+  static_assert(ids.size()==playablePilotCount);return ids.at(size_t(playablePilot(p)));
+}
+PilotKind playablePilot(PilotKind p){
+  switch(p){
+  case PilotKind::Bionic:return PilotKind::Engineer;
+  case PilotKind::Merc:return PilotKind::Maverick;
+  case PilotKind::Vet:return PilotKind::Commander;
+  case PilotKind::Pariah:return PilotKind::Quipster;
+  default:
+    if(int(p)<0||int(p)>=playablePilotCount)throw std::runtime_error("Unknown pilot");
+    return p;
+  }
 }
 int pilotBonusChoices(PilotKind p){return p==PilotKind::Vet?2:p==PilotKind::Pariah?3:0;}
-int pilotBonusAttribute(PilotKind p,int choice){
-  if(choice<0||choice>=pilotBonusChoices(p))throw std::runtime_error("Invalid pilot bonus choice");
-  return p==PilotKind::Vet?choice+1:choice;
-}
 const char *pilotName(PilotKind p) {
-  static const char *names[] = {"COMMANDER", "ENGINEER", "MAVERICK",
-                                "QUIPSTER","BIONIC","MERC","VET","PARIAH"};
-  static_assert(std::size(names)==size_t(PilotKind::Count));
-  int i = int(p);
-  if (i < 0 || i >= int(PilotKind::Count))
-    throw std::runtime_error("Unknown pilot");
-  return names[i];
+  static constexpr std::array names={"COMMANDER","ENGINEER","MAVERICK","QUIPSTER"};
+  return names.at(size_t(playablePilot(p)));
 }
 const char *pilotRoleDescription(PilotKind pilot) {
-  pilotName(pilot);
   static constexpr const char *descriptions[]={
     "Tighter weapon spread and shorter stuns.",
     "Faster movement and shorter sensor-blind effects.",
     "Faster movement and tighter weapon spread.",
-    "Shorter sensor-blind effects and stuns.",
-    "+2 System and +1 Mobility.", "+2 Power and +1 Presence.",
-    "+1 Power, +1 Presence and a choice of Mobility or System.",
-    "+2 Presence and a choice of Power, Mobility or System."};
-  static_assert(std::size(descriptions)==size_t(PilotKind::Count));
-  return descriptions[int(pilot)];
-}
-Module chassisStarterModule(Chassis chassis){
-  chassisInfo(chassis);
-  static constexpr Module defaults[]={Module::RocketFists,Module::LongRangeScanners,
-      Module::ShoulderHardpoint,Module::RetractableShield,Module::ShieldNodes,
-      Module::ExothermicPlating,Module::DismantlerArms,Module::EnergyModulator};
-  static_assert(std::size(defaults)==size_t(Chassis::Count));
-  return defaults[int(chassis)];
+    "Shorter sensor-blind effects and stuns."};
+  static_assert(std::size(descriptions)==playablePilotCount);
+  return descriptions[int(playablePilot(pilot))];
 }
 const char *moduleId(Module m) {
   static const char *ids[] = {
@@ -600,19 +590,17 @@ void Sheet::rest(Dice &d, bool full) {
 void normalizeCombatProfile(Sheet &s){
   validateRefinements(s);
   const auto &info=chassisInfo(s.chassis);
-  pilotName(s.pilot);
+  s.pilot=playablePilot(s.pilot);
+  s.pilotBonusChoice=0;
   static constexpr int characteristics[][4]={{15,11,9,11},{10,16,12,10},
                                               {13,12,13,11},{14,8,12,12},
                                               {10,11,14,13},{15,8,10,14},
                                               {14,14,9,10},{14,11,14,9}};
   static_assert(std::size(characteristics)==size_t(Chassis::Count));
-  static constexpr int bonuses[][4]={{2,0,0,1},{0,1,2,0},{1,2,0,0},{0,0,1,2},
-                                      {0,1,2,0},{2,0,0,1},{1,0,0,1},{0,0,0,2}};
-  static_assert(std::size(bonuses)==size_t(PilotKind::Count));
+  static constexpr int bonuses[][4]={{2,0,0,1},{0,1,2,0},{1,2,0,0},{0,0,1,2}};
+  static_assert(std::size(bonuses)==playablePilotCount);
   for(int i=0;i<4;++i)s.attributes[i]=characteristics[int(s.chassis)][i]+bonuses[int(s.pilot)][i]+s.refinements[i+1];
-  if(pilotBonusChoices(s.pilot))++s.attributes[pilotBonusAttribute(s.pilot,s.pilotBonusChoice)];
-  if(s.starterModule==Module::Count)
-    s.starterModule=chassisStarterModule(s.chassis);
+
   s.level=1;s.pendingLevels=0;s.moduleChoices=0;
   s.maxHp=8+info.hit+s.refinements[size_t(PilotRefinement::Hull)];
   s.hp=std::min(s.hp,s.maxHp);
@@ -622,7 +610,6 @@ Sheet createSheet(Chassis c, PilotKind p, Dice &d, int /*legacyLevel*/) {
   s.creationSeed=d.next();
   s.chassis=c;s.pilot=p;
   normalizeCombatProfile(s);
-  s.modules={s.starterModule};
   startingEquipment(s,false);
   validate(s);
   return s;

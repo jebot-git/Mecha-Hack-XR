@@ -1,4 +1,5 @@
 #include "rpg/enemy_tactics.hpp"
+#include "rpg/cockpit_arm_rest.hpp"
 #include "rpg/weapon_audio.hpp"
 #include "rpg/kaiju_audio.hpp"
 #include "net/snapshot_packet.hpp"
@@ -323,7 +324,7 @@ int main(){try{
   const auto view=s.view(pilot.id,{});
   require(view.eye().y<6&&std::abs(view.knockdownPose().roll)>1.f,
           "Burrow hit lacks the full cockpit drop and roll");
-  const auto expected=rotate(view.knockdownPose().orientation,{-2.5f,-1.2f,-.1f});
+  const auto expected=rotate(view.knockdownPose().orientation,armRestFor(int(pilot.sheet.chassis),LeftHand)->shoulder);
   require(pilot.body.arms[0].tracked&&length(pilot.body.arms[0].shoulder-view.eye()-expected)<.001f,
           "Controller arm remains upright in the fallen cockpit");
   auto guest=s;guest.readSnapshot(s.snapshot());

@@ -39,12 +39,14 @@ float angle(Vec3 a,Vec3 b) {return std::acos(std::clamp(dot(unit(a),unit(b)),-1.
 int main(int argc,char **argv) {try {
   auto base=fixture();const auto tip=weaponTuning(Gear::Rifle)->muzzle;
   float restError=0,replicaError=0;
-  bool independentTracking=true;
+  bool independentTracking=true;float minimumClearance=100,minimumOutboard=100;
   for(size_t chassis=0;chassis<chassisIds.size();++chassis){
     auto session=base;
     session.member(1).sheet.chassis=Chassis(chassis);
     session.member(1).body.chassisYaw=.92f;session.member(1).body.torsoYaw=-.27f;
-    submit(session,Input{});
+    Input resting;
+    for(int hand=0;hand<2;++hand)resting.handPoses[hand].position=cockpitNeutralController(hand);
+    submit(session,resting);
     auto local=session.view(1);
     Session guest;guest.readSnapshot(session.snapshot());
     auto remote=guest.view(1);
@@ -58,12 +60,18 @@ int main(int argc,char **argv) {try {
       const auto &copy=remote.arms[hand];
       replicaError=std::max({replicaError,length(copy.shoulder-arm.shoulder),
                              length(copy.elbow-arm.elbow),length(copy.wrist-arm.wrist)});
+      Input tucked;tucked.handPoses[hand].position={hand?.10f:-.10f,-.17f,.08f};submit(session,tucked);
+      const auto chest=session.view(1);
+      const auto wrist=rotate(gravityInverse(chest.cockpitOrientation()),chest.arms[hand].wrist-chest.eye());
+      minimumClearance=std::min(minimumClearance,-wrist.z);
+      minimumOutboard=std::min(minimumOutboard,(hand?1.f:-1.f)*wrist.x);
       Input lost;lost.handPoses[hand].valid=false;submit(session,lost);
       auto missing=session.view(1);
       independentTracking=independentTracking&&!missing.arms[hand].tracked&&missing.arms[hand^1].tracked;
     }
   }
   check("All chassis reproduce the authored neutral arm joints",restError<.002f,{{"maximum_error_m",restError}});
+  check("Retracted hands clear the canopy and central instruments on every chassis",minimumClearance>=2.75f&&minimumOutboard>.5f,{{"min_forward_m",minimumClearance},{"min_outboard_m",minimumOutboard}});
   check("Tracking loss disables only the affected chassis arm",independentTracking);
   check("Replicated arm joints preserve chassis-specific poses",replicaError<.001f,{{"maximum_error_m",replicaError}});
   float originError=0,visualAxisError=0,shotAngle=0;int poses=0;

@@ -19,7 +19,7 @@ void captureCockpitInteriors(iron::Renderer& renderer, const std::filesystem::pa
     for(int hand=0;hand<2;++hand){
         const float side=hand?1.f:-1.f;
         input.handValid[hand]=true;
-        input.hands[hand]=input.handPoses[hand].position={side*.40f,-.13f,-.75f};
+        input.hands[hand]=input.handPoses[hand].position=cockpitNeutralController(hand);
         input.handPoses[hand].aim=input.handPoses[hand].grip=angles(-side*.11f,.01f);
     }
     auto advance=[&]{

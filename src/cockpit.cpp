@@ -575,17 +575,32 @@ void Renderer::instruments(const World& w,const Matrix& cockpit,bool paused) {
             else bar(mountPose(reactor),reactor.width,reactor.height,heat,heatColor);
             const auto& health=seat->health;
             const auto healthPose=mountPose(health);
-            const bool vertical=health.height>health.width;
             const float plating=float(w.rpgAp)/std::max(1,w.rpgMaxAp);
-            if(health.style==Surface::Style::Dial){
-                needle(health,w.health*.01f,armor);
-                needle(health,plating,{.12f,.6f,1.f},.64f);
-            }else for(int row=0;row<2;++row){
-                const float shift=row?.255f:-.255f;
-                const auto pos=vertical?translation(shift*health.width,0,0):translation(0,shift*health.height,0);
-                bar(multiply(healthPose,pos),health.width*(vertical?.44f:1.f),health.height*(vertical?1.f:.44f),
-                    row?plating:w.health*.01f,row?Vec3{.12f,.6f,1.f}:armor);
-            }
+            // The narrow caution strips have three columns. Taller instruments
+            // stack the channels, inside the bezel on a round instrument.
+            const bool columns=health.width>3.f*health.height;
+            const bool dial=health.style==Surface::Style::Dial;
+            const float width=health.width*(dial?.71f:.96f)/(columns?3.f:1.f);
+            const float height=health.height*(dial?.56f:.96f)/(columns?1.f:3.f);
+            // Leave the printed legend below the readouts on the dial face.
+            const float centerY=dial?.14f*health.height:0.f;
+            instrumentGain=std::max(.78f,instrumentGain);
+            auto channel=[&](int index,const char* name,const char* abbreviation,const std::string& value,
+                             float level,Vec3 tint,bool reverse){
+                const float x=columns?(index-1)*width:0.f;
+                const float y=centerY+(columns?0.f:(1-index)*height);
+                const auto face=multiply(healthPose,translation(x,y,.002f));
+                const std::string label=std::string(width<.14f?abbreviation:name)+" "+value;
+                centered(label,multiply(face,translation(0,height*.105f,.001f)),width*.94f,height*.69f,tint);
+                auto rail=multiply(face,translation(0,-height*.34f,0));
+                if(reverse)rail=multiply(rail,scaling(-1,1,1));
+                bar(rail,width*.90f,std::min(height*.17f,width*.09f),level,tint);
+            };
+            channel(0,"HULL","HP",std::to_string(int(std::lround(w.health)))+"%",
+                    w.health*.01f,{1,.48f,.24f},true);
+            channel(1,"ARMOUR","AP",std::to_string(w.rpgAp)+"/"+std::to_string(w.rpgMaxAp),
+                    plating,{.22f,.66f,1},false);
+            channel(2,"SHIELD","SH",std::to_string(w.rpgShield),w.rpgShield/6.f,{.38f,1,.56f},false);
             module(4);
             const auto& torsoPanel=seat->torso;
             panel=multiply(mountPose(torsoPanel),scaling(torsoPanel.width,torsoPanel.height,.15f));

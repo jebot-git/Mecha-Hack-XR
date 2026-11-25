@@ -86,6 +86,21 @@ Sheet loadProfile(const std::filesystem::path &path, std::string *callsign) {
     int completed=std::min(9,s.level-1+int(s.pendingLevels>0));
     s.campaign.completed=(1u<<completed)-1;s.campaign.revision=unsigned(completed);s.campaign.awaitingAdvance=s.pendingLevels>0;
   }
+  if(!s.created&&(s.starterModule!=Module::Count||(!data.contains("starterModule")&&!s.modules.empty()))){
+    // Old creation menus stored the selected module first. Keep any purchased stock.
+    if(!s.modules.empty()){
+      const auto gear=moduleGear(s.modules.front());
+      if(gear!=Gear::Empty&&s.equipment[RightHip]==gear){
+        s.equipment[RightHip]=Gear::Empty;
+        s.moduleCopies[RightHip-LeftShoulder]=-1;
+        s.qualities[RightHip]=Quality::None;
+      }
+      s.modules.erase(s.modules.begin());
+    }
+    s.starterModule=Module::Count;
+    s.equipment[LeftHip]=Gear::Repair;
+    s.repairKits=s.inventory[size_t(Gear::Repair)]=std::max(1,s.inventory[size_t(Gear::Repair)]);
+  }
   retireObsoleteEquipment(s);
   normalizeCombatProfile(s);
   validate(s);

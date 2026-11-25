@@ -43,7 +43,7 @@ bool Session::stepVehicleAttack(size_t index,const Member *victim,int objectiveT
   const bool airborne=!gunner&&((spec.traits&(Flying|Hover|Submersible))||drone);
   body.ai.airborne=airborne;
   const float approachRange=bomber?59.f:drone?47.f:gunner?65.f:39.f;
-  const float altitude=bomber?32.f:(spec.traits&Flying)?19.f:drone?(underwater?2.f:8.f):3.f;
+  const float altitude=bomber?32.f:std::string_view(spec.id)=="interceptor"?fighterCruiseHeight:(spec.traits&Flying)?19.f:drone?(underwater?2.f:8.f):3.f;
   const float speed=(bomber?25.f:drone?13.5f:gunner?10.f:15.f)*
       (hasInjury(enemy.injuries,MechaInjury::Hobbled)?.55f:1.f)*
       (airborne?1.f:environmentCatalog()[biome].speed);

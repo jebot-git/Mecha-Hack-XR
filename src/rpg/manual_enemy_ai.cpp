@@ -101,8 +101,14 @@ void Session::stepManualEnemies(float dt){
     }
     const auto &spec=combatSpec(enemy);enemy.manualClock=std::max(0.f,enemy.manualClock-dt);
     if(spec.traits&Veriform){float nearest=std::numeric_limits<float>::infinity();
-      for(const auto &m:members)if(!m.ejected&&m.sheet.hp>0)nearest=std::min(nearest,length(m.body.position-world.targets[i].origin));
+      auto &body=world.targets[i];
+      for(const auto &m:members)if(!m.ejected&&m.sheet.hp>0){
+        const auto offset=m.body.position-body.origin;
+        nearest=std::min(nearest,std::hypot(offset.x,offset.z));
+      }
       if(nearest>35)enemy.transformed=true;else if(nearest<20)enemy.transformed=false;
+      body.ai.airborne=enemy.transformed;
+      if(enemy.transformed)body.ai.fallSpeed=0;
     }
     if((spec.traits&Combiner)&&!enemy.combined&&enemy.disabled<=0){
       for(size_t j=i+1;j<enemies.size();++j)if(enemies[j].hp>0&&!enemies[j].combined&&
@@ -165,7 +171,7 @@ bool Session::spawnManualEnemy(int specIndex,Vec3 desired,int tactic,unsigned ar
     if(clearSpawn(world,body,p,radius,flying,insert?-1:int(slot))){body.origin=p;placed=true;}
   }
   if(!placed)return false;
-  world.updateEnemyBounds(body);body.health=float(fresh.hp);body.ai.maxHealth=float(fresh.maxHp);body.ai.airborne=flying;
+  body.ai.airborne=flying;world.updateEnemyBounds(body);body.health=float(fresh.hp);body.ai.maxHealth=float(fresh.maxHp);
   if(ambient){
     body.yaw=std::atan2(-approach.x,-approach.z);
     body.ai.weaponYaw=body.yaw;

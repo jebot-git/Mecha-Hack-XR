@@ -211,11 +211,9 @@ Sheet claimCampaignAward(const Sheet &old,const CampaignState &victory,std::opti
     if(*nextChassis<Chassis::Brawler||*nextChassis>=Chassis::Count)
       throw std::runtime_error("Invalid next campaign chassis");
     next.chassis=*nextChassis;
-    next.starterModule=chassisStarterModule(next.chassis);
   }
-  if(next.starterModule==Module::Count)
-    next.starterModule=chassisStarterModule(next.chassis);
-  next.modules={next.starterModule};
+  next.starterModule=Module::Count;
+  next.modules.clear();
   next.refinements={};
   normalizeCombatProfile(next);
   next.oneShotModule=Module::ChestBeam;

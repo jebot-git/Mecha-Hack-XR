@@ -154,7 +154,7 @@ void Preparation::openTrader(){
 }
 int Preparation::rowCount(bool)const{
  if(recoveredWeaponPage(*this))return selectedWeaponCopy()<0?1:4+int(sheet.campaignAwards>0);
- return inventory?std::max(1,int(stockFor(sheet).size())):trading?tradeBack(*this)+1:sheet.created?int(rowsFor(*this).size()):5+int(pilotBonusChoices(sheet.pilot)>0);}
+ return inventory?std::max(1,int(stockFor(sheet).size())):trading?tradeBack(*this)+1:sheet.created?int(rowsFor(*this).size()):4;}
 int Preparation::selectedWeaponCopy()const{
  const auto gear=Gear(selectedGear);
  const auto stock=equipmentCopyCount(sheet,gear);
@@ -408,12 +408,9 @@ bool Preparation::edit(int delta,bool){
  }
  if(!sheet.created){
   if(selected==0){Dice dice{sheet.creationSeed?sheet.creationSeed:0x4d454348u};auto next=createSheet(Chassis(cycle(int(sheet.chassis),int(Chassis::Count))),sheet.pilot,dice,1);next.pilotBonusChoice=sheet.pilotBonusChoice;normalizeCombatProfile(next);next.creationSwap=sheet.creationSwap;next.record=sheet.record;next.career=sheet.career;next.missionsCompleted=sheet.missionsCompleted;next.campaignAwards=sheet.campaignAwards;next.campaignAwardsSpent=sheet.campaignAwardsSpent;next.lastCampaignAward=sheet.lastCampaignAward;next.campaign=sheet.campaign;sheet=next;startingEquipment(sheet,false);}
-  else if(selected==1){sheet.pilot=PilotKind(cycle(int(sheet.pilot),int(PilotKind::Count)));sheet.pilotBonusChoice=0;normalizeCombatProfile(sheet);}
+  else if(selected==1){sheet.pilot=PilotKind(cycle(int(sheet.pilot),playablePilotCount));sheet.pilotBonusChoice=0;normalizeCombatProfile(sheet);}
   else if(selected==2){int choice=cycle(forename*20+surname,400);forename=choice/20;surname=choice%20;callsign=std::string(firstNames[forename])+" "+lastNames[surname];}
-  else if(selected==3){int next=int(sheet.modules.front());do{next=cycle(next,int(Module::Count));}while(retiredModule(Module(next)));sheet.modules={Module(next)};sheet.moduleChoices=0;startingEquipment(sheet,false);}
-  else if(selected==4&&pilotBonusChoices(sheet.pilot)){
-    sheet.pilotBonusChoice=cycle(sheet.pilotBonusChoice,pilotBonusChoices(sheet.pilot));normalizeCombatProfile(sheet);
-  }else return false;
+  else return false;
   validate(sheet);return true;
  }
  auto rows=rowsFor(*this);if(selected<0||selected>=int(rows.size()))return false;auto row=rows[selected];
@@ -454,11 +451,7 @@ std::vector<std::string> Preparation::lines(const Session &,uint32_t,const std::
  if(inventory){
   for(auto &item:stockFor(sheet))rows.push_back(std::move(item.label));
   if(rows.empty())rows.push_back("NO STOCK");
- }else if(!sheet.created){rows={"CHASSIS: "+std::string(chassisInfo(sheet.chassis).name),"PILOT ROLE: "+std::string(pilotName(sheet.pilot)),"CALLSIGN: "+callsign,"STARTING MODULE: "+std::string(moduleName(sheet.modules.front()))};
-   if(pilotBonusChoices(sheet.pilot)){
-     static constexpr const char* names[]={"POWER","MOBILITY","SYSTEM"};
-     rows.push_back(std::string("BONUS ATTRIBUTE: ")+names[pilotBonusAttribute(sheet.pilot,sheet.pilotBonusChoice)]);
-   }
+ }else if(!sheet.created){rows={"CHASSIS: "+std::string(chassisInfo(sheet.chassis).name),"PILOT ROLE: "+std::string(pilotName(sheet.pilot)),"CALLSIGN: "+callsign};
    rows.push_back("CREATE PILOT");}
  else for(auto row:rowsFor(*this))switch(row.action){
   case Action::Item:{auto gear=Gear(selectedGear);const int copy=selectedWeaponCopy();
@@ -515,7 +508,7 @@ std::vector<std::string> Preparation::lines(const Session &,uint32_t,const std::
  if(!sheet.created)result.push_back("POWER "+std::to_string(sheet.attributes[0])+" / MOBILITY "+std::to_string(sheet.attributes[1])+" / SYSTEM "+std::to_string(sheet.attributes[2])+" / PRESENCE "+std::to_string(sheet.attributes[3]));
  if(!sheet.created&&selected==0)result.push_back(chassisPowerDescription(sheet.chassis));
  if(!sheet.created&&selected==1)result.push_back(pilotRoleDescription(sheet.pilot));
- if(!sheet.created&&selected==3)result.push_back(moduleDescription(sheet.modules.front()));
+ if(!sheet.created&&selected==3)result.push_back("STARTS WITH 1 NANITE CHARGE");
  if(sheet.created&&!trading&&!inventory){auto menu=rowsFor(*this);if(menu[cursor].action==Action::Module)result.push_back(moduleDescription(availableModule(sheet,modulePreview)));}
 
  if(sheet.created){

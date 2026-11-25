@@ -47,8 +47,12 @@ The centre computer shows the cockpit bearing on a 360° compass. The right
 computer shows reactor heat and venting status. The bird’s-eye display shows
 the mecha schematic and target count.
 
-The five status lamps below the central controls show remaining armour. The
-overhead red lamp brightens as the reactor heats up. Steam and a warning tone
+Each chassis displays hull, armour and shield on its own condition gauge.
+Orange shows hull integrity as a percentage, blue shows current and maximum armour
+points, and green shows the remaining energy shield charge. Compact instruments
+label these channels HP, AP and SH.
+
+The overhead red lamp brightens as the reactor heats up. Steam and a warning tone
 build in the cockpit, with a faster flash and sustained venting at overheat.
 
 Weapons, boosts and modules add heat. Venting temporarily disables weapons
@@ -69,10 +73,9 @@ selected role.
 
 ## Preparation
 
-A new pilot has five entries: chassis, pilot role, callsign, starting module and
-Create Pilot. Attributes are generated automatically; there are no attribute
-swap, biography-table, currency-mode or randomizer screens. The starter equipment
-is assigned before saving. Four profiles retain separate equipment and progression.
+Choose a chassis, one of four illustrated pilot roles, and a callsign, then select
+Create Pilot. Each new mech starts with its chassis weapons, scanner and one repair
+nanite charge fitted to the left hip. Four profiles retain separate equipment and progression.
 
 Equipment fits owned gear and armor, assigns the six mounts, and installs
 modules bought with contract credits. Inventory browses stock and identifies mounted gear and fitted

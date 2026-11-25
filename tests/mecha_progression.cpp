@@ -26,8 +26,8 @@ static void win(Session &s){for(auto &e:s.enemies)e.hp=0;s.step(.05f);}
 template<class F>static bool rejects(F f){try{f();return false;}catch(const std::exception &){return true;}}
 int main(){
     for(int c=0;c<4;++c){Dice d{uint32_t(c+1)};auto s=createSheet(Chassis(c),PilotKind::Engineer,d);
-        assert(s.level==1&&s.modules.size()==1&&s.moduleChoices==0&&s.maxHp>=14&&s.maxHp<=18);
-        for(int g=0;g<int(Gear::Count);++g)if(consumable(Gear(g)))assert(s.inventory[g]==0);
+        assert(s.level==1&&s.modules.empty()&&s.moduleChoices==0&&s.maxHp>=14&&s.maxHp<=18);
+        for(int g=0;g<int(Gear::Count);++g)if(consumable(Gear(g)))assert(s.inventory[g]==int(Gear(g)==Gear::Repair));
         assert(rejects([&]{equipGear(s,LeftHip,Gear::Comlink);}));finishCreation(s);validate(s);
     }
     Dice d{19};auto market=createSheet(Chassis::Striker,PilotKind::Engineer,d);
@@ -94,7 +94,7 @@ int main(){
     // Schema-two imports retain their level/stock and leave the source intact.
     auto legacy=createSheet(Chassis::Titan,PilotKind::Engineer,d,3);
     legacy.equipment.fill(Gear::Empty);legacy.equipment[RightHand]=Gear::Cannon;legacy.equipment[RightHip]=Gear::Comlink;
-    legacy.inventory[size_t(Gear::Repair)]=7;
+    legacy.inventory[size_t(Gear::Repair)]=7;legacy.modules={Module::RetractableShield};
     Json oldSheet=legacy;
     for(auto key:{"created","owned","ownedArmor","heavyOwners","oneShotStock","moduleChoices","creationSeed","creationSwap","starterModule","lastCampaignAward"})oldSheet.erase(key);
     auto legacyRoot=directory/"legacy";std::filesystem::create_directories(legacyRoot);
@@ -103,7 +103,7 @@ int main(){
     ProfileStore migrated(legacyRoot);auto imported=migrated.load(0)->sheet;
     assert(imported.created&&imported.level==1&&imported.inventory[size_t(Gear::Repair)]==7&&imported.owned[size_t(Gear::Cannon)]==1);
     assert(imported.equipment[LeftHand]==Gear::Cannon&&imported.equipment[RightHip]==Gear::Empty);
-    assert(imported.starterModule==Module::RetractableShield);
+    assert(imported.has(Module::RetractableShield)&&imported.starterModule==Module::Count);
     {std::ifstream file(legacyRoot/"default.json");std::string text((std::istreambuf_iterator<char>(file)),{});assert(text==oldText);}
     for(auto field:{"armor","oneShotModule"}){
         Json broken=Json::parse(oldText);broken["sheet"][field]=999;
@@ -142,7 +142,7 @@ int main(){
     assert(rejects([&]{installModule(loadout,Module::NanoShroud);}));
     loadout.credits=modulePurchaseCost;
     installModule(loadout,Module::NanoShroud);
-    assert(loadout.credits==0&&loadout.modules.size()==2&&loadout.maxHp==fixedHull&&loadout.attributes==fixedAttributes);
+    assert(loadout.credits==0&&loadout.modules.size()==1&&loadout.maxHp==fixedHull&&loadout.attributes==fixedAttributes);
     // Hand support requires an actual nearby tracked offhand and held grip.
     auto unbraced=fixture(),braced=unbraced;
     for(auto *s:{&unbraced,&braced}){auto &m=s->member(1);m.sheet=createSheet(Chassis::Titan,PilotKind::Engineer,d);finishCreation(m.sheet);}

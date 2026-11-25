@@ -284,10 +284,11 @@ void startingEquipment(Sheet &s,bool credits){
         }
     }
     s.equipment[LeftHip]=Gear::Repair;
-    s.equipment[RightHip]=Gear::Scan;
-    s.equipment[RightShoulder]=Gear::Scan;s.equipment[RightHip]=Gear::Empty;
+    s.equipment[RightShoulder]=Gear::Scan;
     for(auto module:s.modules)if(moduleGear(module)!=Gear::Empty){s.equipment[RightHip]=moduleGear(module);break;}
-    normalizeHeavyEquipment(s);s.repairKits=0;prepare(s);
+    normalizeHeavyEquipment(s);
+    s.repairKits=s.inventory[size_t(Gear::Repair)]=1;
+    prepare(s);
 }
 void refitMounts(Sheet &s){
     normalizeHeavyEquipment(s);
@@ -335,15 +336,12 @@ void sellArmor(Sheet &s,Armor armor){
 }
 void finishCreation(Sheet &s){
     if(s.created)return;
-    if(s.modules.size()!=1)throw std::runtime_error("Choose a chassis and one starting module");
-    const auto previous=s.starterModule;
-    s.starterModule=s.modules.front();
     s.created=true;
-    try{validate(s);}catch(...){s.created=false;s.starterModule=previous;throw;}
+    try{validate(s);}catch(...){s.created=false;throw;}
 }
 void retireObsoleteEquipment(Sheet &s){
     if(retiredModule(s.starterModule))
-        s.starterModule=chassisStarterModule(s.chassis);
+        s.starterModule=Module::Count;
     int refunds=0;
     for(int i=0;i<int(Gear::Count);++i){
         const auto gear=Gear(i);
@@ -366,7 +364,7 @@ void retireObsoleteEquipment(Sheet &s){
     for(int slot=0;slot<MountCount;++slot)if(retiredGear(s.equipment[slot])||s.equipment[slot]==Gear::Scrap){
         s.equipment[slot]=Gear::Empty;s.qualities[slot]=Quality::None;
     }
-    if(!s.created&&s.modules.empty())s.modules.push_back(chassisStarterModule(s.chassis));
+
     if(s.credits<0||s.credits>1000000)throw std::runtime_error("Invalid legacy credits");
     s.credits=std::min(1000000,s.credits+refunds);
 }

@@ -105,6 +105,76 @@ struct MaterialStudy {
         for(const auto& [name,texture]:renderer.textures)verifyChain(GL_TEXTURE_2D,texture.id,name);
         std::cout<<"Verified "<<renderer.textures.size()+7+bool(surface)<<" complete mip chains on the GPU\n";
     }
+    static void checkWaves(Renderer& renderer,const fs::path& output){
+        // Looking back toward +Z from a distant map sector makes the world
+        // position of a visible shot lie well outside a camera-space frustum.
+        World world;world.rpgPrototype=true;world.position={420,0,630};
+        const auto head=multiply(translation(420,12,630),rotation(pi,0));
+        if(!output.empty())fs::create_directories(output);
+        glViewport(0,0,width,height);
+        for(int eye=0;eye<2;++eye){
+            const auto camera=multiply(head,translation(eye?.032f:-.032f,0,0));
+            const auto lens=projection({-.79f,.81f,.7f,-.7f});
+            std::vector<unsigned char> reference(width*height*3),pixels(reference.size());
+            world.projectiles.clear();
+            renderer.draw(world,lens,camera,head,false);
+            glReadPixels(0,0,width,height,GL_RGB,GL_UNSIGNED_BYTE,reference.data());
+            for(auto shape:{ProjectileVisual::WaveA,ProjectileVisual::WaveB}){
+                Projectile shot;shot.position={420,15,662};shot.velocity={0,0,-22};shot.visual=shape;
+                world.projectiles={shot};
+                renderer.draw(world,lens,camera,head,false);
+                glReadPixels(0,0,width,height,GL_RGB,GL_UNSIGNED_BYTE,pixels.data());
+                int changed=0;
+                for(size_t n=0;n<pixels.size();n+=3)
+                    if(std::abs(int(pixels[n])-reference[n])+std::abs(int(pixels[n+1])-reference[n+1])+
+                       std::abs(int(pixels[n+2])-reference[n+2])>75)++changed;
+                if(changed<12)throw std::runtime_error("Incoming wave missing from eye "+std::to_string(eye));
+                std::cout<<"Eye "<<eye<<" wave "<<int(shape)<<": "<<changed<<" visible pixels\n";
+                if(!output.empty())capture(output/("eye-"+std::to_string(eye)+"-wave-"+std::to_string(int(shape))+".ppm"));
+            }
+        }
+    }
+    static void checkInstruments(Renderer& renderer,const fs::path& output){
+        World world;world.rpgPrototype=true;world.mission=0;world.rpgMaxAp=8;
+        if(!output.empty())fs::create_directories(output);
+        glViewport(0,0,width,height);
+        for(size_t i=0;i<rpg::chassisIds.size();++i){
+            world.rpgChassis=int(i);
+            renderer.prepareCockpitLighting(world);
+            const auto* interior=renderer.activeInterior();
+            if(!interior)throw std::runtime_error("Missing chassis interior");
+            const auto& face=interior->health;
+            const Vec3 position{face.pose[12],face.pose[13],face.pose[14]};
+            const auto ray=unit(position);
+            const auto eye=world.eye();
+            const auto q=angles(std::atan2(-ray.x,-ray.z),std::asin(ray.y));
+            const auto head=poseMatrix({{q.x,q.y,q.z,q.w},{eye.x,eye.y,eye.z}});
+            const float zoom=.72f*std::max(face.width,face.height)/length(position);
+            const float v=std::atan(zoom),h=std::atan(zoom*width/height);
+            const auto lens=projection({-h,h,v,-v});
+            auto sample=[&]{
+                renderer.draw(world,lens,head,head,false);
+                std::vector<unsigned char> pixels(width*height*3);
+                glReadPixels(0,0,width,height,GL_RGB,GL_UNSIGNED_BYTE,pixels.data());
+                return pixels;
+            };
+            world.health=32;world.rpgAp=3;world.rpgShield=4;
+            const auto baseline=sample();
+            const std::string name=rpg::chassisIds[i];
+            if(!output.empty())capture(output/(name+"-gauge.ppm"));
+            for(int channel=0;channel<3;++channel){
+                world.health=channel==0?100:32;
+                world.rpgAp=channel==1?8:3;
+                world.rpgShield=channel==2?0:4;
+                const auto pixels=sample();
+                int changed=0;
+                for(size_t n=0;n<pixels.size();n+=3)
+                    if(std::abs(int(pixels[n])-baseline[n])+std::abs(int(pixels[n+1])-baseline[n+1])+
+                       std::abs(int(pixels[n+2])-baseline[n+2])>100)++changed;
+                if(changed<24)throw std::runtime_error(name+" missing instrument channel "+std::to_string(channel));
+            }
+        }
+    }
     static void checkLiveTextures(Renderer& renderer,const fs::path& pack){
         World world;world.targets.clear();world.rpgPrototype=true;world.mission=0;
         Target target;rpg::applyOriginalModel(target,"terran_mammoth");world.targets.push_back(target);
@@ -203,7 +273,9 @@ struct MaterialStudy {
 
 int main(int argc,char** argv){
     const bool check=argc==3 && std::string_view(argv[2])=="--check-live-textures";
-    if(argc!=4 && !check){std::cerr<<"Usage: mecha-material-study <published asset root> <study dir> <output dir>\n";return 2;}
+    const bool waves=argc>=3 && std::string_view(argv[2])=="--check-waves";
+    const bool instruments=(argc==3||argc==4) && std::string_view(argv[2])=="--check-instruments";
+    if(argc!=4 && !check && !waves && !instruments){std::cerr<<"Usage: mecha-material-study <published asset root> <study dir> <output dir>\n";return 2;}
     try{
         if(SDL_Init(SDL_INIT_VIDEO)!=0)throw std::runtime_error(SDL_GetError());
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,3);SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,3);
@@ -221,7 +293,9 @@ int main(int argc,char** argv){
         iron::rpg::setOriginalAssetRoot(argv[1]);
         {
             iron::Renderer renderer(fs::path(argv[1])/"cockpit");
-            if(check)iron::MaterialStudy::checkLiveTextures(renderer,argv[1]);
+            if(waves)iron::MaterialStudy::checkWaves(renderer,argc==4?fs::path(argv[3]):fs::path{});
+            else if(instruments)iron::MaterialStudy::checkInstruments(renderer,argc==4?fs::path(argv[3]):fs::path{});
+            else if(check)iron::MaterialStudy::checkLiveTextures(renderer,argv[1]);
             else iron::MaterialStudy::run(renderer,argv[2],argv[3]);
         }
         SDL_GL_DeleteContext(context);SDL_DestroyWindow(window);SDL_Quit();return 0;

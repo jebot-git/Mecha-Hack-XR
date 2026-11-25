@@ -100,8 +100,7 @@ callsign, role, career, mission record, credits and scrap. Narrative legacy
 carries the previous framework, ending and rebuilding pressure into the next
 campaign. Saved claims prevent duplicate awards and equipment resets when a
 party resumes debrief. The host returns the party to the hangar after every
-remaining pilot accepts. Older profiles without a saved starter module fall
-back to the chassis default when claiming a campaign award.
+remaining pilot accepts. The next chassis starts with one nanite charge equipped on the left hip.
 
 Each pilot starts as a Rookie, earns Veteran after five contracts, and earns
 Campaign Ace after winning a campaign. A veteran who reaches +12 with a human

@@ -3,6 +3,7 @@
 #include "rpg/network.hpp"
 #include <chrono>
 #include <thread>
+#include <fstream>
 #include <cassert>
 #include <iostream>
 using namespace iron;using namespace iron::rpg;
@@ -11,13 +12,13 @@ int main(){
  for(int chassis=0;chassis<int(Chassis::Count);++chassis){
   for(int pilot=0;pilot<int(PilotKind::Count);++pilot){
    Preparation draft;draft.sheet=createSheet(Chassis(chassis),PilotKind(pilot),dice);
-   const auto options=pilotBonusChoices(draft.sheet.pilot);
-   assert(draft.rowCount()==5+int(options>0));
-   if(options){
-    auto base=draft.sheet.attributes;draft.selected=4;draft.edit(1);
-    assert(draft.sheet.attributes[pilotBonusAttribute(draft.sheet.pilot,0)]==base[pilotBonusAttribute(draft.sheet.pilot,0)]-1);
-    assert(draft.sheet.attributes[pilotBonusAttribute(draft.sheet.pilot,1)]==base[pilotBonusAttribute(draft.sheet.pilot,1)]+1);
-   }
+   assert(draft.rowCount()==4&&int(draft.sheet.pilot)<playablePilotCount);
+   assert(draft.sheet.modules.empty()&&draft.sheet.equipment[LeftHip]==Gear::Repair);
+   assert(draft.sheet.inventory[size_t(Gear::Repair)]==1&&draft.sheet.repairKits==1);
+   const auto originalPilot=draft.sheet.pilot;
+   draft.selected=1;
+   for(int n=0;n<playablePilotCount;++n){draft.edit(1);assert(int(draft.sheet.pilot)<playablePilotCount);}
+   assert(draft.sheet.pilot==originalPilot);
    draft.selected=draft.rowCount()-1;draft.confirm();
    lobby.command(2,{{"op","configure"},{"profile",draft.sheet}});
    assert(lobby.member(2).sheet.attributes==draft.sheet.attributes&&lobby.member(2).sheet.created);
@@ -39,8 +40,15 @@ int main(){
   for(int i=0;i<4;++i){
    auto manual=createSheet(Chassis(4+i),PilotKind(4+i),dice);
    manual.pilotBonusChoice=std::max(0,pilotBonusChoices(manual.pilot)-1);
-   normalizeCombatProfile(manual);finishCreation(manual);saveProfile(path,manual,"Visitor");
+   normalizeCombatProfile(manual);finishCreation(manual);
+   if(i==1){manual.repairKits=0;manual.inventory[size_t(Gear::Repair)]=0;}
+   saveProfile(path,manual,"Visitor");
+   // Simulate a saved pre-retirement ID with its existing progression.
+   Json legacy;{std::ifstream file(path);file>>legacy;}
+   legacy["sheet"]["pilot"]=4+i;
+   {std::ofstream file(path);file<<legacy;}
    auto saved=loadProfile(path);
+   assert(saved.pilot==manual.pilot&&saved.inventory==manual.inventory);
    assert(saved.attributes==manual.attributes&&saved.pilotBonusChoice==manual.pilotBonusChoice);
    visitor.command({{"op","configure"},{"profile",saved}});
    waitFor([&]{return std::any_of(visitor.session.members.begin(),visitor.session.members.end(),[&](const Member &m){return m.id==visitor.id&&m.sheet.chassis==manual.chassis;});});
@@ -48,10 +56,18 @@ int main(){
    assert(remote.pilot==manual.pilot&&remote.attributes==manual.attributes&&remote.pilotBonusChoice==manual.pilotBonusChoice);
    assert(server.session.member(visitor.id).sheet.chassis==manual.chassis);
   }
+  auto draft=createSheet(Chassis::Titan,PilotKind::Commander,dice);
+  draft.modules={Module::RetractableShield};draft.starterModule=draft.modules.front();
+  draft.equipment[RightHip]=moduleGear(draft.starterModule);
+  draft.repairKits=draft.inventory[size_t(Gear::Repair)]=0;
+  draft.credits=39;saveProfile(path,draft,"Draft");
+  auto resumed=loadProfile(path);
+  assert(!resumed.created&&resumed.modules.empty()&&resumed.credits==39&&resumed.starterModule==Module::Count);
+  assert(resumed.equipment[RightHip]==Gear::Empty&&resumed.equipment[LeftHip]==Gear::Repair&&resumed.repairKits==1);
   std::filesystem::remove(path);
  }
- assert(p.rowCount()==5);auto original=p.sheet.attributes;p.selected=0;p.edit(1);assert(p.sheet.attributes!=original);
- p.selected=1;p.edit(1);assert(p.sheet.pilot==PilotKind::Maverick);p.selected=3;p.edit(1);p.selected=4;p.confirm();assert(p.sheet.created&&p.sheet.level==1);
+ assert(p.rowCount()==4);auto original=p.sheet.attributes;p.selected=0;p.edit(1);assert(p.sheet.attributes!=original);
+ p.selected=1;p.edit(1);assert(p.sheet.pilot==PilotKind::Maverick);p.selected=3;p.confirm();assert(p.sheet.created&&p.sheet.level==1);
  auto sheet=p.sheet;p.sheet.owned[size_t(Gear::Rifle)]=2;p.sheet.inventory[size_t(Gear::Repair)]=4;for(int slot=0;slot<MountCount;++slot){p.selectedGear=int(slot<2?Gear::Rifle:Gear::Repair);if(slot==1)p.sheet.owned[size_t(Gear::Rifle)]=2;p.mount(slot);assert(p.sheet.equipment[slot]==Gear(p.selectedGear));p.mount(slot,true);assert(p.sheet.equipment[slot]==Gear::Empty);}
  for(bool host:{false,true}){
   auto count=p.rowCount(host);assert(count==11);

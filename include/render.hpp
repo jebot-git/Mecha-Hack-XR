@@ -164,7 +164,7 @@ class Renderer {
     static void uploadModelVertices(Model&,const std::vector<float>&);
     void loadWeapons(const std::filesystem::path&);
     void drawWeapon(const WeaponAssembly&,const avp::Matrix&,float phase,int handling);
-    bool visibleWorldSphere(Vec3,float) const;
+    bool visibleViewSphere(Vec3,float) const;
     bool visibleWorld(const Model&,const avp::Matrix&) const;
     struct WorldDrawCandidate { size_t index; avp::Matrix pose; Quaternion orientation; unsigned bands; };
     std::vector<WorldDrawCandidate> worldDrawCandidates;

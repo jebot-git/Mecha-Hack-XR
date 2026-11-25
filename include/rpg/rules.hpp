@@ -7,6 +7,9 @@ namespace iron::rpg {
 using Json = nlohmann::json;
 enum class Chassis { Brawler, Scout, Striker, Titan, Auxiliary, Colossus, Hybrid, Vanguard, Count };
 enum class PilotKind { Commander, Engineer, Maverick, Quipster, Bionic, Merc, Vet, Pariah, Count };
+// Keep the retired numeric IDs readable in saved pilots and older network snapshots.
+inline constexpr int playablePilotCount=int(PilotKind::Bionic);
+PilotKind playablePilot(PilotKind);
 enum class Module {
   RocketFists,
   JumpJets,
@@ -173,9 +176,7 @@ const char *chassisPowerDescription(Chassis);
 const char *pilotId(PilotKind);
 const char *pilotName(PilotKind);
 int pilotBonusChoices(PilotKind);
-int pilotBonusAttribute(PilotKind,int choice);
 const char *pilotRoleDescription(PilotKind);
-Module chassisStarterModule(Chassis);
 const char *gearName(Gear);
 struct Dice {
   uint32_t state = 1;

@@ -33,8 +33,20 @@ Arm solveArm(const HandPose& pose,int hand,Vec3 eye,float yaw,const ArmRig& rig,
     if(rest){
         // A rested controller places the mecha wrist at its authored socket.
         // Controller displacement and recoil then move the authoritative IK target.
-        const Vec3 neutralController{side*.40f,-.13f,-.75f};
-        local=attackDirection(rest->wrist+local-neutralController*rig.trackingScale,0,handYawLimit);
+        const auto neutralController=cockpitNeutralController(hand);
+        auto travel=local-neutralController*rig.trackingScale;
+        // A real controller can retract all the way to the pilot's chest.
+        // Compress that last portion of travel outside the canopy, while
+        // preserving the full forward reach used for parries and bracing.
+        if(travel.z>.60f){
+            const float extra=travel.z-.60f;
+            travel.z=.60f+.60f*extra/(.60f+extra);
+        }
+        local=rest->wrist+travel;
+        local.z=std::min(local.z,-2.8f);
+        const float nearCanopy=std::clamp(std::max((local.z+4.1f)/1.3f,(pose.position.z+.30f)/.30f),0.f,1.f);
+        if(nearCanopy>0)local.x=side*std::max(side*local.x,1.75f*nearCanopy);
+        local=attackDirection(local,0,handYawLimit);
         const Vec3 restAxis=unit(rest->wrist-rest->shoulder);
         const Vec3 upper=rest->elbow-rest->shoulder;
         pole=unit(upper-restAxis*dot(upper,restAxis),pole);

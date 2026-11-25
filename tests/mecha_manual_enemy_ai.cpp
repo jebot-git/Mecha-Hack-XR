@@ -40,10 +40,28 @@ int main(){try{
  {
   auto game=deployed(index("veriform_mecha"));game.member(1).body.position=game.world.targets[0].origin+Vec3{0,0,100};game.step(.01f);
   require(game.enemies[0].transformed,"Veriform did not switch to interceptor at range");
+  auto &airframe=game.world.targets[0];
+  require(airframe.ai.airborne,"Flight model was classified as ground traffic");
+  const auto floor=game.world.surfaceHeight(airframe.origin.x,airframe.origin.z);
+  airframe.origin.y=floor+fighterCruiseHeight;
+  game.world.updateEnemyBounds(airframe);
+  require(airframe.origin.y>floor+30,"Flight bounds snapped the fighter to the ground");
   Session replica;replica.readSnapshot(game.snapshot());require(replica.world.targets[0].generatorAsset==game.world.targets[0].generatorAsset,"Transformed model did not replicate");
   game.member(1).body.position=game.world.targets[0].origin+Vec3{0,0,12};game.step(.01f);
   require(!game.enemies[0].transformed,"Veriform did not return to mecha for close engagement");
   replica.readSnapshot(game.snapshot());require(replica.world.targets[0].generatorAsset==game.world.targets[0].generatorAsset,"Same-count snapshot retained stale transformed model");
+ }
+ // Start on a clear outdoor pad and climb under the ordinary mission AI.
+ for(const char *id:{"veriform_mecha","interceptor"}){
+  auto game=deployed(index(id));
+  game.world.proceduralTerrain=false;game.world.editGeometry().terrain.clear();game.world.indexTerrain();
+  game.world.interiorRegions.clear();game.world.waterRegions.clear();
+  for(size_t i=1;i<game.world.targets.size();++i)game.world.targets[i].active=false;
+  auto &pilot=game.member(1);pilot.body.position={0,0,100};pilot.sheet.hp=pilot.sheet.maxHp=10000;
+  auto &body=game.world.targets[0];body.origin={0,0,0};game.world.updateEnemyBounds(body);
+  for(int n=0;n<240;++n)game.step(1.f/60);
+  const float clearance=body.origin.y-game.world.walkableHeight(body.origin);
+  if(clearance<30)throw std::runtime_error(std::string(id)+" outdoor cruise clearance "+std::to_string(clearance));
  }
  // Conventional submersibles must actually traverse the deep facility,
  // using the ordinary swept wall collision path rather than six-metre wading.

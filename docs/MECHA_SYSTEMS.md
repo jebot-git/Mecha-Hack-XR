@@ -37,16 +37,12 @@ Pilot roles affect tracked combat and mobility through the pilot’s attributes.
 | Engineer | System +2, Mobility +1 | Better subsystem checks and faster movement |
 | Maverick | Mobility +2, Power +1 | Faster movement, quicker boost recharge and tighter weapon dispersion |
 | Quipster | Presence +2, System +1 | Shorter stuns and sensor blindness |
-| Bionic | System +2, Mobility +1 | Better subsystem checks and faster movement |
-| Merc | Power +2, Presence +1 | Tighter weapon dispersion and shorter stuns |
-| Vet | Power +1, Presence +1, Mobility or System +1 | Select the third attribute during preparation |
-| Pariah | Presence +2, Power, Mobility or System +1 | Select the second attribute during preparation |
 
-Chassis and equipment abilities use their own controls. The Mission Manual roles use only their attribute bonuses (pp. 74–75).
+Chassis and equipment abilities use their own controls.
 
 ## Mission Manual chassis
 
-The four additional frames follow the Mission Manual (pp. 76–79). A right-grip press operates the chassis power with the same input as the core frames. Weapon names, starter modules, hull values and heat use the game's existing equipment and realtime rules.
+The four additional frames follow the Mission Manual (pp. 76–79). A right-grip press operates the chassis power with the same input as the core frames. Weapon names, hull values and heat use the game's existing equipment and realtime rules.
 
 | Chassis | Hit / damage / reactor dice | Chassis power |
 | --- | --- | --- |

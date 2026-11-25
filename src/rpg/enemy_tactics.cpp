@@ -50,7 +50,7 @@ std::optional<Vec3> openFiringPosition(const Session &session,size_t actor,Vec3 
   const float step=std::clamp(std::max(body.half.x,body.half.z)*1.3f+4.f,8.f,16.f);
   const float preferred=actor%2?1.f:-1.f;
   const auto traits=combatSpec(session.enemies[actor]).traits;
-  const bool airborne=(traits&(Flying|Hover))||((traits&Submersible)&&session.world.waterDepthAt(body.origin)>0);
+  const bool airborne=session.enemies[actor].transformed||(traits&(Flying|Hover))||((traits&Submersible)&&session.world.waterDepthAt(body.origin)>0);
   // Test both sides and a second width before committing the navigation cache.
   for(float width:{step,step*2})for(float sign:{preferred,-preferred}){
     auto position=body.origin+lateral*(sign*width);

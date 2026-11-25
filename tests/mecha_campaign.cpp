@@ -158,8 +158,8 @@ int main(){
     assert(sheet.credits==before.credits&&sheet.inventory[size_t(Gear::Scrap)]==before.inventory[size_t(Gear::Scrap)]);
     assert(sheet.weaponCopies.empty()&&sheet.owned[size_t(Gear::RifleRare)]==0&&!sheet.ownedArmor[int(Armor::Heavy)]);
     assert((sheet.fittedCopies==std::array<int,2>{-1,-1}));
-    assert(sheet.inventory[size_t(Gear::Repair)]==0&&sheet.oneShotStock[size_t(Module::ChestBeam)]==0);
-    assert(sheet.modules==std::vector{Module::NanoShroud}&&sheet.equipment[RightHip]==Gear::NanoShroud);
+    assert(sheet.inventory[size_t(Gear::Repair)]==1&&sheet.oneShotStock[size_t(Module::ChestBeam)]==0);
+    assert(sheet.modules.empty()&&sheet.equipment[RightHip]==Gear::Empty);
   }
   auto directory=std::filesystem::temp_directory_path()/("mecha-campaign-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
   struct Cleanup{std::filesystem::path p;~Cleanup(){std::filesystem::remove_all(p);}}cleanup{directory};ProfileStore store(directory);
@@ -232,7 +232,7 @@ int main(){
   assert(rejects([&]{resumedParty.playerCommand(1,{{"op","debrief"},{"chassis",999}});}));
   assert(!returning.campaignAwarded&&Json(returning.sheet)==Json(veteran));
   resumedParty.playerCommand(1,{{"op","debrief"},{"chassis",int(Chassis::Colossus)}});
-  assert(returning.sheet.chassis==Chassis::Colossus&&returning.sheet.starterModule==chassisStarterModule(Chassis::Colossus));
+  assert(returning.sheet.chassis==Chassis::Colossus&&returning.sheet.starterModule==Module::Count);
   assert(returning.sheet.pilot==veteran.pilot&&returning.sheet.creationSeed==veteran.creationSeed&&
          returning.sheet.record==veteran.record&&returning.sheet.credits==veteran.credits&&returning.sheet.created==veteran.created);
   assert(returning.sheet.campaignAwards==veteran.campaignAwards+1&&returning.sheet.maxReactor==chassisInfo(Chassis::Colossus).reactor);

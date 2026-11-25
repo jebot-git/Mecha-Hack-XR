@@ -263,7 +263,7 @@ struct World : Pilot {
     int rpgInsertion=0;
     float rpgInsertionTime=0,rpgInsertionGround=0;
     std::array<std::string,MountCount> rpgReadouts{};
-    int rpgAp=0,rpgMaxAp=0,rpgReactor=0,rpgPhase=0;
+    int rpgShield=0,rpgAp=0,rpgMaxAp=0,rpgReactor=0,rpgPhase=0;
     std::string rpgPilotStatus;
     float rpgHeat=0,rpgArmor=100;bool rpgOverheated=false;
     EnvironmentSettings environment;
