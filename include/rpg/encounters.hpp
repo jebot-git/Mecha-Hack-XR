@@ -5,6 +5,12 @@ class Session;
 struct MissionRecipe;
 enum class EncounterRole {Patrol,Garrison,Ambush,Assault,AirWing,Pack};
 enum class FactionRole { Contract, Neutral, Allied };
+// Host-only shared geometry and timings for a surface unit attack run.
+struct FormationRun {
+  Vec3 axis{},mark{};
+  float breakAt=0,regroupAt=0;
+  bool left=false;
+};
 struct EncounterGroup {
   int role=0,site=-1,cursor=0;
   std::vector<int> actors;
@@ -15,6 +21,7 @@ struct EncounterGroup {
   int faction=-1;
   bool withdrawing=false,retaliating=false;
   std::array<float,3> withdrawal{};
+  FormationRun run;
 };
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(EncounterGroup,role,site,cursor,actors,route,alert,rewardPlaced,factionRole,faction,withdrawing,retaliating,withdrawal)
 struct DungeonRoom {

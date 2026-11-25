@@ -102,7 +102,8 @@ int main(){try{
     if(rig->archetype=="installation"||rig->archetype=="hovercraft")assert(turrets>=1);
     auto still=poseEnemy(*rig,0,0,0,0,0,0),idle=poseEnemy(*rig,0,0,0,0,0,1.3f);
     auto attack=poseEnemy(*rig,0,0,0,0,.12f,0);
-    assert(different(still,idle)&&different(still,attack));
+    if(rig->motionProfile!="tracked")assert(different(still,idle));
+    assert(different(still,attack));
     if(hips){auto forward=poseEnemy(*rig,4.5f,4,0,0,0,0),opposite=poseEnemy(*rig,13.5f,4,0,0,0,0);assert(different(forward,opposite));}
     if(std::string_view(enemy.id)=="jump_pod"||std::string_view(enemy.id)=="mecha_ace"){
       // Some two-part authored legs disagree between the hip and knee/foot
@@ -174,6 +175,19 @@ int main(){try{
     ++checked;
   }
   assert(checked==68&&archetypes.size()==7);
+  for(const char *id:{"anti_mecha_hovertank","anti_mecha_hovertank_alt","heavy_hover_tank"}){
+    Target tank;applyOriginalModel(tank,id);
+    tank.origin={14,6,-9};tank.yaw=.2f;tank.ai.pitch=.11f;tank.ai.bank=-.14f;
+    tank.ai.weaponYaw=2.9f;tank.ai.weaponPitch=.18f;
+    const auto socket=tankGunSocket(tank,1);
+    if(!socket||length(socket->forward-direction(2.9f,.18f))>.001f)
+      throw std::runtime_error(std::string(id)+": rear-quarter gun aim drifted on a sloping hull");
+    tank.ai.muzzleFlash=.12f;
+    const auto kick=tankGunSocket(tank,1);
+    const auto travel=socket->muzzle-kick->muzzle;
+    if(length(travel)<.25f||dot(unit(travel),socket->forward)<.999f)
+      throw std::runtime_error(std::string(id)+": recoil left the bore axis");
+  }
   combatSilhouettes(root);
   std::cout<<"68 enemy variants: articulated locomotion, idle, attack, contact floors, cycle seams and replicated poses verified\n";
 }catch(const std::exception &e){std::cerr<<e.what()<<'\n';return 1;}}

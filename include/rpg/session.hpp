@@ -28,6 +28,7 @@ struct VehiclePass {
   float timer=0;
   int pulse=0;
   bool reverse=false;
+  FormationRun soloRun;
 };
 enum class HeavyPattern { None, Crossfire, MissileCurtain, Beam, Weave, Loft };
 struct HeavyAttack {

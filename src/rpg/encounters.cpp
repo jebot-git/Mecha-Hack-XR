@@ -37,7 +37,7 @@ std::vector<std::array<float,3>> patrolRoute(const World &w,Vec3 anchor,const En
         bool passable=true;
         for(int actor:actors){const auto &unit=combatSpec(session.enemies[size_t(actor)]);
           auto a=w.interiorNavNodes[size_t(walk.back())],b=w.interiorNavNodes[size_t(to)];
-          bool airborne=(unit.traits&(Flying|Hover))!=0;
+          bool airborne=!antiMechaInfantry(unit)&&(unit.traits&(Flying|Hover))!=0;
           if(airborne){float height=flying(unit)?22.f:3.f;a.y+=height;b.y+=height;}
           if(!enemyNavigationPassage(w,size_t(actor),a,b,airborne,false)){passable=false;break;}
         }
@@ -156,13 +156,13 @@ void planMissionEncounters(Session &s){
           if(p.x-radius<b[0]+2||p.x+radius>b[2]-2||p.z-radius<b[1]+2||p.z+radius>b[3]-2)continue;}
         if(flying(unit))p.y+=22;
         if(!clearPosition(s.world,p,radius,i))continue;
-        if(!(unit.traits&(Flying|Hover|Submersible))&&s.world.waterDepthAt(p,radius)>s.world.waterTraversalLimitAt(p,radius))continue;
+        if((antiMechaInfantry(unit)||!(unit.traits&(Flying|Hover|Submersible)))&&s.world.waterDepthAt(p,radius)>s.world.waterTraversalLimitAt(p,radius))continue;
         body.origin=p;placed=true;
       }
       if(!placed){
         // A large footprint may not fit a room or the anchor. Fall back to the
         // existing validated floor search rather than create an obstructed actor.
-        body.origin=missionNavigablePosition(s.world,home,radius,i,(unit.traits&(Flying|Hover|Submersible))?-1:s.world.maxWadeDepth);
+        body.origin=missionNavigablePosition(s.world,home,radius,i,(!antiMechaInfantry(unit)&&(unit.traits&(Flying|Hover|Submersible)))?-1:s.world.maxWadeDepth);
       }
       body.active=true;s.world.updateEnemyBounds(body);enemy.anchorX=body.origin.x;enemy.anchorZ=body.origin.z;
     }
@@ -398,7 +398,7 @@ void Session::patrolEnemy(size_t index,float dt,EnemyNavigationBudget *budget){
   if(spec.kind==EnemyKind::Installation)return;
   const bool fighter=e.transformed||std::string_view(spec.id)=="interceptor";
   const bool swimming=(spec.traits&Submersible)&&biome==2&&world.waterDepthAt(body.origin)>0;
-  const bool airborne=fighter||(spec.traits&(Flying|Hover))!=0||swimming;
+  const bool airborne=fighter||(!antiMechaInfantry(spec)&&(spec.traits&(Flying|Hover))!=0)||swimming;
   const auto movePatrol=[&](Vec3 displacement){
     if(airborne){
       const auto ahead=body.origin+displacement;
@@ -448,7 +448,7 @@ void Session::patrolEnemy(size_t index,float dt,EnemyNavigationBudget *budget){
   }
   auto delta=destination-body.origin;delta.y=0;
   if(length(delta)<5){body.ai.velocity={};holdPosition();return;}
-  const bool tracked=groundDriveTank(spec);
+  const bool tank=groundDriveTank(spec);
   body.ai.airborne=airborne;
   const float speed=airborne?8.f:4.f*environmentCatalog()[biome].speed;
   if(spec.kind==EnemyKind::SmallKaiju&&!e.transformed&&
@@ -465,11 +465,10 @@ void Session::patrolEnemy(size_t index,float dt,EnemyNavigationBudget *budget){
     const auto away=body.origin-home;
     if(length(away)>=29&&dot(away,heading)>0)heading=unit(home-body.origin);
   }
-  const float desiredYaw=std::atan2(-heading.x,-heading.z);
-  body.yaw=tracked?wrap(body.yaw+std::clamp(wrap(desiredYaw-body.yaw),-1.75f*dt,1.75f*dt)):desiredYaw;
+  auto displacement=heading*(speed*dt);
+  if(tank)displacement=tankDriveStep(world,index,heading,heading,navigation[index].priorDriveVelocity,speed,dt,hoverDriveTank(spec),false);
+  else body.yaw=std::atan2(-heading.x,-heading.z);
   body.ai.weaponYaw=body.yaw;world.updateEnemyBounds(body);
-  const auto forward=direction(body.yaw,0);
-  auto displacement=tracked?forward*(speed*dt*std::max(0.f,dot(heading,forward))):heading*(speed*dt);
   movePatrol(displacement);
 }
 void Session::stepDungeonSites(){

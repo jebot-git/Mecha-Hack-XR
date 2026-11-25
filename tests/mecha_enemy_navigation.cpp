@@ -15,6 +15,18 @@ World base(){World w;w.targets.clear();w.position={120,0,120};w.movementBounds={
 }
 int main(){try{
  {
+  auto w=base();auto &tank=w.targets[0];
+  const float dt=.05f;
+  auto side=tankDriveStep(w,0,{1,0,0},{0,0,-1},{},8,dt,true,false);
+  check(side.x>0&&side.x<8*dt&&std::abs(tank.yaw)<.001f,"Hover skirt cannot build lateral thrust facing its target");
+  tank.ai.velocity={};tank.yaw=0;
+  auto pivot=tankDriveStep(w,0,{1,0,0},{1,0,0},{},8,dt,false,false);
+  check(length(pivot)<.001f&&tank.yaw<0&&tank.yaw>-.1f,"Treads failed to pivot before moving sideways");
+  tank.yaw=0;
+  auto reverse=tankDriveStep(w,0,{0,0,1},{0,0,-1},{},8,dt,false,true);
+  check(reverse.z>0&&reverse.z<8*dt&&std::abs(tank.yaw)<.001f,"Tracked egress did not reverse under traction");
+ }
+ {
   auto w=base();
   w.rpgPrototype=true;w.proceduralTerrain=true;w.editGeometry().terrain.clear();
   // A continuous bank exercises independent pitch and roll; neither can

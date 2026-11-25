@@ -70,6 +70,11 @@ struct EnemySpec {
 std::span<const EnemySpec> enemyCatalog();
 const EnemySpec &enemySpec(size_t);
 const char *enemyModelId(size_t);
+inline bool hoverDriveTank(const EnemySpec &spec){return std::string_view(spec.id)=="heavy_hover_tank";}
+inline bool antiMechaInfantry(const EnemySpec &spec){
+  const std::string_view id=spec.id;
+  return id=="anti_mecha_strike_team"||id=="anti_mecha_destruction_squad";
+}
 inline bool groundDriveTank(const EnemySpec &spec){
   const std::string_view id=spec.id;
   return id=="anti_mecha_hovertank"||id=="heavy_hover_tank";

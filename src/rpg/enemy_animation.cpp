@@ -1,4 +1,5 @@
 #include "rpg/enemy_animation.hpp"
+#include "rpg/original_assets.hpp"
 #include "walker_gait.hpp"
 #include "simulation.hpp"
 #include <nlohmann/json.hpp>
@@ -14,6 +15,7 @@ std::map<std::filesystem::path,RigLibrary> libraries;
 constexpr const char *rigFiles[]={"voidmaw-proportion-rigs.json","story-enemy-rigs.json","enemy-reference-rigs.json","enemy-redesign-rigs.json","mecha-redesign-enemy-rigs.json","enemy-animation-rigs.json","manual-animation-rigs.json"};
 std::mutex rigMutex;
 constexpr const char *roles[]={"rigid","torso","head","hip","knee","foot","arm","tail","wing","rotor","turret","barrel","suspension","jaw","scanner"};
+constexpr float maxGunElevation=.6f;
 float finite(float value){return std::isfinite(value)?value:0;}
 
 Quaternion alignLimb(Vec3 from,Vec3 to){
@@ -243,6 +245,9 @@ static const RigLibrary* loadRigLibrary(const std::filesystem::path& filename){
           part.ranges.emplace_back(a[0],a[1]);count+=a[1];
         }
         if(!count)throw std::runtime_error("Empty enemy animation part");
+        if(rig.turretBarrel<0&&(rig.motionProfile=="tracked"||rig.motionProfile=="hover")&&
+           part.joint==EnemyJoint::Barrel&&part.parent>=0&&rig.parts[size_t(part.parent)].joint==EnemyJoint::Turret)
+          rig.turretBarrel=int(rig.parts.size());
         rig.parts.push_back(std::move(part));rig.drawRanges.emplace_back(offset,count);offset+=count;
       }
       if(offset!=rig.vertices||covered.size()!=rig.vertices/3)throw std::runtime_error("Enemy animation omits geometry");
@@ -292,7 +297,9 @@ WalkerPose poseEnemy(const EnemyRig &rig,float phase,float speed,float aimYaw,fl
   // Keep finite extreme timestamps from overflowing oscillator multipliers.
   const bool clinging=voidmaw.phase==VoidmawPose::Cling;
   const double animationTime=clinging?0:seconds;
-  aimYaw=std::clamp(wrap(finite(aimYaw)),-pi/2,pi/2);aimPitch=std::clamp(finite(aimPitch),-.6f,.6f);
+  aimYaw=wrap(finite(aimYaw));
+  if(rig.turretBarrel<0)aimYaw=std::clamp(aimYaw,-pi/2,pi/2);
+  aimPitch=std::clamp(finite(aimPitch),-maxGunElevation,maxGunElevation);
   recoil=std::pow(std::clamp(finite(recoil)/.12f,0.f,1.f),1.6f);
   float moving=std::clamp(std::abs(speed)/2,0.f,1.f),cycle=std::remainder(phase,18.f)*2*pi/18;
   if(clinging){moving=0;cycle=0;}
@@ -453,6 +460,7 @@ WalkerPose poseEnemy(const EnemyRig &rig,float phase,float speed,float aimYaw,fl
       if(flight){q=angles(0,-moving*.025f+retreat*.19f-brace*.38f+kick*.65f+wind*.16f-slash*.24f,
                          std::clamp(aimYaw*.25f,-.22f,.22f)+retreat*.12f+twist*.19f);shift.y=std::sin(animationTime*.8f)*.025f;}
       else if(tracked){q={};}
+      else if(hover&&rig.turretBarrel>=0){shift.y=std::sin(animationTime*1.2f)*.065f;}
       else if(hover){q=angles(0,-moving*.018f+retreat*.15f-brace*.30f+kick*.55f,std::clamp(aimYaw*.1f,-.08f,.08f));shift.y=std::sin(animationTime*1.2f)*.035f;}
       else if(naval){q=angles(0,std::sin(animationTime*.45f)*.008f,std::sin(animationTime*.6f)*.012f);shift.y=std::sin(animationTime*.5f)*.025f;}
       else if(rig.motionProfile=="stationary"){q={};}
@@ -569,11 +577,22 @@ WalkerPose poseEnemy(const EnemyRig &rig,float phase,float speed,float aimYaw,fl
       break;
     case EnemyJoint::Rotor:q=hinge(std::remainder(animationTime*18+p.phase,double(2*pi)),'y');break;
     case EnemyJoint::Turret:
+      if(rig.turretBarrel>=0){
+        yaw=aimYaw;
+        q=angles(yaw-inheritedYaw);
+        break;
+      }
       yaw=aimYaw;pitch=aimPitch*.2f;
       q=angles(yaw-inheritedYaw+idle*.02f,pitch-inheritedPitch-recoil*.045f-kick*.5f-rangedWind*.06f+
                aim*.035f+wind*.11f-slash*.19f);
       break;
     case EnemyJoint::Barrel:
+      if(int(i)==rig.turretBarrel){
+        pitch=aimPitch;
+        q=angles(0,pitch-inheritedPitch);
+        shift=rotate(q,{0,0,recoil*std::clamp((p.high.z-p.low.z)*.12f,.08f,.62f)});
+        break;
+      }
       if(!(mechanical&&p.parent>=0&&rig.parts[size_t(p.parent)].joint==EnemyJoint::Arm&&std::max({wind,slash,guardPose})>0)){
         yaw=aimYaw;pitch=aimPitch;
         q=angles(yaw-inheritedYaw,pitch-inheritedPitch-recoil*.075f-kick*.6f);
@@ -698,13 +717,41 @@ std::optional<EnemySocket> voidmawBiteSocket(const EnemyRig &rig,const Target &b
   return socket;
 }
 
+bool traverseTankGun(Target &body,Vec3 target,float dt){
+  const auto &gravity=body.ai.gravity;
+  const auto center=body.center+gravity.up()*(body.ai.localHalf.y*.2f);
+  const auto ray=rotate(gravityInverse(gravity.frame),target-center);
+  const float yaw=std::atan2(-ray.x,-ray.z),pitch=std::atan2(ray.y,std::hypot(ray.x,ray.z));
+  const float turn=wrap(yaw-body.ai.weaponYaw);
+  body.ai.weaponYaw=wrap(body.ai.weaponYaw+std::clamp(turn,-2.7f*dt,2.7f*dt));
+  body.ai.weaponPitch+=std::clamp(pitch-body.ai.weaponPitch,-1.6f*dt,1.6f*dt);
+  const auto local=rotate(gravityInverse(angles(body.yaw,body.ai.pitch,body.ai.bank)),ray);
+  const float elevation=std::atan2(local.y,std::hypot(local.x,local.z));
+  return std::abs(elevation)<=maxGunElevation&&std::abs(wrap(yaw-body.ai.weaponYaw))<.035f&&
+         std::abs(pitch-body.ai.weaponPitch)<.035f;
+}
+
+std::optional<GunSocket> tankGunSocket(const Target &body,float seconds){
+  if(!body.mesh)return {};
+  const auto *rig=enemyAnimationRig(originalAssetRoot()/"models",body.generatorAsset,body.mesh->size());
+  if(!rig||rig->turretBarrel<0)return {};
+  const auto orientation=compose(body.ai.gravity.frame,angles(body.yaw,body.ai.pitch,body.ai.bank));
+  const auto pose=poseLiveEnemy(*rig,body,orientation,seconds);
+  const size_t index=size_t(rig->turretBarrel);
+  const auto &barrel=rig->parts[index];
+  const auto &joint=pose.parts[index];
+  const Vec3 tip{barrel.pivot.x,barrel.pivot.y,barrel.low.z};
+  return GunSocket{body.origin+rotate(orientation,animatedPoint(joint,tip)),
+                   rotate(compose(orientation,joint.orientation),{0,0,-1})};
+}
+
 WalkerPose poseLiveEnemy(const EnemyRig &rig,const Target &body,Quaternion orientation,float seconds){
   const auto inverse=gravityInverse(orientation);
   const auto &ai=body.ai;
   float yaw=wrap(ai.weaponYaw-body.yaw),pitch=ai.weaponPitch;
-  if(rig.motionProfile=="tracked"){
+  if(rig.motionProfile=="tracked"||rig.turretBarrel>=0){
     // Suspension follows the ground, while the gun retains its world-space aim.
-    const auto aim=rotate(inverse,direction(ai.weaponYaw,ai.weaponPitch));
+    const auto aim=rotate(inverse,rotate(ai.gravity.frame,direction(ai.weaponYaw,ai.weaponPitch)));
     yaw=std::atan2(-aim.x,-aim.z);
     pitch=std::atan2(aim.y,std::hypot(aim.x,aim.z));
   }

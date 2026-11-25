@@ -6,6 +6,8 @@ struct EnemyNavigationBudget {int edgeChecks=32, terrainSamples=256;};
 // Host-only, disposable route cache. No hidden player data or RNG is required.
 struct EnemyNavigationState {
   Vec3 waypoint{}, destination{};
+  // Last accepted velocity before the host clears this tick's animation motion.
+  Vec3 priorDriveVelocity{};
   float remaining=0, recoveryClock=0;
   std::vector<Vec3> path;
   size_t cursor=0;
@@ -25,6 +27,9 @@ struct EnemyNavigationState {
 Vec3 enemyNavigationDirection(const World &,size_t actor,Vec3 desiredDirection,
                               Vec3 destination,float speed,float dt,bool airborne,
                               EnemyNavigationState &,EnemyNavigationBudget *budget=nullptr);
+// Turn a navigable horizontal heading into surface-following chassis motion.
+Vec3 tankDriveStep(World &,size_t actor,Vec3 heading,Vec3 facing,Vec3 priorVelocity,float speed,float dt,
+                   bool hoverDrive,bool allowReverse);
 // Uses the same compressed collision footprint as World::moveEnemy. Dynamic
 // actors are considered for local steering, but do not permanently sever routes.
 bool enemyNavigationPassage(const World &,size_t actor,Vec3 from,Vec3 to,

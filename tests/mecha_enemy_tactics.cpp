@@ -450,6 +450,51 @@ int main(){try{
  auto countEffects=[](const Session &s,unsigned id){
    return std::count_if(s.world.effects.begin(),s.world.effects.end(),[&](const auto &fx){return fx.model==id;});
  };
+ // Paired gunners and anti-mecha squads share a firing approach, peel off
+ // to one flank, and re-enter on the new bearing. Exercise both infantry kits.
+ for(auto ids:{std::array{"anti_mecha_hovertank","anti_mecha_strike_team"},
+               std::array{"heavy_hover_tank","anti_mecha_destruction_squad"}})for(bool wave:{false,true}){
+   auto s=fixture(2);
+   s.world.rpgPrototype=true;s.phase=Phase::Combat;s.mission.openerTime=100;
+   // Capture remains active while the target is healthy, including when the
+   // two actors belong exclusively to an ambient reinforcement wave.
+   s.mission.recipe.objective=9;s.mission.recipe.opener=5;s.members[1].hiddenRemaining=1000;
+   s.members[0].body.position={0,0,38};s.members[0].sheet.hp=1000;
+   if(!wave)s.mission.groups.emplace_back().actors={0,1};
+   for(size_t i=0;i<2;++i){
+     auto &enemy=s.enemies[i];enemy.group=wave?-1:0;enemy.spec=index(ids[i]);
+     enemy.ambient=wave;enemy.ambientWave=wave?1:0;
+     s.mission.recipe.enemies.push_back(enemy.spec);
+     auto &body=s.world.targets[i];body.origin={i?-11.f:0.f,0,i?-20.f:-16.f};
+     body.center=body.origin+Vec3{0,4,0};body.yaw=pi;body.ai.weaponYaw=pi;
+   }
+   Vec3 firstAxis{};int passes=0;float previousBreak=0;
+   std::array<bool,2> fired{},withdrew{};
+   for(int tick=0;tick<1000&&passes<2;++tick){
+     s.step(.025f);
+     const auto &run=wave?s.enemies[0].vehiclePass.soloRun:s.mission.groups[0].run;
+     if(run.breakAt>0&&run.breakAt!=previousBreak){
+       ++passes;previousBreak=run.breakAt;
+       if(passes==1)firstAxis=run.axis;
+       else require(dot(firstAxis,run.axis)<.995f,"Second group pass retraced the original attack bearing");
+     }
+     for(size_t i=0;i<2;++i){
+       const auto &body=s.world.targets[i];
+       require(!body.ai.airborne&&std::abs(body.origin.y)<.01f,"Formation member bounced off level terrain");
+       fired[i]|=s.enemies[i].vehiclePass.pulse>0;
+       withdrew[i]|=s.enemies[i].vehiclePass.phase==VehiclePassPhase::Egress&&
+                    dot(body.ai.velocity,firstAxis)<-2.f;
+     }
+   }
+   if(passes!=2||!fired[0]||!fired[1]||!withdrew[0]||!withdrew[1]){
+     std::cerr<<ids[0]<<" wave="<<wave<<" passes="<<passes<<" fired="<<fired[0]<<fired[1]
+              <<" withdrew="<<withdrew[0]<<withdrew[1];
+     for(auto &body:s.world.targets)std::cerr<<" pos=("<<body.origin.x<<","<<body.origin.z<<")";
+     std::cerr<<'\n';
+   }
+   require(passes==2&&fired[0]&&fired[1]&&withdrew[0]&&withdrew[1],
+           "Mixed surface formation failed to attack, withdraw and begin another pass");
+ }
  {
    auto s=attackFixture("anti_mecha_hovertank",3.f);
    for(int tick=0;tick<60&&s.enemies[0].vehiclePass.phase!=VehiclePassPhase::Warning;++tick)s.step(.025f);

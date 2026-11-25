@@ -147,6 +147,38 @@ bool enemyNavigationPassage(const World &w,size_t actor,Vec3 from,Vec3 to,bool a
   }
   return true;
 }
+Vec3 tankDriveStep(World &world,size_t actor,Vec3 heading,Vec3 facing,Vec3 priorVelocity,float speed,float dt,
+                   bool hoverDrive,bool allowReverse){
+  auto &body=world.targets[actor];
+  heading=unit({heading.x,0,heading.z},{});
+  if(length(heading)<.01f||dt<=0)return {};
+  const bool reverse=!hoverDrive&&allowReverse&&dot(heading,direction(body.yaw,0))<-.55f;
+  const auto nose=hoverDrive?unit({facing.x,0,facing.z},heading):heading*(reverse?-1.f:1.f);
+  const float turn=wrap(std::atan2(-nose.x,-nose.z)-body.yaw);
+  const float turnStep=(hoverDrive?1.12f:1.75f)*dt;
+  body.yaw=wrap(body.yaw+std::clamp(turn,-turnStep,turnStep));
+  world.updateEnemyBounds(body);
+  const auto forward=direction(body.yaw,0);
+  const Vec3 prior{priorVelocity.x,0,priorVelocity.z};
+  Vec3 step;
+  if(hoverDrive){
+    const auto change=heading*speed-prior;
+    step=(prior+unit(change,{})*std::min(length(change),dt*14.f))*dt;
+  }else{
+    const float traction=std::clamp((dot(forward,nose)-.45f)/.55f,0.f,1.f);
+    const float wanted=speed*traction*(reverse?-.85f:1.f);
+    const float rolling=dot(forward,prior);
+    const float acceleration=std::abs(wanted)>std::abs(rolling)?32.f:44.f;
+    step=forward*((rolling+std::clamp(wanted-rolling,-dt*acceleration,dt*acceleration))*dt);
+  }
+  if(length(step)>.0001f&&!enemyNavigationPassage(world,actor,body.origin,body.origin+step,false,true)){
+    // Shed drift at an obstruction and acquire the planner's clear tangent.
+    if(!hoverDrive)return {};
+    step=heading*(std::min(speed,dt*14.f)*dt);
+    if(!enemyNavigationPassage(world,actor,body.origin,body.origin+step,false,true))return {};
+  }
+  return step;
+}
 Vec3 enemyNavigationDirection(const World &w,size_t actor,Vec3 desired,Vec3 destination,float speed,float dt,bool airborne,EnemyNavigationState &state,EnemyNavigationBudget *sharedBudget){
   if(actor>=w.targets.size()||!finite(desired)||!finite(destination)||!std::isfinite(speed)||speed<=0||!std::isfinite(dt)||dt<=0)return {};
   desired.y=0;if(planar(desired)<.0001f){state.path.clear();state.searching=false;return {};}

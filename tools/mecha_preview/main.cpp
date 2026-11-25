@@ -34,11 +34,12 @@ static void capture(const std::filesystem::path& path,int width,int height) {
 #include "terrain_gallery.hpp"
 #include "crossings.hpp"
 #include "weather_fall.hpp"
+#include "tank_formation.hpp"
 int main(int argc,char** argv) {try {
     std::filesystem::path assets=originalAssetRoot(),out="artifacts/validation/native-gallery";
     std::filesystem::path environmentCatalogPath;
     bool crossings=false,weatherFall=false,cockpitFamilies=false,liveInteriors=false,weaponWorkings=false;
-    bool terrainStudy=false,voidmaw=false,surfaceGravity=false,coverKit=false,arsenal=false,vehicleAttacks=false;
+    bool terrainStudy=false,voidmaw=false,surfaceGravity=false,coverKit=false,arsenal=false,tankFormation=false,vehicleAttacks=false;
     bool motionEffects=false,encounterReactor=false,combatSky=false,enemyEffects=false,menus=false,referenceRefinement=false,destruction=false,skyline=false,landscapes=false,encounters=false,enemyRedesign=false,redesign=false,manualAssets=false,expansion=false,maps=false,openers=false,materials=false,injuries=false,vehicles=false,reticles=false;
     for(int i=1;i<argc;++i) {
         std::string flag=argv[i];
@@ -61,6 +62,7 @@ int main(int argc,char** argv) {try {
         if(flag=="--enemy-redesign"){enemyRedesign=true;continue;}
         if(flag=="--voidmaw"){voidmaw=true;continue;}
         if(flag=="--surface-gravity"){surfaceGravity=true;continue;}
+        if(flag=="--tank-formation"){tankFormation=vehicleAttacks=true;continue;}
         if(flag=="--vehicle-attacks"){vehicleAttacks=true;continue;}
         if(flag=="--arsenal"){arsenal=true;continue;}
         if(flag=="--cover-kit"){coverKit=true;continue;}
@@ -650,7 +652,8 @@ int main(int argc,char** argv) {try {
                 }
             }
         }
-        if(vehicleAttacks){
+        if(tankFormation)captureTankFormation(renderer,mapView,frames);
+        else if(vehicleAttacks){
             for(const auto &[id,elevation]:std::array{
                     std::pair{"anti_mecha_hovertank",3.f},std::pair{"interceptor",19.f},
                     std::pair{"bomber",32.f}}){

@@ -24,6 +24,7 @@ struct EnemyRig {
   std::vector<EnemyPart> parts;
   std::vector<std::pair<size_t,size_t>> drawRanges;
   std::string motionProfile="legacy";
+  int turretBarrel=-1; // Elevating barrel on an independently traversing vehicle mount.
   int bladeSide=0; // Long blade/axe baked into a lowered arm; zero for symmetric arms.
 };
 // Immutable authored rigid-part membership is exported alongside the mesh.
@@ -37,5 +38,8 @@ WalkerPose poseEnemy(const EnemyRig &,float phase,float speed,float aimYaw,
                       const VoidmawPoseCue &voidmaw={});
 struct EnemySocket {size_t part;Vec3 point,atImpact;};
 std::optional<EnemySocket> voidmawBiteSocket(const EnemyRig &,const Target &,float side);
+bool traverseTankGun(Target &,Vec3 target,float dt);
+struct GunSocket {Vec3 muzzle,forward;};
+std::optional<GunSocket> tankGunSocket(const Target &,float seconds);
 WalkerPose poseLiveEnemy(const EnemyRig &,const Target &,Quaternion bodyOrientation,float seconds);
 }

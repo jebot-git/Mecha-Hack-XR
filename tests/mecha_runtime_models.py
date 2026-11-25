@@ -113,6 +113,21 @@ alternates = {k + "_alt" for k in base if (authoring / "meshes" / (k + "_alt.jso
 story = {r["id"] for r in read(authoring / "story-assets.json")["assets"] if r.get("source_id") in base}
 assert kaiju.keys() == base | alternates | story and len(kaiju) == 20
 registries = [read(p)["rigs"] for p in (published / "models").glob("*rigs.json")]
+# Each published tank needs a yaw ring and an elevating barrel on that ring.
+fleet_rigs = read(study / "fleet/ground/rigs.json")["rigs"]
+hover_rigs = read(study / "vehicle/native/models/enemy-reference-rigs.json")["rigs"]
+for model in ("heavy_hover_tank", "anti_mecha_hovertank", "anti_mecha_hovertank_alt"):
+    heavy = model == "heavy_hover_tank"
+    rig = (hover_rigs if heavy else fleet_rigs)[model]
+    assert [r[model] for r in registries if model in r] == [rig], model
+    assert rig["motion_profile"] == ("hover" if heavy else "tracked"), model
+    parts = rig["parts"]
+    if heavy:
+        assert sum(part["role"] == "suspension" for part in parts) == 4, model
+    barrels = [part for part in parts if part["role"] == "barrel"]
+    assert barrels and all(part["parent"] >= 0 and parts[part["parent"]]["role"] == "turret"
+                           for part in barrels), model
+
 for model, folder in kaiju.items():
     accepted[model] = folder / (model + ".json")
     assert [r[model] for r in registries if model in r] == [read(folder / "rigs.json")["rigs"][model]], model

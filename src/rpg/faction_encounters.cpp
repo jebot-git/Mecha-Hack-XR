@@ -1,5 +1,6 @@
 #include "rpg/session.hpp"
 #include "rpg/enemy_effects.hpp"
+#include "rpg/enemy_animation.hpp"
 #include "rpg/weapon_audio.hpp"
 #include "searchlight.hpp"
 #include <algorithm>
@@ -238,12 +239,15 @@ bool Session::stepFactionWithdrawal(size_t i,float dt,EnemyNavigationBudget &bud
   const float pace=hasInjury(e.injuries,MechaInjury::Hobbled)?6.f:12.f;
   const auto heading=enemyNavigationDirection(world,i,unit(toward),goal,pace,dt,false,navigation[i],&budget);
   if(length(heading)>.01f){
-    body.yaw=std::atan2(-heading.x,-heading.z);body.ai.weaponYaw=body.yaw;
+    auto step=heading*(pace*dt);
+    if(groundDriveTank(spec))step=tankDriveStep(world,i,heading,heading,navigation[i].priorDriveVelocity,pace,dt,hoverDriveTank(spec),false);
+    else {body.yaw=std::atan2(-heading.x,-heading.z);body.ai.weaponYaw=body.yaw;}
     world.updateEnemyBounds(body);
-    moveRpgEnemy(i,heading*(pace*dt),dt,false);
+    moveRpgEnemy(i,step,dt,false);
     motion.retreat=1.f;
   }
-  if(e.fireClock>0||e.overheated)return true;
+  const bool tank=groundDriveTank(spec);
+  if((e.fireClock>0&&!tank)||e.overheated)return true;
   const auto *pilot=side->retaliating?nearbyPilot(*this,body.origin,75.f):nullptr;
   if(pilot&&!enemyCanSeeMember(*this,i,*pilot))pilot=nullptr;
   Vec3 target{};
@@ -256,13 +260,15 @@ bool Session::stepFactionWithdrawal(size_t i,float dt,EnemyNavigationBudget &bud
     if(!pilot)return true;
     targetIndex=-1;
   }
+  if(tank&&(!traverseTankGun(body,target,dt)||e.fireClock>0))return true;
   const float distance=length(target-body.center);
   const auto attack=std::find_if(spec.attacks.begin(),spec.attacks.end(),[&](const auto &a){
     return a.range>12&&a.dice>0&&distance>=a.minimum&&distance<=a.range;
   });
   if(attack==spec.attacks.end()||!enemyFiringLaneClear(*this,i,target,targetIndex))return true;
-  const auto muzzle=body.center+body.ai.gravity.up()*(body.ai.localHalf.y*.2f);
-  const auto ray=unit(target-muzzle);
+  const auto socket=tank?tankGunSocket(body,world.elapsed):std::nullopt;
+  const auto muzzle=socket?socket->muzzle:body.center+body.ai.gravity.up()*(body.ai.localHalf.y*.2f);
+  const auto ray=socket?socket->forward:unit(target-muzzle);
   Shot shot;
   shot.body.position=muzzle;shot.body.velocity=ray*70.f;shot.body.owner=int(i);
   shot.body.mount=-1;shot.body.life=attack->range/70.f;
@@ -271,7 +277,8 @@ bool Session::stepFactionWithdrawal(size_t i,float dt,EnemyNavigationBudget &bud
   for(int die=0;die<attack->dice;++die)damage+=dice.roll(attack->sides);
   shot.body.damage=float(std::max(1,damage));
   if(launch(std::move(shot))){
-    body.ai.muzzleFlash=.12f;body.ai.weaponYaw=std::atan2(-ray.x,-ray.z);
+    body.ai.muzzleFlash=.12f;
+    if(!tank)body.ai.weaponYaw=std::atan2(-ray.x,-ray.z);
     motion.play(EnemyAction::Fire,world.elapsed,.24f);
     addEffect({WeaponEffect::Sparks,muzzle,ray,Weapon::Rifle,0,1.5f,rpgEnemyKinetic});
     world.sounds.push_back({SoundEvent::Shot,int(Weapon::Rifle),muzzle});
@@ -293,8 +300,12 @@ void Session::followFactionPilots(size_t i,float dt,EnemyNavigationBudget &budge
   auto destination=pilot->body.position-unit(delta)*spacing;
   const auto heading=enemyNavigationDirection(world,i,unit(delta),destination,pace,dt,false,navigation[i],&budget);
   if(length(heading)<.01f)return;
-  body.yaw=std::atan2(-heading.x,-heading.z);body.ai.weaponYaw=body.yaw;
+  const auto &spec=combatSpec(enemies[i]);
+  auto step=heading*(pace*dt);
+  if(groundDriveTank(spec))step=tankDriveStep(world,i,heading,heading,navigation[i].priorDriveVelocity,pace,dt,hoverDriveTank(spec),false);
+  else body.yaw=std::atan2(-heading.x,-heading.z);
+  body.ai.weaponYaw=body.yaw;
   world.updateEnemyBounds(body);
-  moveRpgEnemy(i,heading*(pace*dt),dt,false);
+  moveRpgEnemy(i,step,dt,false);
 }
 }

@@ -157,7 +157,7 @@ static EnemyMotor motorFor(const EnemySpec &spec,bool transformed,bool swimming)
       return EnemyMotor::CreatureCrawl;
     return EnemyMotor::Creature;
   }
-  if(groundDriveTank(spec))return EnemyMotor::Tracked;
+  if(groundDriveTank(spec))return hoverDriveTank(spec)?EnemyMotor::Turbine:EnemyMotor::Tracked;
   if(transformed||spec.traits&(Flying|Hover|Starship))return EnemyMotor::Turbine;
   if(spec.traits&Submersible)return EnemyMotor::Submersible;
   if(pilotedMecha(spec)||spec.kind==EnemyKind::Labor)return EnemyMotor::Walker;
@@ -609,7 +609,7 @@ void Session::prepareMission(bool continuation) {
     if(e.boss>=0)e.fireClock=1.7f;
     auto &body = world.targets[i];
     body.health=float(e.hp);body.ai.maxHealth=float(e.maxHp);
-    float actorDepth=(spec.traits&(Flying|Hover|Submersible))?-1.f:
+    float actorDepth=(!antiMechaInfantry(spec)&&(spec.traits&(Flying|Hover|Submersible)))?-1.f:
                        (biome==2&&spec.kind!=EnemyKind::Conventional?-1.f:std::min(world.maxWadeDepth,body.ai.localHalf.y));
     if (mission.recipe.objective == 6 && !(spec.traits&Submersible)) {
       Vec3 desired=body.origin;desired.z=-missionRadius()*.65f+float(i%4)*24;desired.x=float(int(i/4)-int(mission.recipe.enemies.size()/8))*40;
@@ -2932,6 +2932,7 @@ void Session::enemiesAct(float dt) {
     motion.aim=std::max(0.f,motion.aim-dt*4.f);
     motion.retreat=std::max(0.f,motion.retreat-dt*5.f);
     const auto previousVelocity=body.ai.velocity;
+    navigation[i].priorDriveVelocity=previousVelocity;
     body.ai.velocity={};
     enemyMemory[i].remaining=std::max(0.f,enemyMemory[i].remaining-dt);
     if (e.hp <= 0 || !body.active || body.escaped){
@@ -3418,11 +3419,11 @@ void Session::enemiesAct(float dt) {
       if(length(tangent)>2&&!npcThrust)plan.direction=unit(tangent);
     }
     const auto facing=rotate(gravityInverse(body.ai.gravity.frame),approach);
-    if(std::hypot(facing.x,facing.z)>.01f)body.yaw=std::atan2(-facing.x,-facing.z);
+    if(!groundDriveTank(spec)&&std::hypot(facing.x,facing.z)>.01f)body.yaw=std::atan2(-facing.x,-facing.z);
     world.updateEnemyBounds(body);
     if (spec.kind != EnemyKind::Installation) {
       bool swimming=swimmingAt(spec,world,biome,body.origin);
-      bool airborne = !surfaceWalker&&((traits & (Flying | Hover))||swimming);
+      bool airborne = !surfaceWalker&&!antiMechaInfantry(spec)&&((traits & (Flying | Hover))||swimming);
       const bool grappleShot=surfaceDrive&&!assetPriority&&!searching&&victim->id&&
           std::any_of(spec.attacks.begin(),spec.attacks.end(),[](const auto &a){return a.effect==AttackEffect::Pull;});
       if(grappleShot&&e.grappleCooldown<=0&&
@@ -3450,12 +3451,8 @@ void Session::enemiesAct(float dt) {
                                                speed,dt,airborne,navigation[i],&planningBudgets[i]);
       Vec3 displacement = plan.direction * (speed * dt);
       if(!surfaceWalker)displacement.y = 0;
-      if(groundDriveTank(spec)&&std::hypot(displacement.x,displacement.z)>.0001f){
-        const float yaw=std::atan2(-displacement.x,-displacement.z);
-        body.yaw=wrap(body.yaw+std::clamp(wrap(yaw-body.yaw),-1.75f*dt,1.75f*dt));
-        const auto forward=direction(body.yaw,0);
-        displacement=forward*std::max(0.f,dot(displacement,forward));
-      }
+      if(groundDriveTank(spec))
+        displacement=tankDriveStep(world,i,plan.direction,facing,previousVelocity,speed,dt,hoverDriveTank(spec),true);
       if (airborne) {
         float altitude = swimming?2.f:e.transformed?fighterCruiseHeight:traits & Flying ? (closePursuit&&best<30?4.f:22.f) : 3.f;
         Vec3 ahead=body.origin+displacement;
@@ -3510,8 +3507,11 @@ void Session::enemiesAct(float dt) {
     }
     const Vec3 muzzle=body.center+up*(body.ai.localHalf.y*.2f);
     const Vec3 aimRay=rotate(gravityInverse(body.ai.gravity.frame),victim->body.bodyPoint(6)-muzzle);
-    body.ai.weaponYaw=body.yaw;
-    body.ai.weaponPitch=std::atan2(aimRay.y,std::max(.001f,std::hypot(aimRay.x,aimRay.z)));
+    if(groundDriveTank(spec))traverseTankGun(body,victim->body.bodyPoint(6),dt);
+    else{
+      body.ai.weaponYaw=body.yaw;
+      body.ai.weaponPitch=std::atan2(aimRay.y,std::max(.001f,std::hypot(aimRay.x,aimRay.z)));
+    }
     const float backwards=-dot(body.ai.velocity,rotate(body.ai.gravity.frame,direction(body.yaw,0)));
     if(backwards>.6f)motion.retreat=std::min(std::min(1.f,backwards/3.f),motion.retreat+dt*11.f);
     if(!searching&&!e.overheated){
