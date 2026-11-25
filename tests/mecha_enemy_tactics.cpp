@@ -4,6 +4,8 @@
 #include "rpg/kaiju_audio.hpp"
 #include "net/snapshot_packet.hpp"
 #include "rpg/enemy_effects.hpp"
+#include "rpg/enemy_animation.hpp"
+#include "rpg/voidmaw_siege.hpp"
 #include "rpg/original_assets.hpp"
 #include "rpg/session.hpp"
 #include <algorithm>
@@ -96,7 +98,29 @@ void checkCreatureMotors(){
 }
 }
 int main(){try{
+ setOriginalAssetRoot(gameAssetPath(MECHA_ASSETS));
  checkCreatureMotors();
+ {
+  Target body;body.origin={123,17,-209};body.yaw=1.1f;body.ai.pitch=.2f;
+  applyOriginalModel(body,"kaiju_dismantler");
+  require(bool(body.mesh),"Missing Dismantler mesh");
+  const auto *rig=enemyAnimationRig(originalAssetRoot()/"models",body.generatorAsset,body.mesh->size());
+  require(rig,"Missing Dismantler rig");
+  const auto facing=compose(body.ai.gravity.frame,angles(body.yaw,body.ai.pitch,body.ai.bank));
+  for(float t:{.1f,.45f}){
+    body.ai.voidmawPose={VoidmawPose::Discharge,0,1,1};
+    const auto pose=poseLiveEnemy(*rig,body,facing,t);
+    Vec3 mouth{};int count=0;
+    for(size_t i=0;i<rig->parts.size();++i){
+      const auto &p=rig->parts[i];
+      if(p.name!="mandible_left"&&p.name!="mandible_right")continue;
+      const Vec3 lip{(p.low.x+p.high.x)*.5f,(p.low.y+p.high.y)*.5f,p.low.z-.25f};
+      mouth=mouth+animatedPoint(pose.parts[i],lip);++count;
+    }
+    require(count==2&&length(siegeEmitter(body,{},t,{})-(body.origin+rotate(facing,mouth*.5f)))<.001f,
+            "Kaiju shot missed posed mandibles or originated at an accessory blade");
+  }
+ }
  require(enemyUnitsCompatible(enemySpec(index("aegis_mecha")),enemySpec(index("gladius_mecha"))),"Source pair cannot cooperate");
  require(enemyUnitsCompatible(enemySpec(index("kaiju_spawnling")),enemySpec(index("kaiju_broodqueen"))),"Kaiju brood cannot cooperate");
  require(!enemyUnitsCompatible(enemySpec(index("kaiju_spawnling")),enemySpec(index("mecha_recruit"))),"Biological and mechanical enemies share squad intent");
@@ -198,7 +222,16 @@ int main(){try{
   enemy.hp=enemy.maxHp=40;enemy.tactic=1;
   s.mission.recipe.enemies={enemy.spec};s.mission.openerTime=100;
   body.origin={0,0,-18};applyOriginalEnemy(body,enemy.spec);
-  for(int tick=0;tick<240&&!enemy.grapplePilot;++tick)s.step(1.f/60);
+  bool warned=false;
+  for(int tick=0;tick<240&&!enemy.grapplePilot;++tick){
+    s.step(1.f/60);
+    if(enemy.voidmawAssault.phase==VoidmawAssaultPhase::Coil||enemy.voidmawAssault.phase==VoidmawAssaultPhase::Tackle){
+      require(pilot.meleeGuide.kind==MeleeGuide::Incoming&&s.members[1].meleeGuide.kind==MeleeGuide::None,
+              "Kaiju tackle warning missing or shown to wrong pilot");
+      warned=true;
+    }
+  }
+  require(warned&&pilot.meleeGuide.kind!=MeleeGuide::Incoming,"Tackle warning missed or persisted during cling");
   require(enemy.grapplePilot==pilot.id,"Melee Voidmaw failed to pursue and latch onto the pilot");
   int canopyImpacts=0;
   for(int tick=0;tick<24;++tick){
@@ -222,7 +255,15 @@ int main(){try{
           "First combat snapshot lost the canopy owner, side or attachment time");
   const auto baseline=coop::captureScenery(s.world,s.enemies.size());
   const int durability=pilot.sheet.hp+pilot.sheet.ap;
-  for(int tick=0;tick<120&&pilot.sheet.hp+pilot.sheet.ap==durability;++tick)s.step(1.f/60);
+  bool biteTell=false;
+  for(int tick=0;tick<120&&pilot.sheet.hp+pilot.sheet.ap==durability;++tick){
+    s.step(1.f/60);
+    if(enemy.fireClock>0&&enemy.fireClock<=voidmawBiteWindup){
+      require(pilot.meleeGuide.kind==MeleeGuide::Incoming,"Canopy bite windup lost its attack warning");
+      biteTell=true;
+    }
+  }
+  require(biteTell,"Canopy bite landed without a warning");
   require(pilot.sheet.hp+pilot.sheet.ap<durability,"Attached creature never landed a bite");
   const auto jawOrientation=compose(body.ai.gravity.frame,angles(body.yaw,body.ai.pitch,body.ai.bank));
   const auto jaw=body.origin+rotate(jawOrientation,enemy.grappleMuzzle);
@@ -303,6 +344,8 @@ int main(){try{
   require(enemy.burrowImpact&&!body.active,"Tunnel Wurm did not start a submerged ambush");
   require(hasMovementCue(s.world,CombatCue::KaijuBurrow)&&hasMovementCue(s.world,CombatCue::ArrivalBurrow),
           "Wurm dive lost its body movement or destination warning");
+  require(pilot.meleeGuide.kind==MeleeGuide::Incoming&&dodging.meleeGuide.kind==MeleeGuide::None,
+          "Burrow warning did not match the actual eruption area");
   unsigned eruptions=0;
   for(int tick=0;tick<42;++tick){
     s.step(1.f/60);

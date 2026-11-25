@@ -134,6 +134,45 @@ struct MaterialStudy {
             }
         }
     }
+    static void checkCombatCues(Renderer& renderer){
+        World w;w.rpgPrototype=true;w.mission=0;w.position={420,0,630};
+        w.rpgInjuries=uint32_t(MechaInjury::Targeting);
+        const auto head=multiply(translation(420,12,630),rotation(pi));
+        const auto lens=projection({-.79f,.81f,.7f,-.7f});
+        glViewport(0,0,width,height);
+        for(float eye:{-.032f,.032f}){
+            const auto camera=multiply(head,translation(eye,0,0));
+            auto sample=[&]{
+                renderer.draw(w,lens,camera,head,false);
+                std::vector<unsigned char> pixels(width*height*3);
+                glReadPixels(0,0,width,height,GL_RGB,GL_UNSIGNED_BYTE,pixels.data());
+                return pixels;
+            };
+            w.meleeGuide={};w.projectiles.clear();w.targets.resize(1);w.targets[0].active=false;
+            const auto base=sample();
+            auto changed=[&]{
+                const auto pixels=sample();int count=0;
+                for(size_t i=0;i<pixels.size();i+=3)
+                    if(std::abs(int(pixels[i])-base[i])+std::abs(int(pixels[i+1])-base[i+1])+
+                       std::abs(int(pixels[i+2])-base[i+2])>80)++count;
+                return count;
+            };
+            Projectile p;p.position={420,15,670};p.velocity={0,0,-38};p.owner=0;
+            w.projectiles={p};w.targets[0].ai.rpgMotor=EnemyMotor::Silent;
+            const int ordinary=changed();
+            w.targets[0].ai.rpgMotor=EnemyMotor::CreatureCrawl;
+            const auto kaijuPixels=changed();
+            std::cout<<"Eye "<<eye<<" projectile pixels: kaiju "<<kaijuPixels<<", standard "<<ordinary<<"\n";
+            if(kaijuPixels<std::max(22,ordinary*2))throw std::runtime_error("Head-on kaiju projectile too small");
+            w.projectiles.clear();
+            for(auto kind:{MeleeGuide::Guard,MeleeGuide::Incoming,MeleeGuide::Counter}){
+                for(auto target:{Vec3{420,12,639},Vec3{420,10,632},Vec3{420,12,621}}){
+                    w.meleeGuide={kind,target,{.707f,.707f,0}};
+                    if(changed()<45)throw std::runtime_error("Melee guide missing from pilot view");
+                }
+            }
+        }
+    }
     static void checkEjectionMenu(Renderer& renderer){
         World world;world.rpgPrototype=true;world.position={140,8,-260};world.chassisYaw=.8f;
         world.lifeSpent=true;world.stepEjection(7.f);
@@ -301,9 +340,10 @@ struct MaterialStudy {
 int main(int argc,char** argv){
     const bool check=argc==3 && std::string_view(argv[2])=="--check-live-textures";
     const bool waves=argc>=3 && std::string_view(argv[2])=="--check-waves";
+    const bool combat=argc==3 && std::string_view(argv[2])=="--check-combat-cues";
     const bool ejection=argc==3 && std::string_view(argv[2])=="--check-ejection-menu";
     const bool instruments=(argc==3||argc==4) && std::string_view(argv[2])=="--check-instruments";
-    if(argc!=4 && !check && !waves && !instruments && !ejection){std::cerr<<"Usage: mecha-material-study <published asset root> <study dir> <output dir>\n";return 2;}
+    if(argc!=4 && !check && !waves && !instruments && !ejection && !combat){std::cerr<<"Usage: mecha-material-study <published asset root> <study dir> <output dir>\n";return 2;}
     try{
         if(SDL_Init(SDL_INIT_VIDEO)!=0)throw std::runtime_error(SDL_GetError());
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,3);SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,3);
@@ -321,7 +361,8 @@ int main(int argc,char** argv){
         iron::rpg::setOriginalAssetRoot(argv[1]);
         {
             iron::Renderer renderer(fs::path(argv[1])/"cockpit");
-            if(ejection)iron::MaterialStudy::checkEjectionMenu(renderer);
+            if(combat)iron::MaterialStudy::checkCombatCues(renderer);
+            else if(ejection)iron::MaterialStudy::checkEjectionMenu(renderer);
             else if(waves)iron::MaterialStudy::checkWaves(renderer,argc==4?fs::path(argv[3]):fs::path{});
             else if(instruments)iron::MaterialStudy::checkInstruments(renderer,argc==4?fs::path(argv[3]):fs::path{});
             else if(check)iron::MaterialStudy::checkLiveTextures(renderer,argv[1]);

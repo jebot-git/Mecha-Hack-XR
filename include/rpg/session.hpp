@@ -182,6 +182,7 @@ struct Member {
   std::array<float,2> parryWindow{};
   Vec3 swingMotion{},lastMeleeMotion{};
   float comboRemaining=0,riposteRemaining=0,criticalRemaining=0;
+  MeleeGuide meleeGuide{};
   int comboTarget=-1,comboHand=-1,comboCount=0,riposteTarget=-1;
   std::array<Gesture, 2> gestures{};
   bool mine = false, turret = false;
@@ -313,12 +314,14 @@ class Session {
   void crushFoot(Vec3, Member *);
   void moveRpgEnemy(size_t,Vec3,float,bool airborne);
   bool stepVoidmawAssault(size_t,Member &,float);
+  void updateMeleeGuides();
   bool stepMechaDuel(size_t,const Member *,int npc,float);
   bool startVoidmawGrapple(size_t,Member &);
   void positionVoidmawGrapple(size_t,const Member &);
   void damageVoidmawGrapple(size_t,int);
   void releaseVoidmawGrapple(size_t);
   bool startVoidmawBurrow(size_t,const Member &);
+  bool inEruptionRange(size_t,const Member &) const;
   void voidmawEruption(size_t);
   bool boostMember(Member &,const Input &,bool movementAllowed,float dt);
   void beginDestruction(size_t);

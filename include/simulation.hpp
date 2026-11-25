@@ -144,6 +144,11 @@ inline bool unclaimedSalvage(const Pickup &pickup,unsigned slot){
 }
 struct SoundEvent { enum Kind { Shot, Punch, Explosion, PickupSound, Damage, Complete, Failed, CutterMotor, LargeExplosion, Footstep, Special } kind; int weapon=0; Vec3 position{}; Weapon audioWeapon=Weapon::Empty; int transmitterActor=-1; };
 
+struct MeleeGuide {
+    enum Kind { None, Guard, Incoming, Counter } kind=None;
+    Vec3 position{},axis{};
+    std::optional<Vec3> simultaneousCounter{};
+};
 struct WeaponEffect { enum Kind { Muzzle, Impact, Blast, Sparks, Debris, Smoke } kind=Impact;Vec3 position{},direction{};Weapon weapon=Weapon::Empty;float age=0,size=1;unsigned model=0;float damageRadius=0,damageRate=0; };
 enum class ProjectileKind { Bullet, Rocket, Bomb };
 enum class ProjectileVisual : uint8_t { Standard, WaveA, WaveB, LoftMissile };
@@ -254,6 +259,7 @@ struct World : Pilot {
     bool rpgPrototype=false;
     SkyKind skyKind=SkyKind::Legacy;
     float rpgPoseLead=0; // Render-only time between simulation or network ticks.
+    MeleeGuide meleeGuide{};
     uint32_t rpgLocalPilot=0;
     int rpgCanopyAttacker=-1;
     bool rpgTransitActive=false;

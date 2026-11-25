@@ -799,8 +799,25 @@ void Session::stepMission(float dt) {
       case 0:{int spec=state.recipe.enemies.empty()?3:state.recipe.enemies[0];spawnManualEnemy(spec,{0,0,-missionRadius()*.5f},state.recipe.tactic);break;}
       case 1:for(auto &ally:members)ally.systemDisrupt=6;break;
       case 2:for(auto &ally:members)ally.mobilityDisrupt=6;break;
-      case 3:for(auto &ally:members)if(!world.indoors(ally.body.position+Vec3{0,12,0}))ally.sheet.stress(dice,.5f);break;
-      case 4:for(auto &ally:members)if(!world.indoors(ally.body.position+Vec3{0,12,0})){Shot warning;warning.body.position=ally.body.position+Vec3{0,60,0};warning.body.velocity={0,-12,0};warning.body.life=6;warning.body.damage=4;warning.body.radius=8;warning.body.shooter=-1;warning.body.weapon=Weapon::Rocket;launch(std::move(warning));}break;
+      case 3:break; // The environmental complication runs through the marked regional weather front.
+      case 4:{
+        for(const auto &ally:members){
+          const auto feet=ally.body.position;
+          if(!ally.combatControls()||world.indoors(feet)||std::isfinite(world.interiorCeilingAt(feet+Vec3{0,10,0})))continue;
+          const float angle=2*pi*weatherNoise(state.recipe.seed,unsigned(state.manualElapsed)+ally.id);
+          auto impact=feet+Vec3{std::sin(angle)*12.f,0,std::cos(angle)*12.f};
+          if(!insideArea(impact,missionRadius())||std::any_of(members.begin(),members.end(),[&](const Member &m){
+            return !m.ejected&&std::hypot(m.body.position.x-impact.x,m.body.position.z-impact.z)<10.f;
+          }))continue;
+          impact.y=world.pilotSupportHeight(impact);
+          if(world.indoors(impact)||std::isfinite(world.interiorCeilingAt(impact+Vec3{0,2,0})))continue;
+          if(!addEffect({WeaponEffect::Impact,impact,{0,0,-1},Weapon::Rocket,0,8.f,rpgVehicleBombWarning}))continue;
+          Shot shell;shell.body.position=impact+Vec3{0,32,0};shell.body.velocity={0,-12,0};
+          shell.body.life=3.5f;shell.body.damage=4;shell.body.radius=8;shell.body.shooter=-1;shell.body.weapon=Weapon::Rocket;
+          launch(std::move(shell));
+        }
+        break;
+      }
       case 5:{int hd=1;for(auto &e:enemies)hd=std::max(hd,combatSpec(e).hd);int elite=3;for(size_t i=0;i<enemyCatalog().size();++i)if(enemySpec(i).hd<=std::min(10,hd+1)&&enemySpec(i).hd>enemySpec(elite).hd)elite=int(i);spawnManualEnemy(elite,{0,0,-missionRadius()*.55f},6);break;}
       }
     }
@@ -1352,16 +1369,21 @@ bool Session::startVoidmawBurrow(size_t i,const Member &pilot) {
   world.sounds.push_back({SoundEvent::Special,int(CombatCue::ArrivalBurrow),exit});
   return true;
 }
+bool Session::inEruptionRange(size_t i,const Member &pilot) const {
+  const auto origin=world.targets[i].origin;
+  const auto gap=pilot.body.position-origin;
+  const float radius=std::clamp(6.f+combatSpec(enemies[i]).hd*.38f,7.f,10.f);
+  return !pilot.ejected&&pilot.sheet.hp>0&&!pilot.body.lifeSpent&&!pilot.body.rpgKnockdown.active(world.elapsed)&&
+      pilot.vehicleBlend<=.01f&&std::abs(gap.y)<=4.f&&std::hypot(gap.x,gap.z)<=radius&&
+      world.enemyLineOfSight(origin+Vec3{0,2,0},pilot.body.position+Vec3{0,3,0},int(i),-1);
+}
 void Session::voidmawEruption(size_t i) {
   const auto &body=world.targets[i];
   emitKaijuSound(world,CombatCue::KaijuBurrow,body.origin);
   const auto &spec=combatSpec(enemies[i]);
-  const float radius=std::clamp(6.f+spec.hd*.38f,7.f,10.f);
   for(auto &pilot:members){
+    if(!inEruptionRange(i,pilot))continue;
     const auto gap=pilot.body.position-body.origin;
-    if(pilot.ejected||pilot.sheet.hp<=0||pilot.body.lifeSpent||pilot.body.rpgKnockdown.active(world.elapsed)||
-       pilot.vehicleBlend>.01f||std::abs(gap.y)>4.f||std::hypot(gap.x,gap.z)>radius||
-       !world.enemyLineOfSight(body.origin+Vec3{0,2,0},pilot.body.position+Vec3{0,3,0},int(i),-1))continue;
     const float side=rotate(angles(-pilot.body.facing()),gap).x;
     pilot.body.rpgKnockdown={world.elapsed,side<0?-1.f:1.f};
     pilot.droneControl=false;pilot.thrusters.remaining=0;pilot.body.rpgThrust={};
@@ -2281,7 +2303,6 @@ bool Session::startHeavyAttack(size_t i, const EnemyAttack &attack, const Member
      attack.range<60&&enemy.tactic!=6&&!(spec.traits&(Ace|Commander)))return false;
 
   auto &body=world.targets[i];
-  if(siege) muzzle=siegeEmitter(body,siege,world.elapsed,muzzle);
   const bool weave=role==MechaRangedRole::Skirmisher,rack=role==MechaRangedRole::MissileCarrier;
   const auto pattern=weave?HeavyPattern::Weave:rack?HeavyPattern::Loft:
       breath?HeavyPattern::Beam:missile?HeavyPattern::MissileCurtain:HeavyPattern::Crossfire;
@@ -2397,7 +2418,7 @@ void Session::stepHeavyAttack(size_t i,float dt) {
     if(siege&&(!breath||pattern.pulse==0))emitKaijuSound(world,kaijuAttackCue(attack),origin);
     // Freeze the warned endpoint when the creature commits. Recoil moves the
     // emitter along with its jaw or arm without tracking the dodging pilot.
-    const Vec3 aim=siege?unit(pattern.origin+pattern.aim*attack.range-origin,pattern.aim):pattern.aim;
+    const Vec3 aim=siege?unit(pattern.origin+pattern.aim*pattern.lockDistance-origin,pattern.aim):pattern.aim;
     if(weave||rack){
       launchMechaLayer(i,damage);
       addEffect({WeaponEffect::Sparks,body.center,aim,rack?Weapon::Rocket:Weapon::Rifle,0,1.6f,
@@ -3505,7 +3526,7 @@ void Session::enemiesAct(float dt) {
       });
       if(!specialReady&&startVoidmawGrapple(i,*victim))continue;
     }
-    const Vec3 muzzle=body.center+up*(body.ai.localHalf.y*.2f);
+    Vec3 muzzle=body.center+up*(body.ai.localHalf.y*.2f);
     const Vec3 aimRay=rotate(gravityInverse(body.ai.gravity.frame),victim->body.bodyPoint(6)-muzzle);
     if(groundDriveTank(spec))traverseTankGun(body,victim->body.bodyPoint(6),dt);
     else{
@@ -3550,6 +3571,7 @@ void Session::enemiesAct(float dt) {
     const auto *attack=releasingCharge?&attacks.at(size_t(e.chargedAttack)):
         eligible[eligible.size()==1?0:size_t(dice.roll(int(eligible.size()))-1)];
     const bool kaiju=spec.kind==EnemyKind::SmallKaiju||spec.kind==EnemyKind::LargeKaiju;
+    if(kaiju)muzzle=siegeEmitter(body,siegeAttack(spec,*attack),world.elapsed,muzzle);
     if(releasingCharge){
       e.chargedAttack=-1;
       if(best<attack->minimum||best>attack->range||
@@ -4038,6 +4060,7 @@ void Session::step(float dt) {
     mission.encounterCredits=0;
     for(auto &m:members){m.pendingRecovery.clear();m.pendingDepotSalvage=0;m.fieldAmmo=false;m.explosive=0;}
   }
+  updateMeleeGuides();
   if(phase!=Phase::Combat)
     for(size_t i=0;i<enemies.size();++i)releaseVoidmawGrapple(i);
 }
@@ -4069,6 +4092,11 @@ Json Session::snapshot(const coop::SceneryBaseline *baseline) const {
       const auto &cycle=m.weaponCycles[hand];
       if(cycle.active(world.elapsed))
         players.back()["weapon_cycles"].push_back({hand,int(cycle.stage),cycle.started,cycle.duration});
+    }
+    if(m.meleeGuide.kind!=MeleeGuide::None){
+      const auto &g=m.meleeGuide;
+      players.back()["melee_guide"]={int(g.kind),point(g.position),point(g.axis)};
+      if(g.simultaneousCounter)players.back()["melee_guide"].push_back(point(*g.simultaneousCounter));
     }
     if(m.garrison)players.back()["garrison"]=true;
     if(m.reinforced)players.back()["reinforced"]=true;
@@ -4282,6 +4310,13 @@ void Session::readSnapshot(const Json &j,const Json *scenery) {
     m.scannedContacts=p.at("scan_contacts").get<decltype(m.scannedContacts)>();
     m.scannedActors=p.at("scan_actors").get<decltype(m.scannedActors)>();
     if(m.scannedActors.size()>maxEncounterEnemies)throw std::runtime_error("Radar actor limit exceeded");
+    m.meleeGuide={};
+    if(auto g=p.find("melee_guide");g!=p.end()){
+      const int kind=g->at(0);
+      if(kind<MeleeGuide::Guard||kind>MeleeGuide::Counter)throw std::runtime_error("Invalid melee guide");
+      m.meleeGuide={MeleeGuide::Kind(kind),point(g->at(1)),point(g->at(2))};
+      if(g->size()>3)m.meleeGuide.simultaneousCounter=point(g->at(3));
+    }
     const auto &feedback=p.at("combat_feedback");m.comboCount=feedback.at(0);m.comboRemaining=feedback.at(1);m.riposteRemaining=feedback.at(2);m.criticalRemaining=feedback.at(3);
     m.scannedBearings=p.at("scan_bearings");m.rifleSemi=p.at("rifle_semi");
     m.dronePosition=point(p.at("drone_position"));m.droneYaw=p.at("drone_yaw");m.dronePitch=p.value("drone_pitch",0.f);m.droneControl=p.at("drone_control");
@@ -4532,6 +4567,7 @@ World Session::view(uint32_t id, const ArmRig &rig,float poseLead) const {
     }
     p.health = 100.f * m.sheet.hp / std::max(1, m.sheet.maxHp);
     if (m.id == id) {
+      if(phase==Phase::Combat&&m.combatControls())result.meleeGuide=m.meleeGuide;
       result.rpgDroneView=m.droneControl&&m.drone>0&&!m.ejected&&m.sheet.hp>0;result.rpgDroneEye=m.dronePosition;result.rpgDroneYaw=m.droneYaw;result.rpgDronePitch=m.dronePitch;result.rpgDroneRemaining=m.drone;
       if(result.rpgDroneView)result.mapPilots.push_back(p);
       result.rpgInsertionGround=world.surfaceHeight(p.position.x,p.position.z);
@@ -4566,13 +4602,14 @@ World Session::view(uint32_t id, const ArmRig &rig,float poseLead) const {
       if(phase==Phase::Combat&&result.rpgPilotStatus.empty()){
         if(const auto *hazard=weatherHazard(result.environment.weather)){
           const bool sheltered=result.indoors(p.position)||result.indoors(p.bodyPoint(10))||
+              std::isfinite(result.interiorCeilingAt(p.bodyPoint(10)))||
               (result.environment.weather==Weather::Snowstorm&&!result.exposedToPrecipitation(p.bodyPoint(10)));
           const bool nearWarning=!sheltered&&std::any_of(result.effects.begin(),result.effects.end(),[&](const auto &fx){
             return (fx.model==rpgWeatherWarning||fx.model==rpgWeatherMeteor)&&
                 length(fx.position-p.position)<float(hazard->radius+20);
           });
           result.rpgPilotStatus=std::string(hazard->label)+(sheltered?" / SHELTERED":
-              nearWarning?(hazard->radius>0?" / CLEAR MARKED ZONE":" / SEEK COVER"):
+              nearWarning?" / CLEAR MARKED ZONE":
               m.weatherJam>0?" / SENSOR JAM":"");
         }
       }

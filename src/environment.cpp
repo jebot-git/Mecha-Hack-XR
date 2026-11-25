@@ -22,13 +22,13 @@ nlohmann::json environmentWire(const EnvironmentSettings& s){
 }
 const WeatherHazard *weatherHazard(Weather weather){
     static constexpr std::array hazards{
-        WeatherHazard{"ION STORM",{.28f,.23f,.43f},{.77f,.78f,1.f},{.64f,.73f,1.f},.006f,13.f,2.5f,0},
+        WeatherHazard{"ION STORM",{.28f,.23f,.43f},{.77f,.78f,1.f},{.64f,.73f,1.f},.006f,13.f,2.5f,9.f},
         WeatherHazard{"CORRUPTION SPORE BURST",{.37f,.29f,.36f},{.90f,.78f,.83f},{.88f,.52f,.67f},.010f,15.f,2.5f,12.f},
         WeatherHazard{"FIRE STORM",{.54f,.22f,.10f},{1.f,.78f,.62f},{1.f,.49f,.12f},.008f,12.f,2.f,11.f},
         WeatherHazard{"METEOR SHOWER",{.17f,.18f,.27f},{.92f,.91f,.99f},{1.f,.72f,.42f},0,15.f,3.f,13.f},
-        WeatherHazard{"MAGNETIC BURST",{.23f,.34f,.39f},{.82f,.94f,1.f},{.42f,.86f,1.f},.003f,16.f,2.f,0},
-        WeatherHazard{"ASH CLOUD",{.36f,.35f,.34f},{.86f,.83f,.79f},{.70f,.67f,.62f},.015f,14.f,2.f,0},
-        WeatherHazard{"RADIOACTIVE WIND",{.30f,.38f,.19f},{.88f,1.f,.71f},{.64f,.87f,.32f},.008f,15.f,2.5f,0},
+        WeatherHazard{"MAGNETIC BURST",{.23f,.34f,.39f},{.82f,.94f,1.f},{.42f,.86f,1.f},.003f,16.f,2.f,9.f},
+        WeatherHazard{"ASH CLOUD",{.36f,.35f,.34f},{.86f,.83f,.79f},{.70f,.67f,.62f},.015f,14.f,2.f,10.f},
+        WeatherHazard{"RADIOACTIVE WIND",{.30f,.38f,.19f},{.88f,1.f,.71f},{.64f,.87f,.32f},.008f,15.f,2.5f,10.f},
         WeatherHazard{"SNOWSTORM / HAIL",{.69f,.77f,.83f},{.87f,.94f,1.f},{.90f,.96f,1.f},.010f,14.f,2.5f,12.f}
     };
     const int index=int(weather)-int(Weather::IonStorm);

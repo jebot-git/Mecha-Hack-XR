@@ -5,6 +5,9 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];ASSETS=ROOT/'assets/mecha'
 load=lambda path:json.loads(path.read_text())
 sha=lambda path:hashlib.sha256(path.read_bytes()).hexdigest()
+def inherited(rig):
+ return dict(rig,parts=[{k:v for k,v in part.items() if k not in ('low','high')} for part in rig['parts']])
+
 manifest=load(ASSETS/'story-assets.json');assert manifest['schema']==1 and manifest['all_pass']
 assert len(manifest['assets'])==12 and manifest['environment_count']==8 and manifest['enemy_variant_count']==4
 rigs=load(ASSETS/'models/story-enemy-rigs.json')['rigs'];models=load(ASSETS/'models/manifest.json')['models']
@@ -36,7 +39,16 @@ for row in manifest['assets']:
    for fn in (min,max):assert abs(fn(p[axis] for p in native['vertices'])-fn(p[axis] for p in source['vertices']))<2e-5
   rig=rigs[asset];assert rig['mesh_vertices']==len(native['faces'])*3
   assert rig['parts'] and any(p['role'] in ('hip','rotor','suspension','tail') for p in rig['parts'])
-  assert sha(ASSETS/row['source_rig_file'])==row['source_rig_sha256']
+  # Story variants inherit this rig entry, while their reshaped parts have new bounds.
+  source_rig=load(ASSETS/row['source_rig_file'])['rigs'][row['source_id']]
+  source_rig.setdefault('motion_profile','legacy')
+  assert inherited(rig)==inherited(source_rig),asset
+  for part in rig['parts']:
+   points=[native['vertices'][i] for start,count in part['ranges']
+           for face in native['faces'][start//3:(start+count)//3] for i in face['indices']]
+   for axis in range(3):
+    for key,fn in [('low',min),('high',max)]:
+     assert abs(part[key][axis]-fn(p[axis] for p in points))<2e-5,(asset,part['name'],key)
 assert props==8 and enemies==len(rigs)==4
 blend=ROOT/manifest['source_blend'];assert blend.is_file() and sha(blend)==manifest['source_blend_sha256']
 assert manifest['rigs']==4 and manifest['animation_actions']==12

@@ -124,10 +124,12 @@ The hangar provides separate mission, equipment, trade and profile entry points.
 ## Hazard fronts
 
 Regional weather can add a hazardous front. A front has a short initial
-grace period and warns before each pulse. Enclosed structures shelter
-pilots and NPCs. Spore bursts, fire storms and meteors mark their impact
-areas so a pilot can move clear. The host resolves damage and disruption
-for the whole room.
+grace period. Each hazardous pulse marks a fixed area clear of every pilot
+at the time of warning. Entering the ring risks damage, heat, or disruption
+on impact. Leaving a lingering fire or spore cloud stops subsequent hits.
+Enclosed structures and overhead decks shelter pilots and NPCs. The host
+resolves impacts for the whole room. The environmental mission complication uses
+the same fronts. Distant bombardments mark the shell impact area before the shell lands.
 
 - Ion storms interfere with sensors and add reactor heat on land or in vacuum.
 - Corruption spores form damaging clouds on wilderness maps.
@@ -136,7 +138,8 @@ for the whole room.
 - Magnetic bursts disrupt sensors and mobility in susceptible environments,
   including underwater maps.
 - Volcanic ash clouds reduce visibility and add reactor heat.
-- Radioactive winds expose pilots in volcanic and contaminated battlefield or
-  graveyard terrain.
+- Radioactive wind marks pockets of radiation in volcanic and contaminated terrain.
+  A pulse penetrates armour inside the marked area. Energy shields absorb it.
+- Polar snowstorms mark local hail impacts.
 
 Ordinary atmospheric weather remains separate from these mission modifiers.

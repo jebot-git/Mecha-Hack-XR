@@ -192,7 +192,9 @@ bool World::effect(WeaponEffect::Kind kind,Vec3 p,Vec3 d,Weapon weapon,float siz
     // Prefer evicting cosmetics over active hazards or arrival signals.
     if(effects.size()>=256){
         auto old=std::find_if(effects.begin(),effects.end(),[](const auto& fx){
-            return fx.model!=rpg::rpgRadarArrival&&(fx.damageRate<=0||fx.age>=1);
+            if(fx.model==rpg::rpgRadarArrival||fx.model==rpg::rpgVehicleBombWarning||fx.model==rpg::rpgWeatherWarning||fx.model==rpg::rpgWeatherMeteor||
+               fx.model==rpg::rpgWeatherSpore||fx.model==rpg::rpgWeatherFire)return false;
+            return fx.damageRate<=0||fx.age>=1;
         });
         if(old==effects.end())return false;
         effects.erase(old);

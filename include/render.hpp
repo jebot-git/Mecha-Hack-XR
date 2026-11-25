@@ -220,7 +220,8 @@ class Renderer {
     void uploadTargetMesh(const World&,size_t,bool wreck);
     void drawWorld(const World&);
     void drawEnemyEffect(const WeaponEffect&,const avp::Matrix&,const World&);
-    void drawMechaWave(const Projectile&,const avp::Matrix&);
+    void drawPatternProjectile(const Projectile&,const avp::Matrix&,bool kaiju);
+    void drawMeleeGuide(const MeleeGuide&,const avp::Matrix& head);
     void drawEnemyStreak(Vec3,Vec3,float,Vec3,const avp::Matrix&,float taper=0);
     void flushEnemyEffects();
     void clearWorld();

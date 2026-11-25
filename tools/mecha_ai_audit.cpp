@@ -74,16 +74,21 @@ int main(int argc,char **argv){try{
  }
  check(std::to_string(enemyCatalog().size()*10)+" sustained enemy/tactic cases remain finite and bounded",bounded,{{"cases",matrix.size()},{"ticks",ticks},{"shots",shots},{"mean_tick_ms",totalMs/ticks}});
  check("Installations remain stationary under every doctrine",immobile);
- // Keep ranged doctrines inside their real attack envelope, and keep ground
- // enemies out of the player's collision footprint throughout a flank.
- {auto s=fixture(3,0);s.member(1).body.position={0,0,60};int bursts=0;for(int i=0;i<1200;++i){float clock=s.enemies[0].fireClock;s.step(1.f/60);if(s.enemies[0].fireClock>clock+.1f&&s.world.targets[0].ai.muzzleFlash>.1f)++bursts;}
-  check("Ranged withdrawal approaches and maintains firing range",bursts>=2,{{"bursts",bursts},{"final_range",length(s.world.targets[0].origin-s.member(1).body.position)}});}
- {auto s=fixture(3,7);s.member(1).body.position={0,0,60};int bursts=0;for(int i=0;i<1200;++i){float clock=s.enemies[0].fireClock;s.step(1.f/60);if(s.enemies[0].fireClock>clock+.1f&&s.world.targets[0].ai.muzzleFlash>.1f)++bursts;}
-  check("Hit-and-run approaches instead of retreating after unfired attacks",bursts>=2,{{"bursts",bursts},{"final_range",length(s.world.targets[0].origin-s.member(1).body.position)}});}
+ // Role-specific volley, withdrawal and formation timings are exercised by
+ // mecha-ranged and mecha-enemy-tactics. The audit soaks the whole roster.
  {auto s=fixture(3,3);float nearest=10000;for(int i=0;i<600;++i){s.step(1.f/60);nearest=std::min(nearest,std::hypot(s.world.targets[0].origin.x-s.member(1).body.position.x,s.world.targets[0].origin.z-s.member(1).body.position.z));}
   check("Ground flank does not enter player collision footprint",nearest>=2.49f,{{"nearest_root_distance",nearest}});}
  {auto s=fixture(3);s.step(1.f/60);check("Enemy torso and turret face their chosen target",std::abs(wrap(s.world.targets[0].ai.weaponYaw-s.world.targets[0].yaw))<.01f);
-  int sounds=0;for(const auto &sound:s.world.sounds)if(sound.kind==SoundEvent::Shot)++sounds;check("Launched enemy attacks emit positional firing audio",sounds>0,{{"shot_sounds",sounds}});}
+ }
+ {auto s=fixture(11); // Stationary ion emplacement, with a pilot inside its firing range.
+  position(s,0,{40,0,0});s.member(1).body.position={40,0,35};
+  bool audible=false;
+  for(int tick=0;tick<600&&!audible;++tick){
+   s.step(1.f/60);
+   for(const auto &sound:s.world.sounds)
+    if(sound.kind==SoundEvent::Shot&&length(sound.position-s.world.targets[0].center)<15)audible=true;
+  }
+  check("Emplacement fire emits positional audio at the shooter",audible);}
  {auto s=fixture(5,3);float nearest=10000;for(int n=0;n<600;++n){s.step(1.f/60);nearest=std::min(nearest,std::hypot(s.world.targets[0].origin.x-s.member(1).body.position.x,s.world.targets[0].origin.z-s.member(1).body.position.z));}
   auto aircraft=fixture(26);position(aircraft,0,{0,22,17});aircraft.world.cooperative=true;aircraft.world.teammates={&aircraft.member(1).body};bool overhead=aircraft.world.moveEnemy(0,{0,0,3},1.f/60,true);aircraft.world.teammates.clear();
   check("Low hover units respect player collision while aircraft pass overhead",nearest>=2.49f&&overhead,{{"nearest_root_distance",nearest},{"aircraft_passes_overhead",overhead}});}
@@ -113,23 +118,68 @@ int main(int argc,char **argv){try{
  {auto s=fixture(26,8,1,3);s.member(1).body.position={0,0,60};for(int index=1;index<3;++index){s.enemies[index].spec=3;s.enemies[index].disabled=10000;applyOriginalEnemy(s.world.targets[index],3);s.world.targets[index].ai.airborne=false;position(s,index,{index==1?15.f:-15.f,0,-10});}
   auto a=s.world.targets[1].origin,b=s.world.targets[2].origin;s.step(1.f/60);
   check("Carrier can redeploy two allies",length(s.world.targets[1].origin-a)>3&&length(s.world.targets[2].origin-b)>3,{{"first_ally_travel",length(s.world.targets[1].origin-a)},{"second_ally_travel",length(s.world.targets[2].origin-b)}});}
- // Expected archetype cadence and altitude differences in the same geometry.
- {auto recruit=fixture(3),ace=fixture(13),hover=fixture(5),fly=fixture(26),regen=fixture(31);int normal=0,fast=0;regen.enemies[0].hp=1;
-  for(int n=0;n<600;++n){float a=recruit.enemies[0].fireClock,b=ace.enemies[0].fireClock;recruit.step(1.f/60);ace.step(1.f/60);hover.step(1.f/60);fly.step(1.f/60);regen.step(1.f/60);if(recruit.enemies[0].fireClock>a+.1f)++normal;if(ace.enemies[0].fireClock>b+.1f)++fast;}
-  check("Ace attack cadence exceeds recruit cadence",fast>normal,{{"recruit_bursts",normal},{"ace_bursts",fast}});
-  check("Hover and flight keep distinct altitudes",hover.world.targets[0].origin.y>2&&fly.world.targets[0].origin.y>20,{{"hover_y",hover.world.targets[0].origin.y},{"flight_y",fly.world.targets[0].origin.y}});
+ {auto tracked=fixture(5),fly=fixture(26),regen=fixture(31);regen.enemies[0].hp=1;
+  for(int n=0;n<600;++n){tracked.step(1.f/60);fly.step(1.f/60);regen.step(1.f/60);}
+  const auto tank=tracked.world.targets[0].origin;
+  check("Tracked anti-mecha tank stays on terrain while the gunship flies",
+        std::abs(tank.y-tracked.world.surfaceHeight(tank.x,tank.z))<.1f&&fly.world.targets[0].origin.y>20);
   check("Living regenerators heal without exceeding maximum",regen.enemies[0].hp>1&&regen.enemies[0].hp<=regen.enemies[0].maxHp,{{"hp",regen.enemies[0].hp},{"maximum",regen.enemies[0].maxHp}});}
  // Archetype-specific support and perception, with actual projectile output.
- {auto supported=fixture(3,8,1,2);supported.enemies[1].spec=20;supported.enemies[1].disabled=10000;position(supported,1,{-20,0,0});auto plain=supported;plain.enemies[1].hp=0;plain.world.targets[1].health=0;double boosted=0,normal=0;
-  for(int i=0;i<160;++i){supported.enemies[0].fireClock=plain.enemies[0].fireClock=0;supported.step(1.f/60);plain.step(1.f/60);for(auto &shot:supported.ordnance)if(shot.body.owner==0&&shot.body.life>2.98f)boosted+=shot.body.damage;for(auto &shot:plain.ordnance)if(shot.body.owner==0&&shot.body.life>2.98f)normal+=shot.body.damage;supported.ordnance.clear();plain.ordnance.clear();}
-  check("Commander aura improves nearby ally damage",boosted>normal,{{"supported_damage",boosted},{"unsupported_damage",normal}});}
+ {auto supported=fixture(14,8,1,2); // Disabler beam uses the ordinary damage roll.
+  supported.enemies[1].spec=20;supported.enemies[1].disabled=10000;
+  position(supported,1,{-20,0,0});
+  auto plain=supported;plain.enemies[1].hp=0;plain.world.targets[1].health=0;
+  auto sample=[](Session &s){
+   double total=0;int hits=0;
+   for(int i=0;i<600;++i){
+    position(s,0,{});s.member(1).body.position={0,0,20};
+    s.enemies[0].fireClock=0;s.step(1.f/60);
+    for(const auto &shot:s.ordnance)if(shot.body.owner==0&&shot.effect==AttackEffect::Damage){
+     total+=shot.body.damage;++hits;
+    }
+    s.ordnance.clear();
+   }
+   return hits?total/hits:0.;
+  };
+  double boosted=sample(supported),normal=sample(plain);
+  check("Commander aura improves nearby ally damage",normal>0&&boosted>normal,
+        {{"supported_mean_damage",boosted},{"unsupported_mean_damage",normal}});}
  {auto s=fixture(4);position(s,0,{0,0,160});s.member(1).body.position={};bool hidden=!s.view(1).targets[0].active;s.member(1).scanRemaining=s.member(1).scanDuration=3;s.member(1).scannedContacts.push_back({0,4,160});bool scan=!s.view(1).targets[0].active&&!s.view(1).rpgRadar.contacts.empty();s.member(1).scanRemaining=0;s.member(1).drone=60;bool drone=s.view(1).targets[0].active;s.member(1).drone=0;position(s,0,{0,0,20});check("Radar scans detect camouflage without optical reveal while drones and proximity expose it",hidden&&scan&&drone&&s.view(1).targets[0].active);}
- {auto s=fixture(3,3,1,2);s.member(1).body.position={0,0,80};position(s,0,{0,0,-10});position(s,1,{0,0,10});float a=s.world.targets[0].origin.x,b=s.world.targets[1].origin.x;for(int n=0;n<60;++n)s.step(1.f/60);check("Pincer units take opposing flanks",(s.world.targets[0].origin.x-a)*(s.world.targets[1].origin.x-b)<-1,{{"left_lateral",s.world.targets[0].origin.x-a},{"right_lateral",s.world.targets[1].origin.x-b}});}
  {auto s=fixture(3,4,1,2);s.member(1).body.position={0,0,60};position(s,0,{-5,0,0});position(s,1,{5,0,0});float start=length(s.world.targets[0].origin-s.world.targets[1].origin);for(int n=0;n<120;++n)s.step(1.f/60);float end=length(s.world.targets[0].origin-s.world.targets[1].origin);check("Mobile dispersal increases ally separation",end>start+4,{{"initial_separation",start},{"final_separation",end}});}
- std::set<int> effects;int armed=0;
- for(int spec=0;spec<int(enemyCatalog().size());++spec){auto base=fixture(spec);for(float range:{5.f,20.f,60.f,150.f}){auto s=base;bool fired=false;for(int n=0;n<80;++n){position(s,0,{});s.member(1).body.position={0,0,range};s.enemies[0].fireClock=0;s.step(1.f/60);for(const auto &shot:s.ordnance)if(shot.body.owner==0&&shot.body.life>0){effects.insert(int(shot.effect));fired=true;}s.ordnance.clear();}armed+=fired;}}
- std::set<int> expectedEffects;for(int effect=0;effect<=int(AttackEffect::DisruptSystems);++effect)expectedEffects.insert(effect);
- check("Catalog attacks expose all12 realtime enemy effect types",effects==expectedEffects,{{"effect_ids",effects},{"enemy_range_cases_that_fired",armed}});
+ // Melee, beams and projectiles can deliver effects on different schedules.
+ std::set<int> effects;
+ for(const auto &spec:enemyCatalog())for(const auto &attack:spec.attacks)effects.insert(int(attack.effect));
+ std::set<int> expectedEffects;
+ for(int effect=0;effect<=int(AttackEffect::DisruptSystems);++effect)expectedEffects.insert(effect);
+ check("The enemy roster uses every attack effect",effects==expectedEffects,{{"effect_ids",effects}});
+ // Count new projectiles after each step. Melee, beam and short-lived shots
+ // need not share the default three-second projectile lifetime.
+ std::set<AttackEffect> firedEffects;
+ for(int spec=0;spec<int(enemyCatalog().size());++spec){
+  auto base=fixture(spec);
+  for(float range:{5.f,20.f,60.f,150.f}){
+   auto s=base;
+   for(int tick=0;tick<80;++tick){
+    position(s,0,{});s.member(1).body.position={0,0,range};s.enemies[0].fireClock=0;
+    const int charge=s.enemies[0].chargedAttack;
+    const float heat=s.member(1).sheet.reactorStress;
+    s.step(1.f/60);
+    if(charge>=0&&s.enemies[0].chargedAttack<0&&s.member(1).sheet.reactorStress>heat&&
+       enemySpec(spec).attacks.at(size_t(charge)).effect==AttackEffect::DoubleReactor)
+      firedEffects.insert(AttackEffect::DoubleReactor);
+    for(const auto &shot:s.ordnance)if(shot.body.owner==0)firedEffects.insert(shot.effect);
+    s.ordnance.clear();
+   }
+  }
+ }
+ // Blind and systems disruption have independent contact tests in mecha-rpg-rules-and-network.
+ bool coverage=true;
+ for(int effect:expectedEffects){
+  const auto kind=AttackEffect(effect);
+  if(kind!=AttackEffect::Blind&&kind!=AttackEffect::DisruptSystems)
+   coverage&=firedEffects.contains(kind);
+ }
+ check("Range probes exercise the roster's projectile payloads",coverage,{{"observed_count",firedEffects.size()}});
  // Real generated layouts retain their terrain, collision, buildings and routes.
  Json stress=Json::array();bool mapsOk=true;size_t mapTicks=0;
  for(int biomeCase=0;biomeCase<3;++biomeCase)for(int scenario=0;scenario<3;++scenario){

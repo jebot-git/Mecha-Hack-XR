@@ -31,19 +31,26 @@ SiegeAttack siegeAttack(const EnemySpec &spec, const EnemyAttack &attack) {
 }
 
 Vec3 siegeEmitter(const Target &body, const SiegeAttack &attack, float now, Vec3 fallback) {
-  if (!body.mesh) return fallback;
-  const auto *rig = enemyAnimationRig(originalAssetRoot()/"models", body.generatorAsset, body.mesh->size());
-  if (!rig) return fallback;
-  const auto joint = attack.style == SiegeStyle::Elbow ? EnemyJoint::Arm : EnemyJoint::Jaw;
-  auto part = std::find_if(rig->parts.begin(),rig->parts.end(),
-                           [joint](const auto &p){ return p.joint == joint; });
-  if (part == rig->parts.end()) return fallback;
-  const auto orientation = compose(body.ai.gravity.frame,angles(body.yaw,body.ai.pitch,body.ai.bank));
-  const auto pose = poseLiveEnemy(*rig,body,orientation,now);
-  const Vec3 lip{(part->low.x+part->high.x)*.5f,
-                 joint==EnemyJoint::Jaw ? part->high.y : (part->low.y+part->high.y)*.5f,
-                 part->low.z-.25f};
-  return body.origin + rotate(orientation,animatedPoint(pose.parts[size_t(part-rig->parts.begin())],lip));
+  const auto orientation=compose(body.ai.gravity.frame,angles(body.yaw,body.ai.pitch,body.ai.bank));
+  const auto joint=attack.style==SiegeStyle::Elbow?EnemyJoint::Arm:EnemyJoint::Jaw;
+  const auto *rig=body.mesh?enemyAnimationRig(originalAssetRoot()/"models",body.generatorAsset,body.mesh->size()):nullptr;
+  if(rig){
+    const auto pose=poseLiveEnemy(*rig,body,orientation,now);
+    Vec3 lips{};int count=0;
+    for(size_t i=0;i<rig->parts.size();++i){
+      const auto &part=rig->parts[i];
+      if(part.joint!=joint)continue;
+      // Paired mandibles share one mouth. Exclude accessory blades on forelimbs.
+      if(joint==EnemyJoint::Jaw&&part.name!="jaw"&&!part.name.starts_with("mandible_"))continue;
+      const Vec3 tip{(part.low.x+part.high.x)*.5f,(part.low.y+part.high.y)*.5f,part.low.z-.25f};
+      lips=lips+animatedPoint(pose.parts[i],tip);++count;
+      if(joint==EnemyJoint::Arm)break;
+    }
+    if(count)return body.origin+rotate(orientation,lips*(1.f/count));
+  }
+  if(body.ai.localHalf.z<=0)return fallback;
+  const Vec3 nose=body.ai.localCenter+Vec3{0,body.ai.localHalf.y*.25f,-body.ai.localHalf.z-.25f};
+  return body.origin+rotate(orientation,nose);
 }
 
 float siegeLaneOffset(const SiegeAttack &pattern, int pulse, int lane, bool reverse) {

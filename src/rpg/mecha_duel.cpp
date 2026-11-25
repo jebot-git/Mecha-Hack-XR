@@ -16,6 +16,57 @@ const EnemyAttack *duelWeapon(const EnemySpec &spec){
   return nullptr;
 }
 
+void Session::updateMeleeGuides(){
+  for(auto &pilot:members){
+    auto &guide=pilot.meleeGuide;
+    guide={};
+    if(phase!=Phase::Combat||!pilot.combatControls())continue;
+    std::optional<Vec3> followup;
+    float soonest=1e9f;
+    auto warn=[&](float remaining,Vec3 position){
+      if(guide.kind==MeleeGuide::Guard||remaining>=soonest)return;
+      soonest=remaining;guide={MeleeGuide::Incoming,position,{}};
+    };
+    for(size_t i=0;i<enemies.size();++i){
+      const auto &e=enemies[i];
+      const auto &body=world.targets[i];
+      if(e.hp<=0||body.escaped)continue;
+      if(!body.active){
+        if(e.burrowImpact&&e.arrivalDelay>0&&inEruptionRange(i,pilot))warn(e.arrivalDelay,body.origin);
+        continue;
+      }
+      if(e.disabled<=0){
+        const auto &d=e.duel;
+        const bool incomingCut=d.pilot==pilot.id&&d.phase==DuelPhase::FollowThrough&&
+            std::any_of(ordnance.begin(),ordnance.end(),[&](const Shot &shot){
+              return shot.meleeStrike&&shot.body.owner==int(i)&&shot.body.life>0&&dot(shot.guardAxis,shot.guardAxis)>.5f;
+            });
+        if(d.pilot==pilot.id&&(d.phase==DuelPhase::Windup||incomingCut)){
+          guide={MeleeGuide::Guard,d.guardPoint,d.guardAxis};
+        }
+        const auto &a=e.voidmawAssault;
+        const bool tackle=a.target==pilot.id&&(a.phase==VoidmawAssaultPhase::Coil||a.phase==VoidmawAssaultPhase::Tackle);
+        const auto &attacks=combatSpec(e).attacks;
+        const bool strike=e.chargeTarget==pilot.id&&e.chargeRemaining>0&&e.chargedAttack>=0&&
+            size_t(e.chargedAttack)<attacks.size()&&attacks[e.chargedAttack].range<=12;
+        if(tackle)warn(a.remaining,body.center);
+        if(strike)warn(e.chargeRemaining,body.center);
+        if(e.grapplePilot==pilot.id&&e.fireClock>0&&e.fireClock<=voidmawBiteWindup){
+          const auto facing=compose(body.ai.gravity.frame,angles(body.yaw,body.ai.pitch,body.ai.bank));
+          warn(e.fireClock,body.origin+rotate(facing,e.grappleMuzzle));
+        }
+      }
+      const bool counter=pilot.riposteRemaining>0&&pilot.riposteTarget==int(i);
+      const bool combo=pilot.comboRemaining>0&&pilot.comboCount<3&&pilot.comboTarget==int(i);
+      if(counter||(combo&&!followup))followup=body.center;
+    }
+    if(followup){
+      if(guide.kind==MeleeGuide::None)guide={MeleeGuide::Counter,*followup,{}};
+      else guide.simultaneousCounter=followup;
+    }
+  }
+}
+
 bool Session::stepMechaDuel(size_t i,const Member *victim,int npc,float dt){
   auto &enemy=enemies[i];
   auto &duel=enemy.duel;
@@ -119,10 +170,8 @@ bool Session::stepMechaDuel(size_t i,const Member *victim,int npc,float dt){
     duel.guardPoint=target-duel.ray*3.4f;
     duel.guardAxis=overhead?right:unit(right*(-side*.74f)+up*.68f);
     const float warning=overhead?.88f:duel.beat?.67f:.78f;
-    if(!addEffect({WeaponEffect::Sparks,duel.guardPoint,duel.guardAxis,Weapon::Empty,
-                   enemyEffectLife(rpgDuelGuardTell)-warning,1.45f,rpgDuelGuardTell})){
-      recovery(.5f);return true;
-    }
+    addEffect({WeaponEffect::Sparks,duel.guardPoint,duel.guardAxis,Weapon::Empty,
+               enemyEffectLife(rpgDuelGuardTell)-warning,1.45f,rpgDuelGuardTell});
     duel.phase=DuelPhase::Windup;duel.until=now+warning;
     if(enemy.boss>=0)enemy.bossTell=warning;
     motion.play(EnemyAction::MeleeWindup,now,warning,duel.cut);

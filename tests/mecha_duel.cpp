@@ -1,3 +1,4 @@
+#include "net/snapshot_packet.hpp"
 #include "rpg/enemy_effects.hpp"
 #include "rpg/original_assets.hpp"
 #include "rpg/session.hpp"
@@ -35,6 +36,15 @@ void enterWindup(Session &s,float dt){
   check(duel.phase==DuelPhase::Windup&&length(s.world.targets[0].origin-s.members.back().body.position)<10,
         "Rush failed to close into striking range");
   check(duel.pilot==s.members.back().id,"Rush targeted wrong co-op pilot");
+  const auto &pilot=s.members.back();
+  const auto guide=s.view(pilot.id).meleeGuide;
+  check(guide.kind==MeleeGuide::Guard&&length(guide.position-duel.guardPoint)<.001f&&
+        dot(guide.axis,duel.guardAxis)>.999f,"Pilot guard guide missed the required contact line");
+  if(s.members.size()>1){
+    Session peer;peer.readSnapshot(coop::decodeStatePacket(coop::encodeSnapshotPacket(s.snapshot())));
+    check(peer.view(pilot.id).meleeGuide.kind==MeleeGuide::Guard&&
+          peer.view(s.members.front().id).meleeGuide.kind==MeleeGuide::None,"Guard cue lost pilot ownership in snapshot");
+  }
   check(duel.until-s.world.elapsed>.65f,"First cut has insufficient warning");
   const auto cue=std::find_if(s.world.effects.begin(),s.world.effects.end(),[](const auto &fx){return fx.model==rpgDuelGuardTell;});
   check(cue!=s.world.effects.end()&&length(cue->position-duel.guardPoint)<.001f&&dot(cue->direction,duel.guardAxis)>.999f,
@@ -50,12 +60,19 @@ int main(){try{
     auto s=arena(coop);s.enemies[0].fireClock=1.4f;enterWindup(s,dt);
     const auto health=s.members.back().sheet.hp;
     auto &enemy=s.enemies[0];
+    bool sawActiveCut=false;
     std::vector<MechaTechnique> cuts;
     for(int n=0;n<400&&enemy.duel.phase!=DuelPhase::Recover;++n){
       if(enemy.duel.phase==DuelPhase::Windup&&enemy.duel.beat==int(cuts.size()))cuts.push_back(enemy.duel.cut);
       if(cuts.size()==1&&enemy.duel.phase==DuelPhase::Windup)check(s.members.back().sheet.hp==health,"Early damage in first windup");
       s.step(dt);
+      if(enemy.duel.phase==DuelPhase::FollowThrough&&
+          std::any_of(s.ordnance.begin(),s.ordnance.end(),[](const Shot &shot){return shot.meleeStrike&&shot.body.life>0;})){
+        check(s.members.back().meleeGuide.kind==MeleeGuide::Guard,"Guard guide disappeared during a live cut");
+        sawActiveCut=true;
+      }
     }
+    check(sawActiveCut,"Fixture failed to exercise a parryable travelling cut");
     check(cuts.size()==3&&cuts[0]!=cuts[1]&&cuts[2]==MechaTechnique::Overhead,"Ace failed alternating three-strike exchange");
     check(s.members.back().sheet.hp<health&&enemy.duel.until-s.world.elapsed>1,"No physical contact or recovery opening");
   }
@@ -64,12 +81,19 @@ int main(){try{
   hybrid.enemies[0].fireClock=1.4f;hybrid.world.targets[0].origin.z=-15;
   hybrid.world.updateEnemyBounds(hybrid.world.targets[0]);enterWindup(hybrid,.025f);
   auto s=arena();enterWindup(s,.025f);
+  auto overlap=s;
+  overlap.members.back().riposteTarget=0;overlap.members.back().riposteRemaining=.3f;
+  overlap.step(.025f);
+  Session peer;peer.readSnapshot(coop::decodeStatePacket(coop::encodeSnapshotPacket(overlap.snapshot())));
+  const auto both=peer.view(overlap.members.back().id).meleeGuide;
+  check(both.kind==MeleeGuide::Guard&&both.simultaneousCounter,"Defensive warning hid an active counterattack opening");
   const int hp=s.members.back().sheet.hp;
   auto dodge=s;dodge.members.back().body.position.x+=7.f;
   for(int n=0;n<44;++n)dodge.step(.025f);
   check(dodge.members.back().sheet.hp==hp,"Warned lane tracked a sidestepping pilot");
   auto severed=s;severed.enemies[0].missingArms=3;severed.step(.025f);
   check(severed.enemies[0].duel.phase==DuelPhase::Idle,"Limb loss failed to cancel committed attack");
+  check(severed.members.back().meleeGuide.kind==MeleeGuide::None,"Disarming attacker left a stale cockpit guide");
   check(std::none_of(severed.world.effects.begin(),severed.world.effects.end(),[](const auto &fx){return fx.model==rpgDuelGuardTell;}),"Interrupted guard marker persisted");
   // Reach the legal guard pose with the tracked controller for each cut.
   for(int beat=0;beat<3;++beat){
@@ -92,6 +116,7 @@ int main(){try{
       for(int n=0;n<44&&m.riposteRemaining<=0&&m.sheet.hp==health;++n)guardInput(test,pose,.025f);
       if(mode==0){
         check(m.sheet.hp==health&&m.riposteTarget==0&&m.riposteRemaining>0,"Correct tracked blade failed to parry actual ace");
+        check(test.view(m.id).meleeGuide.kind==MeleeGuide::Counter,"Missing counterattack guide after a parry");
         check(test.enemies[0].disabled>0&&test.world.targets[0].ai.combatMotion.action==EnemyAction::Stagger,"Parry failed to expose enemy");
       }else check(m.sheet.hp<health&&m.riposteRemaining<=0,"Invalid guard stopped attack");
     }

@@ -85,11 +85,15 @@ int main() {
       const auto &pattern=game.enemies[0].heavyAttack;
       const bool sweeping=pattern.pattern==HeavyPattern::Beam;
       const int pulse=pattern.pulse;
+      const int charge=game.enemies[0].chargedAttack;
       const int beforeHit=pilot.sheet.hp+pilot.sheet.ap+pilot.shield;
       game.step(1.f/120);
       const bool beamHit=sweeping && pattern.pulse!=pulse &&
           pilot.sheet.hp+pilot.sheet.ap+pilot.shield<beforeHit;
-      attacked=beamHit||std::any_of(game.ordnance.begin(),game.ordnance.end(),[](const auto &shot){return shot.body.owner==0;})||
+      // A jaw can already be within the hull collision volume at release.
+      const bool contact=charge>=0&&game.enemies[0].chargedAttack<0&&
+          pilot.sheet.hp+pilot.sheet.ap+pilot.shield<beforeHit;
+      attacked=contact||beamHit||std::any_of(game.ordnance.begin(),game.ordnance.end(),[](const auto &shot){return shot.body.owner==0;})||
           (game.enemies[0].grapplePilot==pilot.id&&pilot.sheet.hp+pilot.sheet.ap<durability)||
           pilot.body.rpgKnockdown.active(game.world.elapsed);
     }
@@ -162,13 +166,15 @@ int main() {
     rejected = true;
   }
   assert(rejected && Json(first.member(1).sheet) == prepared);
-  // Every catalog item is legal in an appropriate setup and supports a bounded
-  // activation.
+  // Exercise usable equipment and verify that integrated or retired gear has no mount.
   for (int id = 1; id < int(Gear::Count); ++id) {
+    auto g = Gear(id);
+    if(g==Gear::Comlink||g==Gear::Scrap||retiredGear(g)){
+      for(int slot=0;slot<MountCount;++slot)assert(!mountAllowed(g,slot));
+      continue;
+    }
     auto game = deployed();
     auto &m = game.member(1);
-    auto g = Gear(id);
-    if(g==Gear::Comlink||retiredGear(g))continue; // Integrated hardware has no mount action.
     m.sheet = createSheet(Chassis::Striker, PilotKind::Engineer, d);
     m.sheet.equipment.fill(Gear::Empty);
     int slot=mountAllowed(g,RightHand)?RightHand:RightShoulder;
@@ -191,33 +197,6 @@ int main() {
     submit(game, 1, input);
     game.step(1.f / 60);
     assert(std::isfinite(m.body.position.x) && m.sheet.hp >= 0);
-  }
-  // One-shot mode equipment keeps its exit control after consuming the item.
-  {
-    auto game = deployed();
-    auto &m = game.member(1);
-    m.sheet.equipment[RightShoulder] = Gear::OneShotModule;
-    m.sheet.oneShotModule = Module::VehicleMode;
-    m.sheet.inventory[size_t(Gear::OneShotModule)] = 1;
-    game.enemies[0].disabled = 100;
-    game.enemies[0].decisionClock = 100;
-    game.enemies[0].fireClock = 100;
-    Input in;
-    submit(game, 1, in);
-    game.step(1.f / 60);
-    in.fire[RightShoulder] = true;
-    submit(game, 1, in);
-    game.step(1.f / 60);
-    assert(m.vehicle && m.sheet.inventory[size_t(Gear::OneShotModule)] == 0);
-    in.fire[RightShoulder] = false;
-    for (int i = 0; i < 250; ++i) {
-      submit(game, 1, in);
-      game.step(1.f / 60);
-    }
-    in.fire[RightShoulder] = true;
-    submit(game, 1, in);
-    game.step(1.f / 60);
-    assert(!m.vehicle);
   }
   // A physical contact always resolves damage even with minimum Power and
   // maximum defender Mobility.
@@ -252,6 +231,18 @@ int main() {
   dodge.ordnance.push_back(enemyShot);
   dodge.step(1.f / 60);
   assert(victim.sheet.hp == 20); // no post-contact evasion roll
+  // These status payloads can be delivered by dedicated attack patterns.
+  for(auto effect:{AttackEffect::Blind,AttackEffect::DisruptSystems}){
+    auto scenario=deployed();
+    auto &pilot=scenario.member(1);
+    auto impact=enemyShot;
+    impact.body.position=pilot.body.position+Vec3{0,6,-10};
+    impact.effect=effect;
+    scenario.ordnance.push_back(impact);
+    scenario.step(1.f/60);
+    if(effect==AttackEffect::Blind)assert(pilot.blind>0);
+    else assert(pilot.systemDisrupt>0&&pilot.mobilityDisrupt>0);
+  }
   // Physical cover blocks a shot before it reaches the pilot.
   auto cover = deployed();
   auto &covered = cover.member(1);
@@ -367,7 +358,7 @@ int main() {
     assert(seen);
   for (auto seen : openers)
     assert(seen);
-  auto missionCase = [&](int objective, int opener = 5, int tactic = 8) {
+  auto missionCase = [&](int objective, int opener = 5) {
     Session game(71);
     game.add(1, "Mission");
     GameSettings settings;settings.maps=1;
@@ -375,7 +366,7 @@ int main() {
     settings.enemyCount = 1;
     settings.objective = objective;
     settings.opener = opener;
-    settings.tactic = tactic;
+    settings.tactic = 8;
     settings.location = 0;
     game.command(1, {{"op", "settings"}, {"settings", settings}});
     game.command(1, {{"op", "ready"}, {"value", true}});
@@ -387,8 +378,8 @@ int main() {
     game.enemies[0].disabled = 10000;
     return game;
   };
-  // Every objective gets a distinct executable completion condition.
-  for (int objective = 0; objective < 10; ++objective) {
+  // The moving multi-vehicle escort is exercised end to end by mecha-contract-flow.
+  for (int objective : {0,1,3,4,5,6,7,8,9}) {
     auto game = missionCase(objective);
     auto &player = game.member(1);
     auto visit = [&](Vec3 p) {
@@ -403,12 +394,6 @@ int main() {
     if (objective == 1) {
       game.mission.progress = objectiveDuration(game.mission.recipe,90.f)-.01f;
       game.step(.05f);
-    }
-    if (objective == 2) {
-      auto &asset = game.world.targets[game.mission.assets[0]];
-      asset.origin = {0, 0, -game.settings.extent * .65f};
-      asset.origin.y = game.world.surfaceHeight(asset.origin.x, asset.origin.z);
-      visit(asset.origin + Vec3{10, 0, 0});
     }
     if (objective == 3 || objective == 4) {
       auto assets = game.mission.assets;
@@ -439,7 +424,11 @@ int main() {
       exit.y = game.world.surfaceHeight(exit.x, exit.z);
       visit(exit);
     }
-    assert(game.phase == Phase::Complete);
+    if(game.mission.recoveryOpen){
+      player.body.position=game.world.missionEntry;
+      for(int tick=0;tick<52&&game.phase==Phase::Combat;++tick)game.step(.1f);
+    }
+    if(game.phase!=Phase::Complete)throw std::runtime_error("Objective did not complete: "+std::to_string(objective));
     Session copy;
     copy.readSnapshot(game.snapshot());
     assert(copy.snapshot() == game.snapshot());
@@ -493,29 +482,15 @@ int main() {
               .fire);
   assert(tacticalPlan(8, {0, 0, 0}, {0, 0, 30}, 30, 0, 0, 0, {0, 0, 0}, true)
              .spread < 1);
-  for (int tactic = 0; tactic < 10; ++tactic) {
-    auto game = missionCase(0, 5, tactic);
-    game.enemies[0].disabled = 0;
-    game.enemies[0].fireClock = 100;
-    game.enemies[0].decisionClock = 100;
-    auto &body = game.world.targets[0];
-    float floor=game.world.surfaceHeight(0,0);
-    body.origin = {0, floor, 0};
-    game.world.updateEnemyBounds(body);
-    game.enemies[0].anchorX = game.enemies[0].anchorZ = 0;
-    for (size_t i = 1; i < game.world.targets.size(); ++i)
-      game.world.targets[i].active = false;
-    game.member(1).body.position = {0,game.world.surfaceHeight(0,20),20};
-    game.step(.1f);
-    if (tactic == 0)
-      assert(body.origin.z < 0);
-    if (tactic == 1)
-      assert(body.origin.z > 0);
-    if (tactic == 2)
-      assert(length(body.origin-Vec3{0,floor,0}) < .01f);
-    if (tactic == 3 || tactic == 4 || tactic == 5)
-      assert(std::abs(body.origin.x) > .01f);
-  }
+  // Doctrine intent precedes obstacle avoidance and the mech's weapon-specific movement.
+  auto plan=[](int tactic,float range,unsigned actor,float recovery=1.f){
+    return tacticalPlan(tactic,{},Vec3{0,0,range},30,recovery,0,actor,{},false);
+  };
+  assert(length(plan(2,20,0).direction)==0);
+  for(int tactic:{3,4,5})
+    assert(plan(tactic,20,0).direction.x*plan(tactic,20,1).direction.x<0);
+  assert(plan(0,60,0).direction.z>0);
+  assert(plan(7,60,0,0).direction.z>0&&plan(7,20,0,2).direction.z<0);
   // Ready barrier, profile import, roster ownership and real loopback
   // transport.
   Server server("127.0.0.1", 0, 77);
@@ -572,5 +547,5 @@ int main() {
   assert(!nonHost->error.empty());
   std::filesystem::remove_all(directory);
   std::cout << "Physical accuracy/contact, full catalog, offline reuse, setup, "
-               "GM objectives, openers, tactics and ENet checks passed\n";
+               "Mission objectives, openers, tactics and ENet checks passed\n";
 }

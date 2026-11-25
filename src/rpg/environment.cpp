@@ -47,6 +47,15 @@ EnvironmentSample missionEnvironment(const MissionRecipe &recipe,
     if(recipe.planetoidHazard==1)scripted=Weather::MagneticBurst;
     if(recipe.planetoidHazard==3)scripted=Weather::IonStorm;
     if(recipe.planetoidHazard==9)scripted=Weather::MeteorShower;
+    if(recipe.complication==3&&recipe.rechargeSeconds>0&&
+       (scripted==Weather::Clear||!missionWeatherAllowed(recipe,scripted))){
+      constexpr std::array fronts{Weather::CorruptionSporeBurst,Weather::AshCloud,Weather::FireStorm,Weather::MagneticBurst,
+                                  Weather::MeteorShower,Weather::Snowstorm,Weather::RadioactiveWind,Weather::IonStorm};
+      for(size_t i=0;i<fronts.size();++i){
+        const auto candidate=fronts[(size_t(recipe.seed)+i)%fronts.size()];
+        if(missionWeatherAllowed(recipe,candidate)){scripted=candidate;break;}
+      }
+    }
   }
   if(scripted!=Weather::Clear&&missionWeatherAllowed(recipe,scripted)){
     sample.settings.weather=scripted;

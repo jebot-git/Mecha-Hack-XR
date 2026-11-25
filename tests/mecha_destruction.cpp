@@ -52,6 +52,10 @@ int main() {
   // the native ten-frame explosion/grounded-debris path to both network peers.
   {
     auto game=fixture();auto index=building(game,{0,0,0});
+    // Isolate the lifetime of destruction effects from subsequent weather pulses and bombardments.
+    game.mission.recipe.manualMission=-1;game.environmentCycle.seconds=0;
+    while(weatherHazard(missionEnvironment(game.mission.recipe,game.environmentCycle).settings.weather))
+      ++game.environmentCycle.seed;
     game.member(1).body.position={0,0,60};
     shoot(game,index,4);assert(game.world.targets[index].health==3);
     assert(!game.world.targets[index].processed);

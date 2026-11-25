@@ -60,6 +60,20 @@ static void testWeatherHazards(){
       pilot.body.position.y=38.f;
       game.world.interiorDecks.push_back({{-40,-40,40,40},{-40,38,0},{40,38,0}});
     }
+    if(example.weather==Weather::RadioactiveWind){
+      auto party=game;
+      auto wing=party.members.front();wing.id=2;wing.body.playerSlot=1;wing.body.position.x+=18.f;
+      party.members.push_back(wing);party.step(.05f);
+      bool warned=false;
+      for(const auto &marker:party.world.effects)if(marker.model==rpgWeatherWarning){
+        warned=true;
+        for(const auto &member:party.members){
+          auto delta=member.body.position-marker.position;
+          assert(std::hypot(delta.x,delta.z)>marker.size);
+        }
+      }
+      assert(warned);
+    }
     game.step(.05f);
     const auto fx=std::find_if(game.world.effects.begin(),game.world.effects.end(),[](const auto &f){
       return f.model==rpgWeatherWarning||f.model==rpgWeatherMeteor;
@@ -70,14 +84,19 @@ static void testWeatherHazards(){
     auto client=game;client.readSnapshot(game.snapshot());
     assert(client.world.environment.weather==example.weather);
     assert(client.world.effects.back().model==fx->model);
-    if(hazard->radius>0)pilot.body.position=fx->position;
+    assert(hazard->radius>0&&fx->size==hazard->radius);
+    auto stationary=game;
+    const auto gap=pilot.body.position-fx->position;
+    assert(std::hypot(gap.x,gap.z)>hazard->radius);
+    pilot.body.position=fx->position;
+    body.origin=fx->position+Vec3{2,0,0};game.world.updateEnemyBounds(body);
     auto sheltered=game;
     const auto p=pilot.body.position;
     sheltered.world.interiorRegions.push_back({{p.x-30,p.z-30,p.x+30,p.z+30},p.y-1.f,p.y+35.f});
     auto underBridge=game;
-    if(example.weather==Weather::Snowstorm)
-      underBridge.world.interiorDecks.push_back({{p.x-20,p.z-20,p.x+20,p.z+20},p+Vec3{-20,34,0},p+Vec3{20,34,0}});
+    underBridge.world.interiorDecks.push_back({{p.x-20,p.z-20,p.x+20,p.z+20},p+Vec3{-20,34,0},p+Vec3{20,34,0}});
     auto dodged=game;dodged.member(1).body.position={120,0,100};
+    dodged.world.targets[0].origin={125,0,105};dodged.world.updateEnemyBounds(dodged.world.targets[0]);
     auto shielded=game;
     if(example.weather==Weather::RadioactiveWind){
       pilot.sheet.ap=pilot.sheet.maxAp=8;
@@ -94,24 +113,31 @@ static void testWeatherHazards(){
     int ticks=int(std::ceil((hazard->warning+.22f)/.05f));
     for(int tick=0;tick<ticks;++tick){
       game.step(.05f);sheltered.step(.05f);dodged.step(.05f);shielded.step(.05f);
-      if(example.weather==Weather::Snowstorm)underBridge.step(.05f);
+      underBridge.step(.05f);stationary.step(.05f);
     }
     if(example.weather==Weather::MeteorShower)
       assert(protectedPilot.shield==3&&protectedPilot.sheet.hp==pilot.sheet.hp);
     else assert(protectedPilot.shield==2&&protectedPilot.sheet.hp==100&&protectedPilot.weatherJam==0);
+    for(const Session *safeGame:{&underBridge,&stationary,&dodged}){
+      const auto &safe=safeGame->members.front();
+      const int hp=safeGame==&dodged&&example.weather==Weather::RadioactiveWind?1:100;
+      assert(safe.sheet.hp==hp&&safe.sheet.reactorStress==0&&safe.weatherJam==0&&safe.mobilityDisrupt==0);
+    }
     if(example.weather==Weather::Snowstorm){
-      assert(underBridge.member(1).sheet.hp==100);
       assert(std::any_of(game.world.effects.begin(),game.world.effects.end(),[](const auto &f){return f.model==rpgWeatherHail;}));
     }
     const auto &safe=sheltered.member(1);
     assert(safe.sheet.hp==100&&safe.sheet.reactorStress==0&&safe.weatherJam==0&&safe.mobilityDisrupt==0);
     assert(sheltered.view(1).activeEnvironment().weather==Weather::Clear);
-    if(hazard->radius>0){
+    if(example.weather==Weather::FireStorm||example.weather==Weather::CorruptionSporeBurst||
+       example.weather==Weather::Snowstorm||example.weather==Weather::MeteorShower){
       assert(pilot.sheet.hp<100&&dodged.member(1).sheet.hp==100);
       if(example.weather==Weather::FireStorm||example.weather==Weather::CorruptionSporeBurst){
         const int first=pilot.sheet.hp;
-        for(int n=0;n<25;++n)game.step(.05f);
-        assert(pilot.sheet.hp<first);
+        auto escaped=game;
+        escaped.members.front().body.position={120,0,100};
+        for(int n=0;n<25;++n){game.step(.05f);escaped.step(.05f);}
+        assert(pilot.sheet.hp<first&&escaped.members.front().sheet.hp==first);
       }
     }else if(example.weather==Weather::IonStorm||example.weather==Weather::MagneticBurst){
       assert(pilot.weatherJam>0&&!game.view(1).sensorsWorking());
@@ -128,8 +154,42 @@ static void testWeatherHazards(){
       assert(pilot.sheet.hp==99&&pilot.sheet.ap==8&&pilot.sheet.reactorStress>0);
       assert(protectedPilot.sheet.reactorStress==0&&shielded.enemies[0].hp==npcHp&&shielded.enemies[0].heat==0);
       assert(game.enemies[0].hp==npcHp-1&&game.enemies[0].heat>0);
-      assert(dodged.member(1).sheet.hp==0&&dodged.member(1).emergency==HullEmergency::LastWind);
+      assert(dodged.member(1).emergency==HullEmergency::None);
     }
+  }
+  for(auto weather:{Weather::Clear,Weather::Fog,Weather::Rain,Weather::Storm,Weather::Sandstorm})
+    assert(!weatherHazard(weather));
+  for(int biome=0;biome<8;++biome){
+    MissionRecipe r;r.environment=biome;r.location=0;r.manualMission=0;r.complication=3;r.rechargeSeconds=20;
+    r.planetoidHazard=-1;
+    auto front=missionEnvironment(r,EnvironmentCycle{}).settings.weather;
+    assert(missionWeatherAllowed(r,front)&&weatherHazard(front)&&weatherHazard(front)->radius>0);
+  }
+  {
+    auto shelling=deployed(3,0,500);
+    shelling.mission.openerTime=100;shelling.mission.manualOpportunity=true;
+    shelling.mission.recipe.manualMission=0;shelling.mission.recipe.complication=4;
+    shelling.mission.recipe.rechargeSeconds=10;shelling.mission.manualPulse=10;
+    shelling.mission.recipe.countdownSeconds=0;
+    shelling.world.interiorRegions.clear();shelling.world.interiorDecks.clear();
+    shelling.member(1).body.position={};
+    shelling.step(.05f);
+    const auto mark=std::find_if(shelling.world.effects.begin(),shelling.world.effects.end(),[](const auto &f){
+      return f.model==rpgVehicleBombWarning&&f.weapon==Weapon::Rocket;
+    });
+    assert(mark!=shelling.world.effects.end());
+    const auto delta=mark->position-shelling.member(1).body.position;
+    assert(std::hypot(delta.x,delta.z)>mark->size);
+    assert(std::any_of(shelling.ordnance.begin(),shelling.ordnance.end(),[&](const auto &s){
+      return s.body.position.x==mark->position.x&&s.body.position.z==mark->position.z&&s.body.velocity.y<0;
+    }));
+  }
+  World saturated;
+  for(auto id:{rpgWeatherWarning,rpgWeatherMeteor,rpgWeatherSpore,rpgWeatherFire}){
+    saturated.effects.assign(256,WeaponEffect{});
+    saturated.effects.front().model=id;
+    assert(saturated.effect(WeaponEffect::Smoke,{},{},Weapon::Empty,1.f));
+    assert(saturated.effects.front().model==id);
   }
   int ordinaryLowVisibility=0,missionLowVisibility=0,nightInsertions=0;
   for(uint32_t seed=0;seed<256;++seed){

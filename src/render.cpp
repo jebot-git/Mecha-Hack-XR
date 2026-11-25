@@ -275,24 +275,23 @@ void Renderer::drawEnemyStreak(Vec3 from, Vec3 to, float width, Vec3 color, cons
     for(int i:{0,1,2,0,2,3})enemyEffectVertices.push_back(corners[i]);
 }
 
-void Renderer::drawMechaWave(const Projectile& shot,const Matrix& camera){
-    // The edge of the bright core matches the collision radius. Layer two
-    // keeps its distinct diamond silhouette when colours are hard to see.
-    const float radius=rpg::mechaWaveRadius;
+void Renderer::drawPatternProjectile(const Projectile& shot,const Matrix& camera,bool kaiju){
+    // Keep the second mecha wave diamond-shaped and acid globules round.
+    const float radius=kaiju?1.25f:rpg::mechaWaveRadius;
     const auto viewPosition=point(worldView,{shot.position.x,shot.position.y,shot.position.z});
     if(!visibleViewSphere({viewPosition[0],viewPosition[1],viewPosition[2]},radius*2.2f))return;
     const bool amber=shot.visual==ProjectileVisual::WaveA;
-    const Vec3 rim=amber?Vec3{1,.40f,.08f}:Vec3{.13f,.81f,1};
-    const Vec3 core=amber?Vec3{1,.94f,.65f}:Vec3{.83f,1,1};
-    const Vec3 outline=amber?Vec3{.28f,.07f,.02f}:Vec3{.02f,.11f,.27f};
+    const Vec3 rim=kaiju?Vec3{.48f,1.f,.13f}:amber?Vec3{1,.40f,.08f}:Vec3{.13f,.81f,1};
+    const Vec3 core=kaiju?Vec3{1.f,1.f,.78f}:amber?Vec3{1,.94f,.65f}:Vec3{.83f,1,1};
+    const Vec3 outline=kaiju?Vec3{.27f,.04f,.37f}:amber?Vec3{.28f,.07f,.02f}:Vec3{.02f,.11f,.27f};
     const Vec3 right{camera[0],camera[1],camera[2]},up{camera[4],camera[5],camera[6]};
     constexpr float diag=.70710678f;
     constexpr std::array<std::array<float,2>,8> ring{{{0,1},{diag,diag},{1,0},{diag,-diag},
                                                       {0,-1},{-diag,-diag},{-1,0},{-diag,diag}}};
-    const int stride=amber?1:2;
+    const int stride=(amber||kaiju)?1:2;
     const Vec3 heading=unit(shot.velocity);
     auto oldOpacity=shapeOpacity;shapeOpacity=.39f;
-    drawEnemyStreak(shot.position-heading*(radius*2.0f),shot.position,radius*.45f,rim,camera,-.9f);
+    drawEnemyStreak(shot.position-heading*(radius*(kaiju?4.f:2.f)),shot.position,radius*.45f,rim,camera,-.9f);
     shapeOpacity=oldOpacity;
     for(int j=0;j<8;j+=stride){
         auto radial=[&](int index){
@@ -341,7 +340,7 @@ void Renderer::drawEnemyEffect(const WeaponEffect& fx, const Matrix& camera, con
         visualScale=1.60f;break;
     }
     const float size = visualScale * std::clamp(fx.size, .2f, attackLane?180.f:
-        fx.model==rpgVehicleVolleyWarning?70.f:fx.model==rpgWeaponPulse?22.f:hazardEffect?16.f:7.f);
+        fx.model==rpgVehicleVolleyWarning?70.f:fx.model==rpgVehicleBombWarning?16.f:fx.model==rpgWeaponPulse?22.f:hazardEffect?16.f:7.f);
     const float fade = 1.f - progress;
     const Vec3 aim = unit(fx.direction);
     const Vec3 side = unit(cross(aim, std::abs(aim.y) < .85f ? Vec3{0, 1, 0} : Vec3{1, 0, 0}));
@@ -554,10 +553,10 @@ void Renderer::drawEnemyEffect(const WeaponEffect& fx, const Matrix& camera, con
             for(int dash=0;dash<6;++dash){
                 const float start=(float(dash)+.25f)/6.f;
                 drawEnemyStreak(origin+lane*(size*start),
-                    origin+lane*(size*(start+.10f)),breath?.15f:.12f,color,camera);
+                    origin+lane*(size*(start+.10f)),breath?.35f:.17f,color,camera);
             }
         }
-        sprite(breath?31:32,origin,(breath?2.7f:1.8f)+1.5f*progress,color,
+        sprite(breath?31:32,origin,(breath?4.8f:1.8f)+1.5f*progress,color,
                .52f+.43f*progress);
         break;
     }
@@ -565,11 +564,12 @@ void Renderer::drawEnemyEffect(const WeaponEffect& fx, const Matrix& camera, con
         const Vec3 end=origin+aim*size;
         const Vec3 mint{.21f,1.f,.72f};
         shapeOpacity=.37f;
-        drawEnemyStreak(origin,end,1.04f,mint,camera,-.29f);
+        drawEnemyStreak(origin,end,1.62f,mint,camera,-.29f);
         shapeOpacity=.86f;
-        drawEnemyStreak(origin,end,.46f,{.31f,1.f,.86f},camera,-.32f);
-        drawEnemyStreak(origin,end,.17f,{.83f,1.f,.91f},camera,-.45f);
-        sprite(31,origin,3.2f,mint,.89f);
+        drawEnemyStreak(origin,end,.72f,{.31f,1.f,.86f},camera,-.32f);
+        drawEnemyStreak(origin,end,.30f,{.83f,1.f,.91f},camera,-.45f);
+        sprite(31,origin,4.8f,mint,.95f);
+        sprite(31,end,3.4f,{.66f,1.f,.82f},.88f);
         break;
     }
     case rpgVehicleVolleyWarning: {
@@ -595,9 +595,11 @@ void Renderer::drawEnemyEffect(const WeaponEffect& fx, const Matrix& camera, con
         const bool ground=fx.weapon==Weapon::Grenade;
         shapeOpacity=.66f+.28f*std::sin(fx.age*17.f);
         if(ground){
+            const bool onSurface=std::abs(world.pilotSupportHeight(origin)-origin.y)<1.f;
             auto rim=[&](float angle){
                 auto point=origin+Vec3{std::sin(angle)*size,0,std::cos(angle)*size};
-                point.y=(world.environment.weather==Weather::Snowstorm?world.pilotSupportHeight(point):world.walkableHeight(point))+.32f;
+                point.y=origin.y+.32f;
+                if(onSurface)point.y=world.pilotSupportHeight(point)+.32f;
                 return point;
             };
             for(int n=0;n<20;++n){
@@ -671,7 +673,7 @@ void Renderer::drawEnemyEffect(const WeaponEffect& fx, const Matrix& camera, con
         shapeOpacity=.77f+.22f*std::sin(fx.age*11.f);
         const Vec3 color{1,.46f,.16f};
         auto surface=[&](Vec3 p){
-            p.y=world.surfaceHeight(p.x,p.z)+world.waterDepthAt(p)+.31f;
+            p.y=(fx.weapon==Weapon::Rocket?world.pilotSupportHeight(p):world.surfaceHeight(p.x,p.z)+world.waterDepthAt(p))+.31f;
             return p;
         };
         std::array<Vec3,16> rim;
@@ -930,8 +932,13 @@ void Renderer::drawWorldLayer(const World& w,const Matrix& camera,bool paused,co
         Vec3 d=p.velocity*(1/std::max(.001f,length(p.velocity)));float yaw=std::atan2(-d.x,-d.z),pitch=std::asin(std::clamp(d.y,-1.f,1.f));
         auto pose=multiply(translation(p.position.x,p.position.y,p.position.z),rotation(yaw,pitch));
         bool missile=p.kind==ProjectileKind::Rocket,bomb=p.kind==ProjectileKind::Bomb,rail=p.weapon==Weapon::Rail;
-        if(w.rpgPrototype&&(p.visual==ProjectileVisual::WaveA||p.visual==ProjectileVisual::WaveB)){
-            drawMechaWave(p,camera);
+        const auto motor=w.rpgPrototype&&p.owner>=0&&size_t(p.owner)<w.targets.size()
+            ?w.targets[p.owner].ai.rpgMotor:EnemyMotor::Silent;
+        const bool kaiju=motor==EnemyMotor::Creature||motor==EnemyMotor::CreatureWing||
+            motor==EnemyMotor::CreatureCrawl||motor==EnemyMotor::CreatureSwim;
+        if(kaiju)drawPatternProjectile(p,camera,true);
+        else if(w.rpgPrototype&&(p.visual==ProjectileVisual::WaveA||p.visual==ProjectileVisual::WaveB)){
+            drawPatternProjectile(p,camera,false);
         }else if(bomb||missile){
             const bool lofted=p.visual==ProjectileVisual::LoftMissile;
             if(lofted)pose=multiply(pose,scaling(3.4f,3.4f,1.8f));
@@ -1071,6 +1078,45 @@ void Renderer::drawWorldLayer(const World& w,const Matrix& camera,bool paused,co
         glDepthMask(GL_TRUE);glDisable(GL_BLEND);
     }
 }
+void Renderer::drawMeleeGuide(const MeleeGuide& guide,const Matrix& head){
+    const Matrix view=inverseRigid(head);
+    const auto p=point(view,{guide.position.x,guide.position.y,guide.position.z});
+    const float depth=std::max(.5f,-p[2]);
+    float x=p[0]/depth,y=p[1]/depth;
+    const bool behind=p[2]>=0;
+    if(behind&&std::hypot(x,y)<.01f)y=-1;
+    const float edge=std::max(std::abs(x)/.53f,std::abs(y)/.40f);
+    const bool offscreen=behind||edge>1;
+    if(offscreen){const float scale=1.f/std::max(.001f,edge);x*=scale;y*=scale;}
+    const float z=offscreen?2.f:depth;
+    const Matrix panel=multiply(head,multiply(translation(x*z,y*z,-z),scaling(z,z,z)));
+    const bool guard=guide.kind==MeleeGuide::Guard,counter=guide.kind==MeleeGuide::Counter;
+    const Vec3 tint=counter?Vec3{.22f,1.f,.82f}:Vec3{1.f,.69f,.10f};
+    auto mark=[&](Vec3 a,Vec3 b){
+        line(panel,a,b,.009f,{.07f,.045f,.08f});
+        line(panel,a,b,.004f,tint);
+    };
+    glDisable(GL_DEPTH_TEST);glDepthMask(GL_FALSE);
+    if(guard){
+        const auto axis=guide.axis;
+        const Vec3 projected{dot(axis,{head[0],head[1],head[2]}),dot(axis,{head[4],head[5],head[6]}),0};
+        const Vec3 along=unit(projected,{0,1,0});
+        for(float sign:{-1.f,1.f})mark(along*(sign*.018f),along*(sign*.093f));
+    }else{
+        for(float sign:{-1.f,1.f}){
+            mark({sign*.055f,-.032f,0},{sign*.029f,0,0});
+            mark({sign*.029f,0,0},{sign*.055f,.032f,0});
+        }
+    }
+    if(offscreen){
+        const Vec3 outward=unit(Vec3{x,y,0}),side{-outward.y,outward.x,0};
+        mark(outward*.13f,outward*.105f+side*.015f);
+        mark(outward*.13f,outward*.105f-side*.015f);
+    }
+    text(guard?"PARRY":counter?"STRIKE":"INCOMING",multiply(panel,translation(-.067f,counter?.085f:-.108f,0)),.005f,tint);
+    glDepthMask(GL_TRUE);glEnable(GL_DEPTH_TEST);
+}
+
 void Renderer::drawScene(const World& w,const Matrix& projection,const Matrix& camera,const Matrix& head,bool paused,const Frontend* menu) {
     glEnable(GL_DEPTH_TEST);glDisable(GL_BLEND);glDisable(GL_CULL_FACE);
     environmentProfile=w.activeEnvironment();environmentView=environmentVisuals(w.activeEnvironment(),w.night,w.skyColor,w.groundColor,w.weatherTime());
@@ -1226,6 +1272,11 @@ void Renderer::drawScene(const World& w,const Matrix& projection,const Matrix& c
     if(w.missile.active) {
         text("CRUISE / HEAD GUIDANCE",multiply(hud,translation(-.34f,.64f,0)),.01f,{.6f,.85f,.8f});
         if(paused) text("PAUSED",multiply(hud,translation(-.12f,.16f,0)),.015f,{1,.7f,.3f});
+    }
+    if(w.rpgPrototype&&!paused&&!w.lifeSpent&&w.meleeGuide.kind!=MeleeGuide::None){
+        if(w.meleeGuide.simultaneousCounter)
+            drawMeleeGuide({MeleeGuide::Counter,*w.meleeGuide.simultaneousCounter,{}},head);
+        drawMeleeGuide(w.meleeGuide,head);
     }
 }
 }

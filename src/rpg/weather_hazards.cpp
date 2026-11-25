@@ -8,7 +8,7 @@ namespace {
 constexpr float frontGrace=4.f, fieldInterval=1.f;
 bool exposed(const World &world,Vec3 p){
   const auto canopy=p+Vec3{0,10,0};
-  return !world.indoors(p)&&!world.indoors(canopy)&&
+  return !world.indoors(p)&&!world.indoors(canopy)&&!std::isfinite(world.interiorCeilingAt(canopy))&&
          (world.environment.weather!=Weather::Snowstorm||world.exposedToPrecipitation(canopy));
 }
 bool withinImpact(const World &world,Vec3 center,Vec3 feet,float radius,int actor=-1){
@@ -28,8 +28,7 @@ void Session::stepWeatherHazards(){
     });
     front={};front.kind=kind;front.seed=world.environment.seed;
   }
-  if(!hazard)return;
-  const bool local=hazard->radius>0;
+  if(!hazard||hazard->radius<=0)return;
   const auto live=[&](const Member &m){
     return !m.ejected&&m.sheet.hp>0&&!m.body.lifeSpent&&exposed(world,m.body.position);
   };
@@ -41,10 +40,10 @@ void Session::stepWeatherHazards(){
   };
   if(front.impactAt>=0&&world.elapsed>=front.impactAt){
     const bool initial=front.linger==0;
-    if(initial&&local){
+    if(initial){
       if(kind==Weather::CorruptionSporeBurst)front.linger=4;
       if(kind==Weather::FireStorm)front.linger=3;
-      for(size_t n=0;n<front.count;++n){
+      for(size_t n=0;n<front.count;){
         const auto p=front.cells[n];
         if(kind==Weather::MeteorShower){
           addEffect({WeaponEffect::Blast,p,{0,1,0},Weapon::Grenade,0,hazard->radius*.6f,rpgWeaponBlast});
@@ -57,17 +56,19 @@ void Session::stepWeatherHazards(){
           }
         }else if(kind==Weather::Snowstorm){
           addEffect({WeaponEffect::Sparks,p,{0,1,0},Weapon::Empty,0,hazard->radius,rpgWeatherHail});
-        }else{
+        }else if(kind==Weather::FireStorm||kind==Weather::CorruptionSporeBurst){
           const unsigned fx=kind==Weather::FireStorm?rpgWeatherFire:rpgWeatherSpore;
-          addEffect({WeaponEffect::Smoke,p,{0,1,0},Weapon::Empty,0,hazard->radius,fx});
-        }
+          if(!addEffect({WeaponEffect::Smoke,p,{0,1,0},Weapon::Empty,0,hazard->radius,fx})){
+            // A lingering field must remain visible for as long as it can hurt.
+            front.cells[n]=front.cells[--front.count];
+            continue;
+          }
+        }else addEffect({WeaponEffect::Sparks,p+Vec3{0,2,0},{0,1,0},Weapon::Rail,0,hazard->radius,rpgWeatherPulse});
+        ++n;
       }
-    }else if(initial){
-      for(const auto &m:members)if(live(m))
-        addEffect({WeaponEffect::Sparks,m.body.bodyPoint(6),{0,1,0},Weapon::Rail,0,5.f,rpgWeatherPulse});
     }
     for(auto &m:members){
-      if(!live(m)|| (local&&!hit(m.body.position,-1)))continue;
+      if(!live(m)||!hit(m.body.position,-1))continue;
       if(kind!=Weather::MeteorShower&&absorbShield(m,1)==0)continue;
       switch(kind){
         case Weather::IonStorm:
@@ -103,7 +104,7 @@ void Session::stepWeatherHazards(){
       const auto &body=world.targets[i];
       const auto &e=enemies[i];
       if(e.hp<=0||!body.active||body.escaped||!exposed(world,body.origin)||
-         (local&&!hit(body.origin,int(i))))continue;
+         !hit(body.origin,int(i)))continue;
       switch(kind){
         case Weather::IonStorm:damageNpc(i,0,AttackEffect::DoubleReactor,Quality::None);break;
         case Weather::CorruptionSporeBurst:
@@ -130,28 +131,30 @@ void Session::stepWeatherHazards(){
   if(pulse==front.lastPulse||age-pulse*hazard->cadence>1.f)return;
   front.lastPulse=pulse;
   front.count=0;
+  const bool freeFlight=biome==1||biome==2||biome==7||mission.recipe.location==7;
   for(const auto &m:members){
     if(!live(m)||front.count>=front.cells.size())continue;
-    if(!local){
-      addEffect({WeaponEffect::Sparks,m.body.bodyPoint(5),{0,1,0},Weapon::Rail,3.f-hazard->warning,5.f,rpgWeatherWarning});
-      ++front.count;
-      continue;
-    }
     const uint32_t index=unsigned(pulse)*23+m.body.playerSlot*5;
     const float angle=weatherNoise(front.seed,index)*2*pi;
-    const float distance=hazard->radius*(.55f+.45f*weatherNoise(front.seed,index+1));
+    const float distance=hazard->radius+2.f+4.f*weatherNoise(front.seed,index+1);
     for(float turn:{0.f,1.57f,-1.57f,pi}){
       auto p=m.body.position+Vec3{std::sin(angle+turn)*distance,0,std::cos(angle+turn)*distance};
-      p.y=kind==Weather::Snowstorm?world.pilotSupportHeight(p):world.walkableHeight(p);
+      if(!freeFlight)p.y=world.pilotSupportHeight(p);
+      // A stationary pilot, including a disabled one, always starts outside each new cell.
+      const auto overlapsPilot=[&](const Member &pilot){
+        const auto d=pilot.body.position-p;
+        return !pilot.ejected&&std::abs(d.y)<=13.f&&std::hypot(d.x,d.z)<=hazard->radius+1.f;
+      };
       if(!insideArea(p,missionRadius()*.96f)||!exposed(world,p)||std::abs(p.y-m.body.position.y)>10.f||
-         (kind!=Weather::MeteorShower&&world.wadingDepthAt(p)>1.f)||
-         std::any_of(front.cells.begin(),front.cells.begin()+front.count,[&](Vec3 prior){return length(prior-p)<hazard->radius;}))continue;
+         (!freeFlight&&kind!=Weather::MeteorShower&&world.wadingDepthAt(p)>1.f)||
+         std::any_of(members.begin(),members.end(),overlapsPilot)||
+         std::any_of(front.cells.begin(),front.cells.begin()+front.count,[&](Vec3 prior){return std::hypot(prior.x-p.x,prior.z-p.z)<hazard->radius*2.f;}))continue;
       const unsigned model=kind==Weather::MeteorShower?rpgWeatherMeteor:rpgWeatherWarning;
       if(addEffect({WeaponEffect::Sparks,p,{0,1,0},Weapon::Grenade,3.f-hazard->warning,hazard->radius,model}))
         front.cells[front.count++]=p;
       break;
     }
   }
-  if(!local||front.count)front.impactAt=world.elapsed+hazard->warning;
+  if(front.count)front.impactAt=world.elapsed+hazard->warning;
 }
 }
