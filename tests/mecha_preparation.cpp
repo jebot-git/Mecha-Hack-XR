@@ -70,16 +70,48 @@ int main(){
  p.selected=1;p.edit(1);assert(p.sheet.pilot==PilotKind::Maverick);p.selected=3;p.confirm();assert(p.sheet.created&&p.sheet.level==1);
  auto sheet=p.sheet;p.sheet.owned[size_t(Gear::Rifle)]=2;p.sheet.inventory[size_t(Gear::Repair)]=4;for(int slot=0;slot<MountCount;++slot){p.selectedGear=int(slot<2?Gear::Rifle:Gear::Repair);if(slot==1)p.sheet.owned[size_t(Gear::Rifle)]=2;p.mount(slot);assert(p.sheet.equipment[slot]==Gear(p.selectedGear));p.mount(slot,true);assert(p.sheet.equipment[slot]==Gear::Empty);}
  for(bool host:{false,true}){
-  auto count=p.rowCount(host);assert(count==11);
+  auto count=p.rowCount(host);assert(count==5);
   for(int row=0;row<count;++row){p.selected=row;auto lines=p.lines(lobby,host?1:2,"");assert(lines.size()<=12);for(const auto &line:lines)for(const char *obsolete:{"GM","TABLE","RANDOM","QUALITY:","HOSTILES:","FACTION:","WORLD:","MISSION LENGTH","REFRESH"})assert(line.find(obsolete)==std::string::npos);}
  }
- p.sheet.credits=modulePurchaseCost;p.modulePreview=Module::ChestBeam;p.selected=2;auto before=p.sheet.modules.size();p.confirm();assert(p.sheet.modules.size()==before+1&&p.sheet.credits==0);
- p.selected=0;for(int n=0;n<int(Gear::Count)*2;++n){p.edit(1);assert(playerEquipment(Gear(p.selectedGear)));}
+ // Opening each workshop and navigating its controls must preserve the fitted sheet.
+ for(int i=1;i<=int(Workshop::Refine);++i){
+   p.openEquipment();p.selected=i-1;
+   auto saved=Json(p.sheet);
+   assert(p.tradeCommand().is_null()&&p.refillCommand().is_null());
+   p.confirm();assert(p.workshop==Workshop(i));
+   for(int n=0;n<p.rowCount();++n){
+     p.navigate(0,1);p.navigate(1,0);
+     auto view=p.loadoutPanel(p.sheet,-1,"");
+     assert((view.columns==0)==(p.workshop==Workshop::Equip));
+     if(p.workshop!=Workshop::Equip)assert(view.selectedSlot==-1&&p.refillCommand().is_null());
+   }
+   assert(p.back()&&p.selected==i-1&&Json(p.sheet)==saved);
+ }
+ {
+   Preparation editor;editor.sheet=sheet;editor.openEquipment();
+   const auto saved=editor.sheet.equipment;
+   editor.confirm();assert(editor.workshop==Workshop::Equip);
+   editor.navigate(0,1);editor.navigate(0,1);
+   const int slot=equipmentPanelOrder[editor.selected];assert(slot==LeftHand);
+   editor.edit(1);assert(editor.sheet.equipment==saved);
+   editor.back();editor.confirm();editor.navigate(0,1);editor.navigate(0,1);
+   assert(editor.selectedGear==int(saved[slot])&&!editor.confirm());
+   while(editor.selectedGear!=int(Gear::Empty))editor.edit(1);
+   assert(editor.confirm()&&editor.sheet.equipment[slot]==Gear::Empty);
+   editor.back();editor.selected=int(Workshop::Armour)-1;editor.confirm();
+   const auto armour=editor.sheet.armor;
+   editor.navigate(1,0);editor.back();assert(editor.sheet.armor==armour);
+   editor.confirm();assert(!editor.confirm()&&editor.sheet.armor==armour);
+   editor.selected=0;assert(editor.confirm()&&editor.sheet.armor==Armor::None);
+ }
+ p.sheet.credits=modulePurchaseCost;p.workshop=Workshop::Install;p.selected=0;
+ auto before=p.sheet.modules.size();p.confirm();assert(p.sheet.modules.size()==before+1&&p.sheet.credits==0);
+ p.workshop=Workshop::Equip;p.selected=0;for(int n=0;n<int(Gear::Count)*2;++n){p.edit(1);assert(playerEquipment(Gear(p.selectedGear)));}
  p.inventory=true;p.selected=0;auto stock=p.lines(lobby,1,"");
  assert(stock.front()=="INVENTORY"&&p.rowCount()>0);
  auto unchanged=Json(p.sheet);p.edit(1);p.confirm();assert(Json(p.sheet)==unchanged);
  p.inventory=false;
- p.trading=true;p.selected=0;for(int n=0;n<int(Gear::Count)*2;++n){p.edit(1);auto gear=Gear(p.selectedGear);assert(playerEquipment(gear)&&traderPrice(gear)>0&&weaponRarity(gear)==Rarity::Common);}
+ p.trading=true;
  p.selectedGear=int(Gear::Rifle);p.sheet.inventory[size_t(Gear::Scrap)]=5;
  p.selected=p.rowCount()-3;p.selectedCopy=0;p.edit(1);
  assert(p.selectedWeaponCopy()==1);
@@ -89,7 +121,7 @@ int main(){
  assert(p.equipmentCommand(RightHand).at("copy")==1);
  {
   Preparation fitted;
-  fitted.sheet=sheet;
+  fitted.sheet=sheet;fitted.workshop=Workshop::Equip;
   fitted.sheet.credits=400;
   equipGear(fitted.sheet,LeftShoulder,Gear::Repair);
   fitted.sheet.inventory[size_t(Gear::Repair)]=0;
@@ -121,7 +153,7 @@ int main(){
          guest.sheet.repairKits==1&&guest.sheet.credits==400-gearInfo(Gear::Repair).cost);
   Session replica;replica.readSnapshot(lobby.snapshot());
   assert(replica.member(2).sheet.inventory[size_t(Gear::Repair)]==1&&replica.member(2).sheet.equipment==originalEquipment);
-  fitted.sheet=guest.sheet;
+  fitted.sheet=guest.sheet;fitted.workshop=Workshop::Frame;
   for(int row=0;row<fitted.rowCount();++row){
    fitted.selected=row;
    if(!fitted.tradeCommand().is_null())break;
@@ -167,7 +199,7 @@ int main(){
    return Json{{"op","trade"},{"action","tune"},{"gear","rifle"},{"copy",0},{"stat",int(stat)},{"award",award}};
   };
   Preparation purchase;
-  purchase.sheet=pilot.sheet;
+  purchase.sheet=pilot.sheet;purchase.workshop=Workshop::Refine;
   bool pilotAward=false,weaponAward=false;
   for(int row=0;row<purchase.rowCount();++row){
    purchase.selected=row;

@@ -322,37 +322,84 @@ void Renderer::frontend(const Frontend& state,const Matrix& base) {
             }
             words(name,x-(trigger?3.7f:1.9f),y-2.f,.92f,color);
         };
-        panel("equipment");
+        panel(state.interfaceArt=="trader"?"trader":"equipment");
         words(loadout.title,13,22,1.45f,amber);
-        for(size_t i=0;i<loadout.options.size();++i){
-            const float spacing=std::min(76.f,296.f/float(loadout.options.size()));
-            const float x=13+spacing*float(i);
-            const bool selected=loadout.selectedOption==int(i);
-            words(loadout.options[i],x,47,1.03f,selected?amber:dim);
-            if(selected)stroke(x,55,x+std::min(57.f,spacing-6.f),55,1.f,amber);
-        }
-        optionalPicture(state.chassisPortrait,104,63,112,130,.011f);
-        constexpr const char *controls[]={"LT","RT","Y","B","X","A"};
-        constexpr const char *mounts[]={"LEFT ARM","RIGHT ARM","LEFT SHOULDER","RIGHT SHOULDER","LEFT HIP","RIGHT HIP"};
-        constexpr float hardpointY[]={90,120,137};
-        for(int i=0;i<MountCount;++i){
-            const int slot=equipmentPanelOrder[i];
-            const auto &card=loadout.slots[slot];
-            const bool left=i%2==0,selected=loadout.selectedSlot==slot;
-            const float x=left?12:214,y=57+47*float(i/2);
-            const float edge=left?x+94:x,anchorX=left?134:186;
-            const float anchorY=hardpointY[i/2];
-            const Vec3 accent=selected?amber:(card.empty||card.linked?dim:green);
-            fill(x,y,94,42,selected?focus:ink);
-            stroke(x,y,x+94,y,selected?1.6f:1.f,accent);
-            stroke(edge,y+18,anchorX,anchorY,selected?1.4f:.85f,accent);
-            stroke(anchorX-2,anchorY,anchorX+2,anchorY,1.7f,accent);
-            key(controls[slot],x+12,y+10,accent,slot<LeftShoulder);
-            words(mounts[slot],x+25,y+13,.85f,accent);
-            int lineNumber=0;
-            for(const auto &part:missionLines(card.item,22))
-                if(lineNumber<2)words(part,x+5,y+24+7.5f*lineNumber++,.96f,card.empty?dim:green);
-            words(card.detail,x+5,y+39,.84f,card.detail=="DEPLETED"?amber:dim);
+        if(loadout.columns>0){
+            const int columns=loadout.columns;
+            const int rows=columns==1?5:3;
+            const int capacity=columns*rows;
+            const int start=loadout.cursor/capacity*capacity;
+            const int count=int(loadout.cards.size());
+            if(count>capacity)words(std::to_string(start/capacity+1)+" / "+std::to_string((count+capacity-1)/capacity),264,40,1.f,dim);
+            const float width=296.f/columns,height=150.f/rows;
+            for(int i=start;i<std::min(start+capacity,count);++i){
+                const auto &card=loadout.cards[i];
+                const float x=12+((i-start)%columns)*width,y=46+((i-start)/columns)*height;
+                const bool selected=i==loadout.cursor;
+                const auto accent=selected?amber:dim;
+                fill(x,y,width-3,height-3,selected?focus:ink);
+                stroke(x,y,x+width-3,y,selected?1.6f:.75f,accent);
+                if(selected)stroke(x,y,x,y+height-3,1.6f,accent);
+                bool illustrated=!card.icon.empty()&&optionalPicture(card.icon,x+3,y+3,24,24,.015f);
+                using Symbol=EquipmentPanel::Symbol;
+                if(!illustrated&&card.symbol!=Symbol::None){
+                    const float cx=x+15,cy=y+14;
+                    auto edge=[&](float ax,float ay,float bx,float by){stroke(cx+ax,cy+ay,cx+bx,cy+by,1.2f,accent);};
+                    switch(card.symbol){
+                    case Symbol::Mount:
+                        edge(-8,-4,8,-4);edge(-8,-4,-8,4);edge(8,-4,8,4);edge(-3,4,3,4);edge(0,-4,0,4);break;
+                    case Symbol::Module:
+                        edge(-5,-5,5,-5);edge(5,-5,5,5);edge(5,5,-5,5);edge(-5,5,-5,-5);
+                        for(float dy:{-3.f,2.f}){edge(-8,dy,-5,dy);edge(5,dy,8,dy);}break;
+                    case Symbol::Plate:
+                        edge(-7,-6,7,-6);edge(7,-6,6,2);edge(6,2,0,7);edge(0,7,-6,2);edge(-6,2,-7,-6);break;
+                    case Symbol::Frame:
+                        edge(-7,-6,7,-6);edge(7,-6,4,6);edge(4,6,-4,6);edge(-4,6,-7,-6);edge(-6,-3,4,5);edge(6,-3,-4,5);break;
+                    case Symbol::Attribute:
+                        for(int k=0;k<3;++k)edge(-6+k*5,5,-6+k*5,5-4*(k+1));
+                        break;
+                    default:break;
+                    }
+                    illustrated=true;
+                }
+                const float inset=illustrated?30:6;
+                const int characters=int((width-inset-5)/4.3f);
+                int line=0;
+                for(const auto &part:missionLines(card.label,characters))
+                    if(line<2)words(part,x+inset,y+12+8*line++,1.f,selected?amber:green);
+                words(card.caption,x+6,y+height-8,.9f,dim);
+            }
+        }else{
+            for(size_t i=0;i<loadout.options.size();++i){
+                const float spacing=296.f/float(loadout.options.size());
+                const float x=13+spacing*float(i);
+                const bool selected=loadout.selectedOption==int(i);
+                words(loadout.options[i],x,47,1.03f,selected?amber:dim);
+                if(selected)stroke(x,55,x+std::min(57.f,spacing-6.f),55,1.f,amber);
+            }
+            optionalPicture(state.chassisPortrait,104,63,112,130,.011f);
+            constexpr const char *controls[]={"LT","RT","Y","B","X","A"};
+            constexpr const char *mounts[]={"LEFT ARM","RIGHT ARM","LEFT SHOULDER","RIGHT SHOULDER","LEFT HIP","RIGHT HIP"};
+            constexpr float hardpointY[]={90,120,137};
+            for(int i=0;i<MountCount;++i){
+                const int slot=equipmentPanelOrder[i];
+                const auto &card=loadout.slots[slot];
+                const bool left=i%2==0,selected=loadout.selectedSlot==slot;
+                const float x=left?12:214,y=57+47*float(i/2);
+                const float edge=left?x+94:x,anchorX=left?134:186;
+                const float anchorY=hardpointY[i/2];
+                const Vec3 accent=selected?amber:(card.empty||card.linked?dim:green);
+                fill(x,y,94,42,selected?focus:ink);
+                stroke(x,y,x+94,y,selected?1.6f:1.f,accent);
+                stroke(edge,y+18,anchorX,anchorY,selected?1.4f:.85f,accent);
+                stroke(anchorX-2,anchorY,anchorX+2,anchorY,1.7f,accent);
+                key(controls[slot],x+12,y+10,accent,slot<LeftShoulder);
+                words(mounts[slot],x+25,y+13,.85f,accent);
+                int lineNumber=0;
+                for(const auto &part:missionLines(card.item,22))
+                    if(lineNumber<2)words(part,x+5,y+24+7.5f*lineNumber++,.96f,card.empty?dim:green);
+                words(card.detail,x+5,y+39,.84f,card.detail=="DEPLETED"?amber:dim);
+            }
         }
         fill(12,201,296,48,ink);
         stroke(12,201,308,201,1.f,dim);

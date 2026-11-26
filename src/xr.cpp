@@ -25,6 +25,24 @@ struct XR::Impl {
     XrSession session = XR_NULL_HANDLE;
     XrSpace space = XR_NULL_HANDLE;
     XrSystemId system = XR_NULL_SYSTEM_ID;
+#ifdef __ANDROID__
+    PFN_xrRequestDisplayRefreshRateFB requestRefresh=nullptr;
+    PFN_xrPerfSettingsSetPerformanceLevelEXT setPerformance=nullptr;
+    void applyQuestPreset() const {
+        if(requestRefresh){
+            const auto result=requestRefresh(session,90.f);
+            std::cerr<<"Quest display request 90 Hz: "<<result<<'\n';
+        }
+        if(setPerformance){
+            // Horizon chooses the actual clock levels within the requested envelope.
+            for(auto domain:{XR_PERF_SETTINGS_DOMAIN_CPU_EXT,XR_PERF_SETTINGS_DOMAIN_GPU_EXT}){
+                const auto result=setPerformance(session,domain,XR_PERF_SETTINGS_LEVEL_SUSTAINED_HIGH_EXT);
+                std::cerr<<"Quest sustained-high "<<(domain==XR_PERF_SETTINGS_DOMAIN_CPU_EXT?"CPU":"GPU")
+                         <<" request: "<<result<<'\n';
+            }
+        }
+    }
+#endif
     bool running = false, hasAnchor = false, quit = false, isFocused = false, visible = true;
     XrEnvironmentBlendMode blend = XR_ENVIRONMENT_BLEND_MODE_OPAQUE;
     struct Eye {
@@ -102,6 +120,17 @@ void XR::initialize(SDL_Window *window) {
     std::vector<const char *> extensions{xr_platform::graphicsExtension};
 #ifdef __ANDROID__
     extensions.push_back(XR_KHR_ANDROID_CREATE_INSTANCE_EXTENSION_NAME);
+    auto questExtension=[&](const char *name){
+        if(!x.rpgControls)return false;
+        for(const auto &property:available)if(std::strcmp(property.extensionName,name)==0){
+            extensions.push_back(name);
+            return true;
+        }
+        std::cerr<<"Quest preset extension unavailable: "<<name<<'\n';
+        return false;
+    };
+    const bool refresh=questExtension(XR_FB_DISPLAY_REFRESH_RATE_EXTENSION_NAME);
+    const bool performance=questExtension(XR_EXT_PERFORMANCE_SETTINGS_EXTENSION_NAME);
 #elif !defined(_WIN32)
     if (useEgl)
         extensions.push_back(XR_MNDX_EGL_ENABLE_EXTENSION_NAME);
@@ -120,6 +149,12 @@ void XR::initialize(SDL_Window *window) {
     ci.enabledExtensionCount = extensions.size();
     ci.enabledExtensionNames = extensions.data();
     XR_CHECK(xrCreateInstance(&ci, &x.instance));
+#ifdef __ANDROID__
+    if(refresh)XR_CHECK(xrGetInstanceProcAddr(x.instance,"xrRequestDisplayRefreshRateFB",
+        reinterpret_cast<PFN_xrVoidFunction*>(&x.requestRefresh)));
+    if(performance)XR_CHECK(xrGetInstanceProcAddr(x.instance,"xrPerfSettingsSetPerformanceLevelEXT",
+        reinterpret_cast<PFN_xrVoidFunction*>(&x.setPerformance)));
+#endif
     XrInstanceProperties properties{XR_TYPE_INSTANCE_PROPERTIES};
     XR_CHECK(xrGetInstanceProperties(x.instance, &properties));
     x.runtime = properties.runtimeName;
@@ -178,6 +213,14 @@ void XR::initialize(SDL_Window *window) {
         auto &e = x.eyes[i];
         e.width = int(views[i].recommendedImageRectWidth);
         e.height = int(views[i].recommendedImageRectHeight);
+#ifdef __ANDROID__
+        if(x.rpgControls){
+            const auto scale=std::min({2048.0/e.width,double(views[i].maxImageRectWidth)/e.width,
+                                       double(views[i].maxImageRectHeight)/e.height});
+            e.width=int(std::lround(e.width*scale));
+            e.height=int(std::lround(e.height*scale));
+        }
+#endif
         XrSwapchainCreateInfo sc{XR_TYPE_SWAPCHAIN_CREATE_INFO};
         sc.usageFlags = XR_SWAPCHAIN_USAGE_COLOR_ATTACHMENT_BIT;
         sc.format = format;
@@ -464,6 +507,9 @@ bool XR::beginFrame(bool measureTiming, bool sampleHiddenInput) {
                 info.primaryViewConfigurationType = XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO;
                 XR_CHECK(xrBeginSession(x.session, &info));
                 x.running = true;
+#ifdef __ANDROID__
+                x.applyQuestPreset();
+#endif
             }
             if (state == XR_SESSION_STATE_STOPPING) {
                 x.running = false;

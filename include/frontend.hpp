@@ -16,6 +16,10 @@ inline constexpr std::array<int,MountCount> equipmentPanelOrder{
     LeftShoulder,RightShoulder,LeftHand,RightHand,LeftHip,RightHip};
 struct EquipmentPanel {
     struct Slot {std::string item,detail;bool empty=false,linked=false;};
+    enum class Symbol { None, Mount, Module, Plate, Frame, Attribute };
+    struct Card {std::string label,caption,icon;Symbol symbol=Symbol::None;};
+    std::vector<Card> cards;
+    int columns=0,cursor=0;
     std::array<Slot,MountCount> slots;
     std::vector<std::string> options;
     std::string title,inspection,detail,action,status;

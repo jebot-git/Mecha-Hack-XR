@@ -21,7 +21,7 @@ int main(){
   auto trade=fixture();trade.trading=true;trade.selectedGear=int(Gear::Rifle);
   assert(trade.sheet.inventory[size_t(Gear::Scrap)]==0&&trade.rowCount()==10);
   trade.selected=trade.rowCount()-1;
-  assert(trade.tradeCommand().is_null());trade.confirm();assert(!trade.trading);
+  assert(trade.tradeCommand().is_null());trade.confirm();assert(trade.catalog);trade.catalog=false;
   trade.trading=true;trade.sheet.inventory[size_t(Gear::Scrap)]=10;
   assert(trade.rowCount()==10);trade.selected=rowContaining(trade,lobby,"CRAFT / ");
   auto request=trade.tradeCommand();assert(request.at("op")=="trade"&&request.at("action")=="craft"&&request.at("gear")=="rifle");
@@ -32,21 +32,26 @@ int main(){
   lobby.member(2).sheet=trade.sheet;auto rifle=trade.sheet.owned[size_t(Gear::Rifle)];
   lobby.command(2,request);trade.sheet=lobby.member(2).sheet;
   assert(trade.sheet.owned[size_t(Gear::Rifle)]==rifle+1&&trade.sheet.inventory[size_t(Gear::Scrap)]<10);
-  trade.selected=trade.rowCount()-1;assert(trade.tradeCommand().is_null());trade.confirm(false);assert(!trade.trading);
+  trade.selected=trade.rowCount()-1;assert(trade.tradeCommand().is_null());trade.confirm(false);assert(trade.catalog);trade.catalog=false;
   trade.trading=true;trade.selectedGear=int(Gear::ChromePlating);assert(trade.rowCount()==7);
-  trade.selected=6;assert(trade.tradeCommand().is_null());trade.confirm();assert(!trade.trading);
+  trade.selected=6;assert(trade.tradeCommand().is_null());trade.confirm();assert(trade.catalog);trade.catalog=false;
   // Crafting keeps its row when the last scrap is spent, so focus stays put.
   trade.trading=true;trade.selectedGear=int(Gear::Repair);trade.sheet.inventory[size_t(Gear::Scrap)]=0;
   assert(rowContaining(trade,lobby,"CRAFT / ")==6);
-  trade.selected=trade.rowCount()-1;trade.confirm();assert(!trade.trading);
+  trade.selected=trade.rowCount()-1;trade.confirm();assert(trade.catalog);trade.catalog=false;
   const auto rare=weaponVariant(Gear::Rifle,Rarity::Rare);
   recoverWeapon(trade.sheet,rare,{});
   trade.selectedGear=int(rare);trade.openTrader();
-  for(int n=0;n<int(Gear::Count);++n){
-    trade.edit(1);const auto gear=Gear(trade.selectedGear);
-    assert(weaponRarity(gear)==Rarity::Common);
-    trade.selected=1;assert(trade.tradeCommand().at("action")=="buy");trade.selected=0;
+  const auto offerings=trade.rowCount();
+  for(int n=0;n<offerings;++n){
+    trade.selected=n;assert(trade.tradeCommand().is_null());
+    assert(trade.loadoutPanel(trade.sheet,-1,"").cards.size()==size_t(offerings));
+    trade.confirm();const auto gear=Gear(trade.selectedGear);
+    assert(!trade.catalog&&weaponRarity(gear)==Rarity::Common);
+    trade.selected=1;assert(trade.tradeCommand().at("action")=="buy");
+    assert(trade.back()&&trade.catalog&&trade.selected==n);
   }
+  trade.openEquipment();
   trade.inventory=true;trade.trading=false;trade.selected=rowContaining(trade,lobby,gearName(rare));
   assert(trade.selected>=0);trade.confirm();
   assert(trade.trading&&!trade.inventory&&trade.selectedGear==int(rare));

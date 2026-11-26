@@ -409,9 +409,7 @@ int main(int argc, char **argv) {
           input.headValid = t.headValid;
           const bool combat=session().phase==Phase::Combat&&!paused;
           const bool grip=t.squeezeHeld[0]||t.squeezeHeld[1];
-          const bool mounts=inventoryOpen||(!profilePicker&&playerMenu.page==MenuPage::None&&
-              session().phase==Phase::Hangar&&frontend.screen==Screen::Loadout&&
-              preparation.sheet.created&&!preparation.trading&&!preparation.inventory&&!sortieView);
+          const bool mounts=inventoryOpen;
           input.thrust=combat&&t.recenter;
           headlightDown=headlightDown?t.turn.y<-.40f:
               t.turn.y<-.70f&&-t.turn.y>std::abs(t.turn.x);
@@ -527,13 +525,13 @@ int main(int argc, char **argv) {
           }
           else if(action==PlayerAction::NewCampaign){command({{"op","reroll_missions"}});frontend.mission=0;status="NEW CAMPAIGN READY";}
           else if(action==PlayerAction::Lobby){switchLobby=true;menuNavigation.blockButtons();}
-          else if(action==PlayerAction::Pilots&&profiles){profilePicker=true;frontend.screen=Screen::Title;preparation.trading=preparation.inventory=false;command({{"op","sortie"},{"value",false}});playerMenu.open(MenuPage::None);}
+          else if(action==PlayerAction::Pilots&&profiles){profilePicker=true;frontend.screen=Screen::Title;preparation.openEquipment();command({{"op","sortie"},{"value",false}});playerMenu.open(MenuPage::None);}
           else if(action==PlayerAction::Missions){frontend.screen=preparation.sheet.created?Screen::Missions:Screen::Loadout;playerMenu.open(MenuPage::None);}
           else if(action==PlayerAction::Sortie){
             sortieView=true;frontend.screen=Screen::Pause;status.clear();playerMenu.open(MenuPage::None);
           }
           else if(action==PlayerAction::Equipment||action==PlayerAction::Inventory||action==PlayerAction::Trade){
-            preparation.selected=0;preparation.trading=false;preparation.inventory=action==PlayerAction::Inventory;
+            preparation.openEquipment();preparation.inventory=action==PlayerAction::Inventory;
             if(action==PlayerAction::Trade)preparation.openTrader();
             frontend.screen=Screen::Loadout;inventoryOpen=current.phase==Phase::Combat;fieldRow=0;equipHeld=input.fire;playerMenu.open(MenuPage::None);
           }
@@ -563,7 +561,7 @@ int main(int argc, char **argv) {
             auto saved=profiles->load(profileCursor);
             if(saved){preparation.sheet=saved->sheet;name=saved->callsign;}
             else{Dice d{std::random_device{}()};preparation.sheet=createSheet(Chassis::Striker,PilotKind::Engineer,d);name="Pilot "+std::to_string(profileCursor+1);}
-            preparation.callsign=name;preparation.selected=0;preparation.trading=preparation.inventory=false;profilePicker=false;configured=false;authoritativeProfile=false;
+            preparation.callsign=name;preparation.openEquipment();profilePicker=false;configured=false;authoritativeProfile=false;
             frontend.screen=preparation.sheet.created?Screen::Pause:Screen::Loadout;
             if(preparation.sheet.created)playerMenu.open(MenuPage::Hangar);
             frontend.held=input.fire;frontend.confirmHeld=true;equipHeld=input.fire;
@@ -601,7 +599,7 @@ int main(int argc, char **argv) {
             prepare(preparation.sheet);
             if(openerPreview<0)saveProfile(profilePath, preparation.sheet, name);
           }
-          if (current.phase == Phase::Hangar && previousPhase != Phase::Hangar){bool creation=!current.member(player).sheet.created;frontend.screen=creation?Screen::Loadout:Screen::Pause;paused=false;inventoryOpen=false;frontend.mission=current.selectedMission;preparation.selected=0;preparation.trading=preparation.inventory=false;playerMenu.open(creation||sortieView?MenuPage::None:MenuPage::Hangar);}
+          if (current.phase == Phase::Hangar && previousPhase != Phase::Hangar){bool creation=!current.member(player).sheet.created;frontend.screen=creation?Screen::Loadout:Screen::Pause;paused=false;inventoryOpen=false;frontend.mission=current.selectedMission;preparation.openEquipment();playerMenu.open(creation||sortieView?MenuPage::None:MenuPage::Hangar);}
           previousPhase = current.phase;
           if((current.phase==Phase::Complete||current.phase==Phase::Hangar)&&authoritativeProfile&&
              (preparation.sheet.career.standings!=current.member(player).sheet.career.standings||preparation.sheet.career.heroFactions!=current.member(player).sheet.career.heroFactions||preparation.sheet.campaignAwards!=current.member(player).sheet.campaignAwards||Json(preparation.sheet.campaign)!=Json(current.member(player).sheet.campaign))){
@@ -626,7 +624,7 @@ int main(int argc, char **argv) {
             if(!paused)inventoryOpen=false;
             if(inventoryOpen){
               fieldRow=(fieldRow+setupRow+MountCount)%MountCount;
-              if(setupDelta){preparation.selected=0;preparation.edit(setupDelta);}
+              if(setupDelta)preparation.browseGear(setupDelta);
               for(int mount=0;mount<MountCount;++mount)if(uiFocus&&input.fire[mount]&&!equipHeld[mount]){
                 status.clear();command(preparation.equipmentCommand(mount,input.ping[0]||input.ping[1]));
               }
@@ -665,24 +663,17 @@ int main(int argc, char **argv) {
               confirm=rebuild=false;setupRow=setupDelta=0;
             }
             if(frontend.screen==Screen::Loadout&&rebuild){
-              preparation.trading=preparation.inventory=false;playerMenu.open(MenuPage::Hangar);rebuild=confirm=false;
+              if(!preparation.back()){preparation.openEquipment();playerMenu.open(MenuPage::Hangar);}
+              status.clear();rebuild=confirm=false;setupRow=setupDelta=0;
             }
           }
           if(current.phase==Phase::Hangar&&!current.campaign.awaitingAdvance&&frontend.screen==Screen::Loadout&&playerMenu.page==MenuPage::None){
             const bool host=current.host==player;
-            if(setupRow||setupDelta)status.clear();
-            if(setupRow)preparation.selected=(preparation.selected+setupRow+preparation.rowCount(host))%preparation.rowCount(host);
-            bool changed=false;
-            try{
-              if(setupDelta)changed=preparation.edit(setupDelta,host);
-              if(preparation.sheet.created&&!preparation.trading&&!preparation.inventory){
-                for(int mount=0;mount<MountCount;++mount)if(uiFocus&&input.fire[mount]&&!equipHeld[mount]){
-                  preparation.mount(mount,input.ping[0]||input.ping[1]);changed=true;
-                }
-              }
-              equipHeld=input.fire;
-              if(changed){configure();status.clear();}
-            }catch(const std::exception &e){status=e.what();}
+            if(setupRow||setupDelta){
+              status.clear();confirm=false;
+              try{if(preparation.navigate(setupDelta,setupRow,host))configure();}
+              catch(const std::exception &e){status=e.what();}
+            }
           }
           const bool menuFocus=uiFocus;
           if(current.phase==Phase::Complete && current.campaign.victorious && !current.member(player).debriefAccepted){
@@ -723,7 +714,7 @@ int main(int argc, char **argv) {
                   if(!preparation.trading&&!preparation.inventory)playerMenu.open(MenuPage::Hangar);
                 }else if(preparation.inventory){preparation.confirm(host);}
                 else{
-                  preparation.confirm(host);configure();
+                  if(preparation.confirm(host))configure();
                   if(!before&&preparation.sheet.created){frontend.screen=Screen::Pause;playerMenu.open(MenuPage::Hangar);}
                 }
               }catch(const std::exception &e){status=e.what();}
@@ -889,7 +880,7 @@ int main(int argc, char **argv) {
           if(!status.empty())frontend.menuLines.push_back(status);
         }
         else if(inventoryOpen&&present){
-          frontend.screen=Screen::Loadout;frontend.equipmentModel=preparation.previewModel(&frontend.equipmentHandling);
+          frontend.screen=Screen::Loadout;frontend.equipmentModel=preparation.previewModel(&frontend.equipmentHandling,true);
           const int fieldSlot=equipmentPanelOrder[fieldRow];
           frontend.equipmentPanel=preparation.loadoutPanel(current.member(player).sheet,fieldSlot,status);
           frontend.message="STICK: MOVE / ITEM   GRIP + MOUNT: REMOVE   B: BACK";
@@ -924,9 +915,9 @@ int main(int argc, char **argv) {
             frontend.screen = Screen::Missions;
           if(frontend.screen == Screen::Loadout) {
             frontend.equipmentModel=preparation.previewModel(&frontend.equipmentHandling);
-            if(preparation.sheet.created&&!preparation.trading&&!preparation.inventory){
+            if(preparation.sheet.created){
               frontend.equipmentPanel=preparation.loadoutPanel(preparation.sheet,-1,status);
-              frontend.message="STICK: MOVE / CHANGE   GRIP + MOUNT: REMOVE   B: BACK";
+              frontend.message=preparation.workshop==Workshop::Equip&&!preparation.trading&&!preparation.inventory?"UP/DOWN: MOUNT   LEFT/RIGHT: ITEM   A: APPLY   B: BACK":"STICK: BROWSE   A: SELECT   B: BACK";
             }else{
               frontend.menuLines=preparation.lines(current,player,status);
               frontend.message=preparation.inventory?"STICK: BROWSE   B: BACK":menuHint;

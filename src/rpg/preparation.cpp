@@ -14,8 +14,8 @@ std::string oneDecimal(float value){
  return std::to_string(tenths/10)+"."+std::to_string(tenths%10);
 }
 const char* armorName(Armor a){return a==Armor::Heavy?"HEAVY":a==Armor::Light?"LIGHT":"NONE";}
-enum class Action {Item,Armor,Module,Frame,Refine,Mount};
-struct Row {Action action;int index=0;};
+enum class Action {Open,Empty,Armor,Module,Frame,Refine,Mount};
+struct Row {Action action;int index=0;bool award=false;};
 bool saleItem(Gear gear){return playerEquipment(gear)&&gear!=Gear::Empty&&traderPrice(gear)>0&&(gearInfo(gear).module==Module::Count||gradedModule(gear));}
 bool traderStock(Gear gear){return saleItem(gear)&&weaponRarity(gear)==Rarity::Common;}
 bool recoveredWeaponPage(const Preparation &p){return p.trading&&weaponRarity(Gear(p.selectedGear))!=Rarity::Common;}
@@ -110,20 +110,94 @@ std::vector<InventoryItem> stockFor(const Sheet &sheet){
 bool upgradeAvailable(const Sheet &sheet,Module module,bool frame){
  return !retiredModule(module)&&!sheet.has(module)&&frameUpgrade(module)==frame;
 }
-Module availableModule(const Sheet &sheet,Module preferred,bool frame=false){
- if(upgradeAvailable(sheet,preferred,frame))return preferred;
- for(int m=0;m<int(Module::Count);++m)if(upgradeAvailable(sheet,Module(m),frame))return Module(m);
- return Module::Count;
+constexpr std::array workshopNames={"EQUIPMENT","EQUIP","INSTALL","ARMOUR","FRAME","REFINE"};
+constexpr std::array workshopCaptions={"","Weapons and mounts","Active modules","Armour plating","Passive upgrades","Hull and attributes"};
+const std::vector<Gear>& catalogStock(){
+ static const auto stock=[]{
+   std::vector<Gear> items;
+   for(int i=1;i<int(Gear::Count);++i)if(traderStock(Gear(i)))items.push_back(Gear(i));
+   return items;
+ }();
+ return stock;
 }
 std::vector<Row> rowsFor(const Preparation &p){
- std::vector<Row> rows={{Action::Item},{Action::Armor}};
- if(fittedModuleCount(p.sheet)<moduleLimit&&availableModule(p.sheet,p.modulePreview)!=Module::Count)
-   rows.push_back({Action::Module});
- if(availableModule(p.sheet,p.framePreview,true)!=Module::Count)rows.push_back({Action::Frame});
- rows.push_back({Action::Refine});
- if(p.sheet.campaignAwards>0)rows.push_back({Action::Refine,1});
- for(int slot:equipmentPanelOrder)rows.push_back({Action::Mount,slot});
+ std::vector<Row> rows;
+ switch(p.workshop){
+ case Workshop::Home:
+   for(int i=1;i<int(workshopNames.size());++i)rows.push_back({Action::Open,i});
+   break;
+ case Workshop::Equip:
+   for(int slot:equipmentPanelOrder)rows.push_back({Action::Mount,slot});
+   break;
+ case Workshop::Armour:
+   for(int i=0;i<3;++i)if((i==int(Armor::None)||p.sheet.ownedArmor[i])&&chassisArmorAllowed(p.sheet.chassis,Armor(i)))
+      rows.push_back({Action::Armor,i});
+   break;
+ case Workshop::Install:case Workshop::Frame:{
+   const bool frame=p.workshop==Workshop::Frame;
+   if(frame||fittedModuleCount(p.sheet)<moduleLimit)
+     for(int i=0;i<int(Module::Count);++i)if(upgradeAvailable(p.sheet,Module(i),frame))
+       rows.push_back({frame?Action::Frame:Action::Module,i});
+   break;
+ }
+ case Workshop::Refine:
+   for(int i=0;i<int(PilotRefinement::Count);++i){
+     rows.push_back({Action::Refine,i});
+     if(p.sheet.campaignAwards>0)rows.push_back({Action::Refine,i,true});
+   }
+   break;
+ }
+ if(rows.empty())rows.push_back({Action::Empty});
  return rows;
+}
+int gridColumns(const Preparation &p){
+ if(p.inventory||p.catalog)return 3;
+ if(p.trading||p.workshop==Workshop::Equip)return 0;
+ if(p.workshop==Workshop::Armour)return 3;
+ if(p.workshop==Workshop::Refine&&p.sheet.campaignAwards==0)return 1;
+ return 2;
+}
+void inspectMount(Preparation &p){
+ const int slot=equipmentPanelOrder.at(p.selected);
+ p.selectedGear=int(p.sheet.equipment[slot]);
+ p.selectedCopy=std::max(0,equippedWeaponCopy(p.sheet,equipmentOwner(p.sheet,slot)));
+}
+std::string stockIcon(Gear gear){
+ if(gear==Gear::Empty)return {};
+ const auto family=weaponFamily(gear);
+ const char *id=gearInfo(family).id;
+ switch(family){
+ case Gear::ChainCutter:id="cutter";break;
+ case Gear::Scattergun:id="shotgun";break;
+ case Gear::Rotary:id="gatling";break;
+ case Gear::GrenadeLobber:id="auto_grenade";break;
+ case Gear::RocketRack:id="rocket";break;
+ case Gear::SeekerPod:id="homing";break;
+ case Gear::PulseCarbine:id="rifle";break;
+ case Gear::RailLance:id="rail";break;
+ case Gear::ArcGrenade:case Gear::FragGrenade:id="scouting_drone";break;
+ default:break;
+ }
+ return "icon-weapon_"+std::string(id)+"-0";
+}
+std::string stockStats(const Sheet &fitted,Gear gear,int copy){
+ std::string detail;
+ if(const auto *tuning=weaponTuning(gear)){
+   const auto stats=weaponStats(fitted,gear,copy);
+   const int damage=std::max(1,(damageDie(fitted)+2)/2+tuning->damageBias+2*int(heavy(gear)));
+   detail=std::to_string(damage)+" HIT / "+std::to_string(int(std::lround(stats.range)))+
+       " M / "+std::to_string(int(std::lround(stats.cooldown*1000)))+" MS / "+oneDecimal(stats.heat*100)+"% HEAT";
+ }
+ if(gradedModule(gear)){
+   const auto stats=weaponStats(fitted,gear,copy);
+   detail=std::string(rarityName(equipmentRarity(fitted,gear,copy)))+" / "+
+     oneDecimal(stats.cooldown)+" S / "+oneDecimal(stats.heat*100)+"% HEAT";
+   if(gear==Gear::LongRangeScanners)detail+=" / "+oneDecimal(5.f*stats.output)+" S TRACE";
+   else if(stats.range>0)detail+=" / "+oneDecimal(stats.range)+" M";
+   else detail+=" / "+std::to_string(int(std::lround(stats.output*100)))+"% OUTPUT";
+ }
+ if(gear==Gear::Shield)detail=gearDescription(gear);
+ return detail;
 }
 std::pair<Gear,int> inspectedGear(const Preparation &p){
  if(!p.sheet.created)return {Gear::Empty,-1};
@@ -133,6 +207,7 @@ std::pair<Gear,int> inspectedGear(const Preparation &p){
     return {stock[size_t(p.selected)].gear,stock[size_t(p.selected)].copy};
  }
  if(p.trading){
+   if(p.catalog)return {catalogStock().at(std::clamp(p.selected,0,int(catalogStock().size())-1)),-1};
    if(recoveredWeaponPage(p))return {Gear(p.selectedGear),p.selectedWeaponCopy()};
    if(p.selected<3||(p.selected>=6&&p.selected<tradeBack(p)))
      return {Gear(p.selectedGear),p.selected==1?-1:p.selectedWeaponCopy()};
@@ -141,18 +216,54 @@ std::pair<Gear,int> inspectedGear(const Preparation &p){
  const auto rows=rowsFor(p);
  if(p.selected<0||size_t(p.selected)>=rows.size())return {Gear::Empty,-1};
  const auto row=rows[size_t(p.selected)];
- if(row.action==Action::Mount)return {p.sheet.equipment[row.index],
-      equippedWeaponCopy(p.sheet,equipmentOwner(p.sheet,row.index))};
- if(row.action==Action::Item)return {Gear(p.selectedGear),p.selectedWeaponCopy()};
+ if(row.action==Action::Mount)return {Gear(p.selectedGear),p.selectedWeaponCopy()};
  return {Gear::Empty,-1};
 }
 }
+void Preparation::openEquipment(){
+ workshop=Workshop::Home;selected=0;trading=inventory=catalog=false;
+}
+bool Preparation::back(){
+ if(trading&&!catalog){
+   const bool recovered=recoveredWeaponPage(*this);
+   trading=!recovered;inventory=recovered;catalog=!recovered;
+   selected=std::clamp(returnCursor,0,rowCount()-1);
+   return true;
+ }
+ if(!inventory&&!trading&&workshop!=Workshop::Home){
+   selected=int(workshop)-1;workshop=Workshop::Home;
+   return true;
+ }
+ return false;
+}
+void Preparation::browseGear(int delta){
+ const auto [gear,copy]=nextEquipment(sheet,Gear(selectedGear),selectedWeaponCopy(),delta);
+ selectedGear=int(gear);selectedCopy=std::max(0,copy);
+}
+bool Preparation::navigate(int horizontal,int vertical,bool host){
+ const int count=rowCount(host);
+ selected=std::clamp(selected,0,count-1);
+ const int cols=sheet.created?gridColumns(*this):0;
+ if(cols){
+   if(vertical){
+     const int lastRow=(count-1)/cols;
+     const int row=(selected/cols+vertical+lastRow+1)%(lastRow+1);
+     selected=std::min(count-1,row*cols+selected%cols);
+   }else if(horizontal)selected=(selected+horizontal+count)%count;
+ }else if(vertical){
+   selected=(selected+vertical+count)%count;
+   if(sheet.created&&!trading&&!inventory&&workshop==Workshop::Equip)inspectMount(*this);
+ }
+ else if(horizontal)return edit(horizontal,host);
+ return false;
+}
 void Preparation::openTrader(){
- trading=true;inventory=false;selected=0;selectedCopy=0;
+ trading=catalog=true;inventory=false;selected=0;selectedCopy=0;
  if(!chassisArmorAllowed(sheet.chassis,tradeArmor))tradeArmor=Armor::Light;
  if(!traderStock(Gear(selectedGear)))selectedGear=int(Gear::Rifle);
 }
 int Preparation::rowCount(bool)const{
+ if(trading&&catalog)return int(catalogStock().size());
  if(recoveredWeaponPage(*this))return selectedWeaponCopy()<0?1:4+int(sheet.campaignAwards>0);
  return inventory?std::max(1,int(stockFor(sheet).size())):trading?tradeBack(*this)+1:sheet.created?int(rowsFor(*this).size()):4;}
 int Preparation::selectedWeaponCopy()const{
@@ -165,15 +276,16 @@ Json Preparation::equipmentCommand(int slot,bool remove)const{
  return {{"op","equip"},{"slot",slot},{"gear",gearInfo(gear).id},{"copy",remove?-1:selectedWeaponCopy()}};
 }
 Json Preparation::tradeCommand()const{
+ if(catalog)return nullptr;
  if(!trading){
    if(!sheet.created||inventory)return nullptr;
    const auto rows=rowsFor(*this);
    if(selected<0||size_t(selected)>=rows.size())return nullptr;
    const auto row=rows[selected];
    if(row.action==Action::Frame)
-     return {{"op","trade"},{"action","frame_upgrade"},{"module",moduleId(availableModule(sheet,framePreview,true))}};
+     return {{"op","trade"},{"action","frame_upgrade"},{"module",moduleId(Module(row.index))}};
    if(row.action==Action::Refine)
-     return {{"op","trade"},{"action","refine_pilot"},{"stat",int(refinement)},{"award",row.index==1}};
+     return {{"op","trade"},{"action","refine_pilot"},{"stat",row.index},{"award",row.award}};
    return nullptr;
  }
  if(recoveredWeaponPage(*this)){
@@ -203,7 +315,7 @@ Json Preparation::refillCommand()const{
  if(selected<0||size_t(selected)>=rows.size()||rows[selected].action!=Action::Mount)return nullptr;
  const int slot=rows[selected].index;
  const auto gear=sheet.equipment[slot];
- if(!consumable(gear)||equipmentOwner(sheet,slot)!=slot)return nullptr;
+ if(gear!=Gear(selectedGear)||!consumable(gear)||equipmentOwner(sheet,slot)!=slot)return nullptr;
  Json request={{"op","trade"},{"action","refill"},{"slot",slot},{"gear",gearInfo(gear).id}};
  return request;
 }
@@ -240,32 +352,79 @@ EquipmentPanel Preparation::loadoutPanel(const Sheet &fitted,int fieldMount,cons
    }
    return panel;
  }
+ panel.cursor=std::clamp(selected,0,rowCount()-1);
+ panel.columns=gridColumns(*this);
+ using Symbol=EquipmentPanel::Symbol;
+ if(inventory||trading){
+   panel.title=(inventory?"INVENTORY":"TRADE POST")+std::string(" / ")+std::to_string(fitted.credits)+" CR";
+   if(inventory){
+     const auto stock=stockFor(fitted);
+     for(const auto &entry:stock){
+       std::string caption;
+       if(entry.copy>=0)caption=std::string(rarityName(equipmentRarity(fitted,entry.gear,entry.copy)))+" #"+std::to_string(entry.copy+1);
+       else if(entry.gear!=Gear::Empty)caption=entry.label.substr(entry.label.find("  ")+2);
+       panel.cards.push_back({entry.gear==Gear::Empty?entry.label:gearName(entry.gear),caption,stockIcon(entry.gear),entry.gear==Gear::Empty?Symbol::Plate:Symbol::Module});
+     }
+     if(stock.empty()){panel.inspection="NO STOCK";return panel;}
+     const auto &entry=stock[panel.cursor];
+     panel.inspection=entry.label;
+     if(entry.gear!=Gear::Empty){
+       panel.detail=stockStats(fitted,entry.gear,entry.copy);
+       if(panel.detail.empty())panel.detail=gearDescription(entry.gear);
+     }
+     if(entry.copy>=0&&weaponRarity(entry.gear)!=Rarity::Common)panel.action="INSPECT COPY";
+   }else if(catalog){
+     for(auto gear:catalogStock())panel.cards.push_back({gearName(gear),std::to_string(traderPrice(gear))+" CR",stockIcon(gear),Symbol::Module});
+     const auto gear=catalogStock()[panel.cursor];
+     panel.inspection=gearName(gear);panel.detail=stockStats(fitted,gear,-1);
+     if(panel.detail.empty())panel.detail=gearDescription(gear);
+     panel.action="INSPECT STOCK";
+   }else{
+     panel.columns=1;
+     for(const auto &label:tradeLabels())panel.cards.push_back({label,{},{}});
+     panel.inspection=gearName(staged);
+     panel.detail=std::to_string(fitted.inventory[size_t(Gear::Scrap)])+" SCRAP / "+std::to_string(availableCampaignAwards(fitted))+" AWARDS";
+     if(panel.cursor==3&&!recoveredWeaponPage(*this))panel.detail="LEFT / RIGHT TO CHOOSE ARMOUR";
+     if(tuneAction(*this)||(recoveredWeaponPage(*this)&&panel.cursor>=2&&panel.cursor<rowCount()-1))
+       panel.detail="LEFT / RIGHT TO CHOOSE ATTRIBUTE";
+     panel.action=panel.cards[panel.cursor].label;
+     if(tradeCommand().is_null()&&panel.cursor!=rowCount()-1)panel.action.clear();
+   }
+   return panel;
+ }
+ panel.title=std::string(workshopNames[int(workshop)])+" / "+std::to_string(fitted.credits)+" CR";
+ if(workshop==Workshop::Equip)panel.options.push_back("ITEM / "+fitLabel);
+ if(workshop==Workshop::Install)panel.title+=" / "+std::to_string(fittedModuleCount(fitted))+" OF "+std::to_string(moduleLimit)+" INSTALLED";
  const auto rows=rowsFor(*this);
- const auto row=rows[std::clamp(selected,0,int(rows.size())-1)];
- for(size_t i=0;i<rows.size()&&rows[i].action!=Action::Mount;++i){
-   if(int(i)==selected)panel.selectedOption=int(i);
-   switch(rows[i].action){
-   case Action::Item:panel.options.push_back("ITEM");break;
-   case Action::Armor:panel.options.push_back("ARMOUR");break;
-   case Action::Module:panel.options.push_back("INSTALL");break;
-   case Action::Frame:panel.options.push_back("FRAME");break;
-   case Action::Refine:panel.options.push_back(rows[i].index?"USE AWARD":"REFINE");break;
-   case Action::Mount:break;
+ const auto row=rows[panel.cursor];
+ for(const auto &entry:rows){
+   const auto i=entry.index;
+   switch(entry.action){
+   case Action::Open:{
+     constexpr std::array symbols={Symbol::None,Symbol::Mount,Symbol::Module,Symbol::Plate,Symbol::Frame,Symbol::Attribute};
+     panel.cards.push_back({workshopNames[i],workshopCaptions[i],{},symbols[i]});break;
+   }
+   case Action::Armor:panel.cards.push_back({armorName(Armor(i)),fitted.armor==Armor(i)?"FITTED":"AVAILABLE",{},Symbol::Plate});break;
+   case Action::Module:case Action::Frame:
+     panel.cards.push_back({moduleName(Module(i)),std::to_string(entry.action==Action::Frame?frameUpgradeCost:modulePurchaseCost)+" CR",stockIcon(moduleGear(Module(i))),entry.action==Action::Frame?Symbol::Frame:Symbol::Module});break;
+   case Action::Refine:
+     panel.cards.push_back({refinementName(PilotRefinement(i)),entry.award?"1 AWARD":std::to_string(pilotRefinementCost(fitted))+" SCRAP",{},Symbol::Attribute});break;
+   default:break;
    }
  }
  const auto [gear,copy]=inspectedGear(*this);
  switch(row.action){
- case Action::Item:
-   panel.inspection=fitLabel;
-   panel.detail="SELECT A SLOT TO FIT THIS ITEM";
-   panel.action="NEXT ITEM";
-   break;
+ case Action::Open:
+   panel.inspection=workshopCaptions[row.index];panel.action=std::string("OPEN ")+workshopNames[row.index];break;
+ case Action::Empty:
+   panel.inspection=workshop==Workshop::Install?"NO INSTALLATIONS AVAILABLE":"NO UPGRADES AVAILABLE";break;
  case Action::Armor:
-   panel.inspection=std::string(armorName(fitted.armor))+" ARMOUR";
-   panel.action="CHANGE ARMOUR";
+   panel.inspection=std::string(armorName(Armor(row.index)))+" ARMOUR";
+   panel.detail=std::string("CURRENT / ")+armorName(fitted.armor);
+   panel.actionAvailable=fitted.armor!=Armor(row.index);panel.action=panel.actionAvailable?"FIT ARMOUR":"ALREADY FITTED";
    break;
  case Action::Frame:{
-   const auto frame=availableModule(fitted,framePreview,true);
+   const auto frame=Module(row.index);
    panel.inspection=moduleName(frame);
    panel.detail=moduleDescription(frame);
    panel.action="UPGRADE / "+std::to_string(frameUpgradeCost)+" CR";
@@ -273,12 +432,13 @@ EquipmentPanel Preparation::loadoutPanel(const Sheet &fitted,int fieldMount,cons
    break;
  }
  case Action::Module:
-   panel.inspection=moduleName(availableModule(fitted,modulePreview));
-   panel.detail=moduleDescription(availableModule(fitted,modulePreview));
+   panel.inspection=moduleName(Module(row.index));
+   panel.detail=moduleDescription(Module(row.index));
    panel.action="INSTALL / "+std::to_string(modulePurchaseCost)+" CR";
    panel.actionAvailable=fitted.credits>=modulePurchaseCost;
    break;
  case Action::Refine:{
+   const auto refinement=PilotRefinement(row.index);
    const int count=pilotRefinementCount(fitted);
    panel.inspection=std::string(refinementName(refinement))+" REFINEMENT / "+std::to_string(count)+"/"+
                     std::to_string(pilotRefinementLimit)+" USED";
@@ -288,7 +448,7 @@ EquipmentPanel Preparation::loadoutPanel(const Sheet &fitted,int fieldMount,cons
      break;
    }
    panel.detail=refinementPreview(fitted,refinement);
-   if(row.index){
+   if(row.award){
      const int awards=availableCampaignAwards(fitted);
      panel.action="REFINE / 1 AWARD ("+std::to_string(awards)+" AVAILABLE)";
      panel.actionAvailable=awards>0;
@@ -302,8 +462,8 @@ EquipmentPanel Preparation::loadoutPanel(const Sheet &fitted,int fieldMount,cons
  case Action::Mount:{
    panel.selectedSlot=row.index;
    const auto &card=panel.slots[row.index];
-   panel.inspection=card.item;
-   if(consumable(gear)){
+   panel.inspection=std::string(mountNames[row.index])+" / "+card.item;
+   if(consumable(gear)&&staged==fitted.equipment[row.index]&&equipmentOwner(fitted,row.index)==row.index){
      const auto cost=gearInfo(gear).cost;
      panel.detail=card.detail;
      if(gear==Gear::Repair||gear==Gear::ArcGrenade||gear==Gear::FragGrenade||gear==Gear::ExplosiveRounds)
@@ -315,7 +475,9 @@ EquipmentPanel Preparation::loadoutPanel(const Sheet &fitted,int fieldMount,cons
        panel.action="REFILL / "+std::to_string(cost)+" CR REQUIRED";
        panel.actionAvailable=false;
      }else panel.action="REFILL +1 / "+std::to_string(cost)+" CR";
-   }else if(mountAllowed(staged,row.index)&&chassisGearAllowed(fitted.chassis,staged))panel.action="FIT "+fitLabel;
+   }else if(staged==fitted.equipment[row.index]&&stagedCopy==equippedWeaponCopy(fitted,equipmentOwner(fitted,row.index))){
+     panel.action=staged==Gear::Empty?"MOUNT EMPTY":"ALREADY FITTED";panel.actionAvailable=false;
+   }else if(mountAllowed(staged,row.index)&&chassisGearAllowed(fitted.chassis,staged))panel.action=staged==Gear::Empty?"CLEAR MOUNT":"FIT "+fitLabel;
    else{
      panel.action="CHOOSE AN ITEM FOR THIS MOUNT";
      panel.actionAvailable=false;
@@ -323,32 +485,18 @@ EquipmentPanel Preparation::loadoutPanel(const Sheet &fitted,int fieldMount,cons
    break;
  }
  }
- if(const auto *tuning=weaponTuning(gear)){
-   const auto stats=weaponStats(fitted,gear,copy);
-   const int damage=std::max(1,(damageDie(fitted)+2)/2+tuning->damageBias+2*int(heavy(gear)));
-   panel.detail=std::to_string(damage)+" HIT / "+std::to_string(int(std::lround(stats.range)))+
-       " M / "+std::to_string(int(std::lround(stats.cooldown*1000)))+" MS / "+oneDecimal(stats.heat*100)+"% HEAT";
- }
- if(gradedModule(gear)){
-   const auto stats=weaponStats(fitted,gear,copy);
-   panel.detail=std::string(rarityName(equipmentRarity(fitted,gear,copy)))+" / "+
-     oneDecimal(stats.cooldown)+" S / "+oneDecimal(stats.heat*100)+"% HEAT";
-   if(gear==Gear::LongRangeScanners)panel.detail+=" / "+oneDecimal(5.f*stats.output)+" S TRACE";
-   else if(stats.range>0)panel.detail+=" / "+oneDecimal(stats.range)+" M";
-   else panel.detail+=" / "+std::to_string(int(std::lround(stats.output*100)))+"% OUTPUT";
- }
- if(gear==Gear::Shield)panel.detail=gearDescription(gear);
+ if(auto stats=stockStats(fitted,gear,copy);!stats.empty())panel.detail=std::move(stats);
  return panel;
 }
-std::string Preparation::previewModel(int* handling)const{
- const auto [gear,copy]=inspectedGear(*this);
+std::string Preparation::previewModel(int* handling,bool field)const{
+ const auto [gear,copy]=field?std::pair{Gear(selectedGear),selectedWeaponCopy()}:inspectedGear(*this);
  if(handling){
     const auto* item=weaponCopy(sheet,gear,copy);
     const auto stat=size_t(WeaponStat::Handling);
     *handling=item?item->roll[stat]+item->tuning[stat]:0;
  }
  Quality quality=Quality::None;
- if(sheet.created&&!inventory&&!trading){
+ if(sheet.created&&!inventory&&!trading&&!field){
     const auto rows=rowsFor(*this);
     if(selected>=0&&size_t(selected)<rows.size()&&rows[size_t(selected)].action==Action::Mount)
         quality=sheet.qualities[rows[size_t(selected)].index];
@@ -368,25 +516,46 @@ bool Preparation::confirm(bool host){
  if(inventory){
    const auto [gear,copy]=inspectedGear(*this);
    if(copy>=0&&weaponRarity(gear)!=Rarity::Common){
-     inventory=false;trading=true;selectedGear=int(gear);selectedCopy=copy;selected=0;
+     returnCursor=selected;inventory=false;catalog=false;trading=true;selectedGear=int(gear);selectedCopy=copy;selected=0;
    }
    return false;
  }
- if(recoveredWeaponPage(*this)){
-   if(selected>=rowCount()-1||selectedWeaponCopy()<0){trading=false;inventory=true;selected=0;}
+ if(trading){
+   if(catalog){
+     returnCursor=selected;selectedGear=int(catalogStock().at(selected));selectedCopy=0;catalog=false;selected=0;
+   }else if(selected>=rowCount()-1)back();
    return false;
  }
- if(trading){if(selected>=tradeBack(*this)){trading=false;selected=0;}return false;}
- if(!sheet.created){if(selected==rowCount()-1){finishCreation(sheet);selected=0;}else edit(1,host);return false;}
- auto rows=rowsFor(*this);if(selected<0||selected>=int(rows.size()))return false;
- if(rows[selected].action==Action::Mount){mount(rows[selected].index);}
- else if(rows[selected].action==Action::Module){installModule(sheet,availableModule(sheet,modulePreview));prepare(sheet);selected=std::min(selected,rowCount()-1);}
- else if(rows[selected].action==Action::Frame){upgradeFrame(sheet,availableModule(sheet,framePreview,true));prepare(sheet);selected=std::min(selected,rowCount()-1);}
- else edit(1,host);
+ if(!sheet.created){
+   if(selected==rowCount()-1){finishCreation(sheet);openEquipment();return true;}
+   return edit(1,host);
+ }
+ const auto rows=rowsFor(*this);
+ if(selected<0||selected>=int(rows.size()))return false;
+ const auto row=rows[selected];
+ switch(row.action){
+ case Action::Open:
+   workshop=Workshop(row.index);selected=0;
+   if(workshop==Workshop::Equip)inspectMount(*this);
+   if(workshop==Workshop::Armour){
+     const auto choices=rowsFor(*this);
+     for(size_t i=0;i<choices.size();++i)if(choices[i].index==int(sheet.armor))selected=int(i);
+   }
+   break;
+ case Action::Mount:
+   if(sheet.equipment[row.index]==Gear(selectedGear)&&equippedWeaponCopy(sheet,equipmentOwner(sheet,row.index))==selectedWeaponCopy())return false;
+   mount(row.index);return true;
+ case Action::Armor:
+   if(sheet.armor==Armor(row.index))return false;
+   sheet.armor=Armor(row.index);prepare(sheet);return true;
+ case Action::Module:
+   installModule(sheet,Module(row.index));prepare(sheet);selected=std::min(selected,rowCount()-1);return true;
+ default:break;
+ }
  return false;
 }
 bool Preparation::edit(int delta,bool){
- if(inventory)return false;
+ if(inventory||catalog)return false;
  auto cycle=[&](int value,int count){return(value+delta%count+count)%count;};
  if(recoveredWeaponPage(*this)){
    const int stock=availableEquipment(sheet,Gear(selectedGear));
@@ -395,11 +564,7 @@ bool Preparation::edit(int delta,bool){
    return false;
  }
  if(trading){
-  if(selected==0){
-    for(int n=0;n<int(Gear::Count);++n){selectedGear=cycle(selectedGear,int(Gear::Count));if(traderStock(Gear(selectedGear)))break;}
-    selectedCopy=0;
-  }
-  else if(selectedWeaponCopy()>=0&&(selected==tuneCopyRow(*this)||selected==2))
+  if(selectedWeaponCopy()>=0&&(selected==tuneCopyRow(*this)||selected==2))
     selectedCopy=cycle(selectedWeaponCopy(),equipmentCopyCount(sheet,Gear(selectedGear)));
   else if(tuneAction(*this))
     tuneStat=WeaponStat(cycle(int(tuneStat),int(WeaponStat::Count)));
@@ -413,62 +578,21 @@ bool Preparation::edit(int delta,bool){
   else return false;
   validate(sheet);return true;
  }
- auto rows=rowsFor(*this);if(selected<0||selected>=int(rows.size()))return false;auto row=rows[selected];
- if(row.action==Action::Item){
-   const auto [gear,copy]=nextEquipment(sheet,Gear(selectedGear),selectedWeaponCopy(),delta);
-   selectedGear=int(gear);selectedCopy=std::max(0,copy);
-   return false;
- }
- if(row.action==Action::Armor){int value=int(sheet.armor);for(int n=0;n<3;++n){value=cycle(value,3);if(sheet.ownedArmor[value]&&chassisArmorAllowed(sheet.chassis,Armor(value))){sheet.armor=Armor(value);prepare(sheet);return true;}}}
- if(row.action==Action::Module||row.action==Action::Frame){
-   const bool frame=row.action==Action::Frame;
-   auto &preview=frame?framePreview:modulePreview;
-   int value=int(availableModule(sheet,preview,frame));
-   for(int n=0;n<int(Module::Count);++n){value=cycle(value,int(Module::Count));if(upgradeAvailable(sheet,Module(value),frame)){preview=Module(value);break;}}
- }
- if(row.action==Action::Refine){
-   int value=int(refinement);
-   for(int n=0;n<int(PilotRefinement::Count);++n){
-     value=cycle(value,int(PilotRefinement::Count));
-     if(canRefinePilot(sheet,PilotRefinement(value))){refinement=PilotRefinement(value);break;}
-   }
- }
- if(row.action==Action::Mount){
-   auto gear=sheet.equipment[row.index];
-   auto copy=equippedWeaponCopy(sheet,equipmentOwner(sheet,row.index));
-   const int choices=int(Gear::Count)+std::accumulate(sheet.owned.begin(),sheet.owned.end(),0);
-   for(int n=0;n<choices;++n){
-      std::tie(gear,copy)=nextEquipment(sheet,gear,copy,delta);
-      if(!mountAllowed(gear,row.index)||(copy>=0&&weaponCopyFitted(sheet,gear,copy,row.index)&&!heavy(gear)))continue;
-      try{equipGear(sheet,row.index,gear,copy);prepare(sheet);return true;}
-      catch(const std::exception &) {}
+ if(workshop==Workshop::Equip){
+   const int slot=equipmentPanelOrder.at(selected);
+   const int limit=int(Gear::Count)+std::accumulate(sheet.owned.begin(),sheet.owned.end(),0);
+   for(int i=0;i<limit;++i){
+     browseGear(delta);
+     const auto gear=Gear(selectedGear);
+     if(!mountAllowed(gear,slot)||!chassisGearAllowed(sheet.chassis,gear))continue;
+     if(!pairedWeapon(sheet.chassis,gear)&&selectedWeaponCopy()>=0&&weaponCopyFitted(sheet,gear,selectedWeaponCopy(),slot))continue;
+     break;
    }
  }
  return false;
 }
-std::vector<std::string> Preparation::lines(const Session &,uint32_t,const std::string &status)const{
+std::vector<std::string> Preparation::tradeLabels()const{
  std::vector<std::string> rows;
- if(inventory){
-  for(auto &item:stockFor(sheet))rows.push_back(std::move(item.label));
-  if(rows.empty())rows.push_back("NO STOCK");
- }else if(!sheet.created){rows={"CHASSIS: "+std::string(chassisInfo(sheet.chassis).name),"PILOT ROLE: "+std::string(pilotName(sheet.pilot)),"CALLSIGN: "+callsign};
-   rows.push_back("CREATE PILOT");}
- else for(auto row:rowsFor(*this))switch(row.action){
-  case Action::Item:{auto gear=Gear(selectedGear);const int copy=selectedWeaponCopy();
-    rows.push_back("ITEM: "+std::string(gearName(gear))+(copy>=0?" / COPY "+std::to_string(copy+1):
-       " / "+std::to_string(consumable(gear)?sheet.inventory[size_t(gear)]:availableEquipment(sheet,gear))+" OWNED"));break;}
-  case Action::Armor:rows.push_back("ARMOR: "+std::string(armorName(sheet.armor)));break;
-  case Action::Module:rows.push_back("INSTALL: "+std::string(moduleName(availableModule(sheet,modulePreview)))+" / "+std::to_string(modulePurchaseCost)+" CR");break;
-  case Action::Frame:rows.push_back("FRAME: "+std::string(moduleName(availableModule(sheet,framePreview,true)))+" / "+std::to_string(frameUpgradeCost)+" CR");break;
-  case Action::Refine:rows.push_back(std::string("REFINE ")+refinementName(refinement)+(row.index?" / AWARD":" / SCRAP"));break;
-  case Action::Mount:{int slot=row.index;auto gear=sheet.equipment[slot];std::string label=std::string(mountNames[slot])+": "+gearName(gear);if(equipmentOwner(sheet,slot)!=slot)label+=" / BRACED";else {
-      const int copy=equippedWeaponCopy(sheet,slot);
-      if(copy>=0)label+=" / COPY "+std::to_string(copy+1);
-      if(sheet.qualities[slot]!=Quality::None)label+=" / "+std::string(qualityName(sheet.qualities[slot]));
-    }rows.push_back(label);break;}
-
- }
- if(trading){
    const auto gear=Gear(selectedGear);
    const int copy=selectedWeaponCopy();
    const int cost=tradeArmor==Armor::Heavy?70:tradeArmor==Armor::Light?40:0;
@@ -498,6 +622,20 @@ std::vector<std::string> Preparation::lines(const Session &,uint32_t,const std::
      }
    }
    rows.push_back("BACK");
+ return rows;
+}
+std::vector<std::string> Preparation::lines(const Session &,uint32_t,const std::string &status)const{
+ std::vector<std::string> rows;
+ if(inventory){
+  for(auto &item:stockFor(sheet))rows.push_back(std::move(item.label));
+  if(rows.empty())rows.push_back("NO STOCK");
+ }else if(!sheet.created){rows={"CHASSIS: "+std::string(chassisInfo(sheet.chassis).name),"PILOT ROLE: "+std::string(pilotName(sheet.pilot)),"CALLSIGN: "+callsign};
+   rows.push_back("CREATE PILOT");}
+ else if(trading&&!catalog)rows=tradeLabels();
+ else {
+   const auto panel=loadoutPanel(sheet,-1,status);
+   for(const auto &card:panel.cards)rows.push_back(card.label);
+   if(rows.empty())rows.push_back(panel.inspection);
  }
  int cursor=std::clamp(selected,0,int(rows.size())-1),start=cursor/7*7;
  std::vector<std::string> result={inventory?"INVENTORY":recoveredWeaponPage(*this)?"RECOVERED / "+std::string(gearName(Gear(selectedGear))):trading?"TRADE POST / "+std::string(gearName(Gear(selectedGear))):sheet.created?"EQUIPMENT / "+callsign:"NEW PILOT / "+callsign};
@@ -509,7 +647,7 @@ std::vector<std::string> Preparation::lines(const Session &,uint32_t,const std::
  if(!sheet.created&&selected==0)result.push_back(chassisPowerDescription(sheet.chassis));
  if(!sheet.created&&selected==1)result.push_back(pilotRoleDescription(sheet.pilot));
  if(!sheet.created&&selected==3)result.push_back("STARTS WITH 1 NANITE CHARGE");
- if(sheet.created&&!trading&&!inventory){auto menu=rowsFor(*this);if(menu[cursor].action==Action::Module)result.push_back(moduleDescription(availableModule(sheet,modulePreview)));}
+
 
  if(sheet.created){
      const auto [gear,copy]=inspectedGear(*this);
@@ -542,7 +680,6 @@ std::vector<std::string> Preparation::lines(const Session &,uint32_t,const std::
          if(tuning->windup>0)result.push_back("CHARGE "+std::to_string(int(std::lround(tuning->windup*1000)))+" MS");
      }
  }
- if(sheet.created&&!trading&&!inventory){result.push_back(mountHint);result.push_back("GRIP + MOUNT: UNEQUIP");}
  if(!status.empty())result.push_back(status.substr(0,58));
  return result;
 }

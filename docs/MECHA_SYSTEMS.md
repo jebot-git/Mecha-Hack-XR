@@ -53,9 +53,10 @@ The four additional frames follow the Mission Manual (pp. 76–79). A right-grip
 
 ## Trade post and contracts
 
-The equipment menu's **Open Trade Post** entry is available between missions,
-including before the first mission. Use the left stick to select rows
-to select an item, buy, sell, choose armor, buy/equip armor or sell unused armor.
+Open **Trade Post** in the hangar between missions or before the first mission.
+Use the stick to browse the stock grid. Select an item to view its price and
+available transactions, then confirm the desired action. Back returns to the grid.
+Open **Inventory** to inspect owned copies, quantities and fitted equipment.
 Transactions are authoritative in the hangar and require completed debriefs.
 Mission, briefing and combat states reject trade requests.
 
