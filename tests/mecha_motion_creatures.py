@@ -19,7 +19,8 @@ from mecha_motion.rigs import discover
 class CreatureActionsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.pack = ROOT / "build-mecha/game-assets/mecha"
+        from tools.mecha_motion.__main__ import DEFAULT_PACK
+        cls.pack = DEFAULT_PACK
         cls.rigs, _ = discover(cls.pack)
         cls.rigs = {k: r for k, r in cls.rigs.items() if r["family"] == "kaiju"}
         ref = ROOT / "art/mecha/motion-evaluation"

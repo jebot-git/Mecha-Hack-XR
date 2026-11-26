@@ -6,6 +6,7 @@
 #include "searchlight.hpp"
 #include "rpg/enemy_animation.hpp"
 #include "rpg/destruction.hpp"
+#include "rpg/enemy_effects.hpp"
 #include <bit>
 #include <chrono>
 #include <numeric>
@@ -274,7 +275,7 @@ void Renderer::prepareWorldSlots(const World& w){
         worldEnemyRigs[i]=nullptr;
         if(w.rpgPrototype&&t.mesh){
             auto [it,inserted]=assetRigs.try_emplace({t.generatorAsset,t.mesh->size()},nullptr);
-            if(inserted)it->second=rpg::enemyAnimationRig(gameplayRoot.parent_path()/"models",t.generatorAsset,t.mesh->size());
+            if(inserted)it->second=motionLibrary.visualRig(t.generatorAsset,rpg::enemyAnimationRig(gameplayRoot.parent_path()/"models",t.generatorAsset,t.mesh->size()));
             worldEnemyRigs[i]=it->second;
         }
     }
@@ -399,9 +400,28 @@ void Renderer::drawWorld(const World& w){
         worldDrawCandidates.clear();
         for(size_t i=0;i<w.targets.size();++i){
             const auto &t=w.targets[i];
-            if(!t.active||t.escaped||(t.spawnType>=0&&!visibilityInRange(w,visibilityObserver,t.center)))continue;
+            auto& motion=livingPoses[i];
+            bool diving=false;
+            if(worldEnemyRigs[i]&&!t.active&&motion.seen&&motion.wasActive){
+                // The authority moves a burrower to its exit while it is hidden.
+                // Render the dive at the last visible position, then the breach at the exit.
+                const auto* actor=motionLibrary.find(t.generatorAsset);
+                if(actor&&actor->clips.contains("burrow-entry")&&std::any_of(w.effects.begin(),w.effects.end(),[&](const WeaponEffect& e){
+                    return e.model==rpg::rpgArrivalBurrow&&e.age<1.f&&length(e.position-t.origin)<10.f;
+                }))motion.burrowStart=w.elapsed;
+            }
+            if(!t.active)diving=w.elapsed>=motion.burrowStart&&w.elapsed-motion.burrowStart<.82f;
+            if(!motion.wasActive&&t.active&&worldEnemyRigs[i]){
+                const auto* actor=motionLibrary.find(t.generatorAsset);
+                if(actor&&actor->clips.contains("burrow-eruption")&&std::any_of(w.effects.begin(),w.effects.end(),[&](const WeaponEffect& e){
+                    return e.model==rpg::rpgArrivalBurrow&&e.age<2.8f&&length(e.position-t.origin)<10.f;
+                }))motion.burrowStart=w.elapsed;
+            }
+            motion.wasActive=t.active;motion.seen=true;
+            if(t.active)motion.lastOrigin=t.origin;
+            if((!t.active&&!diving)||t.escaped||(t.spawnType>=0&&!visibilityInRange(w,visibilityObserver,diving?motion.lastOrigin:t.center)))continue;
             auto q=compose(t.ai.gravity.frame,angles(t.yaw,t.ai.pitch,t.ai.bank));
-            auto p=t.health>0?t.origin:w.wreckPosition(t);
+            auto p=diving?motion.lastOrigin:t.health>0?t.origin:w.wreckPosition(t);
             if(t.health>0&&t.ai.rpgGrapplePilot&&t.ai.rpgGrapplePilot==w.rpgLocalPilot&&w.rpgPoseLead>0){
                 const auto before=rpg::sampleKnockdown(w.rpgKnockdown,w.elapsed);
                 const auto after=w.knockdownPose();
@@ -466,7 +486,22 @@ void Renderer::drawWorld(const World& w){
                 auto &cached=livingPoses[i];
                 const float time=w.elapsed+w.rpgPoseLead;
                 if(cached.frame!=poseFrame||cached.time!=time){
-                    cached.pose=rpg::poseLiveEnemy(*enemyRig,t,q,time);
+                    auto live=rpg::poseLiveEnemy(*enemyRig,t,q,time);
+                    if(const auto* a=motionLibrary.find(t.generatorAsset)){
+                        auto cue=motionLibrary.enemyCue(*a,t,time);
+                        float age=time-cached.burrowStart;
+                        if(age>=0&&age<.82f)cue=motionLibrary.at(*a,{t.active?"burrow-eruption":"burrow-entry"},age/.82f);
+                        if(cue.clip!=cached.clip){
+                            cached.previous=cached.pose;cached.changed=time;cached.clip=cue.clip;
+                        }
+                        auto jump=a->clips.find("leap-land");
+                        if(jump!=a->clips.end()&&cue.clip==&jump->second)
+                            cue.phase=std::clamp((time-cached.changed)/1.55f,0.f,1.f);
+                        motionLibrary.apply(*a,cue,live,enemyRig,nullptr,t.ai.combatMotion.aim>.1f,
+                                            t.ai.voidmawPose.phase==rpg::VoidmawPose::Cling,t.ai.weaponYaw-t.yaw,t.ai.weaponPitch,t.ai.voidmawPose.phase==rpg::VoidmawPose::Discharge);
+                        rpg::blendMotionTransition(live,cached.previous,(time-cached.changed)/.09f);
+                    }
+                    cached.pose=std::move(live);
                     cached.frame=poseFrame;cached.time=time;
                 }
                 pose=&cached.pose;
@@ -475,6 +510,8 @@ void Renderer::drawWorld(const World& w){
                 float age=std::max(0.f,w.elapsed-t.rpgDeathAt),poseAge=std::min(1.6f,age);auto &cached=corpsePoses[i];
                 if(cached.age!=poseAge||cached.started!=t.rpgDeathAt){
                     cached.pose=rpg::poseEnemyDeath(*enemyRig,t.ai.gaitPhase,wrap(t.ai.weaponYaw-t.yaw),t.ai.weaponPitch,poseAge,unsigned(i)^w.prototypeSeed);cached.floor=-1e9f;
+                    if(const auto* a=motionLibrary.find(t.generatorAsset))
+                        motionLibrary.apply(*a,motionLibrary.enemyCue(*a,t,t.rpgDeathAt+poseAge),cached.pose,enemyRig);
                     auto support=[&](size_t part,Vec3 vertex){auto p=rotate(angles(t.yaw),animatedPoint(cached.pose.parts[part],vertex));cached.floor=std::max(cached.floor,w.walkableHeight(t.origin+Vec3{p.x,0,p.z})-p.y);};
                     for(size_t part=0;part<enemyRig->parts.size();++part){const auto &bounds=enemyRig->parts[part];
                         if(poseAge>=1.6f)for(auto [first,count]:bounds.ranges)for(size_t n=first;n<first+count;++n)support(part,(*t.mesh)[n].position);

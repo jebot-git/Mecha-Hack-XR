@@ -9,6 +9,7 @@ namespace iron {
 using namespace avp;
 static Matrix orient(Quaternion q,Vec3 p) {return poseMatrix({{q.x,q.y,q.z,q.w},{p.x,p.y,p.z}});}
 void Renderer::loadModels(const std::filesystem::path& root) {
+    motionLibrary.load(root.parent_path()/"motions");
     std::map<std::string,std::vector<float>> modelData;
     // The shared material atlas adds no per-model textures or draw calls.
     // Ordinary engine installations without the original pack use a white fallback.
@@ -288,6 +289,10 @@ void Renderer::drawSoldier(const Pilot& pilot,float tilt,const Matrix* camera,fl
     const auto& asset=models.at(body);const auto& data=found->second;if(asset.count!=data.vertices)throw std::runtime_error("Player animation/model mismatch");
     auto pose=pilot.rpgVehicleBlend>0&&!pilot.lifeSpent?poseVehicle(data.rig,pilot.rpgVehicleBlend):poseWalker(data.rig,pilot.gaitPhase,pilot.lifeSpent?0:pilot.walkingSpeed,pilot.lifeSpent?0:pilot.torsoYaw,pilot.lifeSpent?0:wrap(pilot.aimYaw-pilot.facing()),pilot.lifeSpent?0:pilot.aimPitch,
         pilot.lifeSpent?WalkerMotion{}:WalkerMotion{pilot.rpgChassis,pilot.rpgThrust,pilot.rpgBodyRecoil,pilot.rpgLanding});
+    if(pilot.rpgChassis>=0)
+        if(auto* trained=motionLibrary.find(body))
+            motionLibrary.apply(*trained,motionLibrary.pilotCue(*trained,pilot,time),pose,nullptr,
+                                pilot.lifeSpent||pilot.rpgVehicleBlend>=.01f?nullptr:&data.rig);
     auto base=orient(compose(pilot.gravity.frame,angles(pilot.chassisYaw,tilt)),pilot.bodyPoint(-data.rig.floor));
     if(pilot.rpgKnockdown.active(time)){
         const auto fall=rpg::sampleKnockdown(pilot.rpgKnockdown,time);

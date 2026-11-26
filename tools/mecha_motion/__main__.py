@@ -8,7 +8,8 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_PACK = ROOT / "build-mecha/game-assets/mecha"
+PUBLISHED_PACK = ROOT / "assets/mecha"
+DEFAULT_PACK = PUBLISHED_PACK if (PUBLISHED_PACK / "runtime-models.json").is_file() else ROOT / "build-mecha/game-assets/mecha"
 REFERENCES = ROOT / "art/mecha/motion-evaluation"
 
 

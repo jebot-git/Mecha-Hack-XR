@@ -16,7 +16,8 @@ from mecha_motion.rigs import discover as gait_inventory
 class VehicleMotionTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.pack = ROOT / "build-mecha/game-assets/mecha"
+        from tools.mecha_motion.__main__ import DEFAULT_PACK
+        cls.pack = DEFAULT_PACK
         cls.rigs = vehicle.discover(cls.pack)
         reference = ROOT / "art/mecha/motion-evaluation/reference/brace.json"
         cls.curves = json.loads(reference.read_text())

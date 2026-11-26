@@ -17,7 +17,8 @@ from mecha_motion.rigs import discover
 class MechanicalActionsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.pack = ROOT / "build-mecha/game-assets/mecha"
+        from tools.mecha_motion.__main__ import DEFAULT_PACK
+        cls.pack = DEFAULT_PACK
         cls.rigs, _ = discover(cls.pack)
         refs = ROOT / "art/mecha/motion-evaluation"
         gait = json.loads((refs / "kimodo-gait.json").read_text())["sides"]

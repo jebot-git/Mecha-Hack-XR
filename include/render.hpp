@@ -5,6 +5,7 @@
 #include "simulation.hpp"
 #include "frontend.hpp"
 #include "animation.hpp"
+#include "rpg/motion_playback.hpp"
 #include "cockpit_effects.hpp"
 #include "cockpit_glass.hpp"
 #include "cockpit_lighting.hpp"
@@ -182,6 +183,7 @@ class Renderer {
         std::array<BoosterSocket,2> boosters{};
     };
     std::map<std::string,ModelRig> walkerRigs;
+    rpg::MotionPlayback motionLibrary;
     std::string soldierModel(const Pilot&)const;
     void drawSoldier(const Pilot&,float tilt=0,const avp::Matrix* camera=nullptr,float time=-1);
     ArmRig decodedRig{};
@@ -201,7 +203,14 @@ class Renderer {
     Model damageDecals;uint64_t damageDecalKey=0;
     struct CorpsePoseCache {float age=-1,started=-2,floor=0;WalkerPose pose;};
     std::vector<CorpsePoseCache> corpsePoses;
-    struct LivingPoseCache {WalkerPose pose; uint64_t frame=0; float time=-1;};
+    struct LivingPoseCache {
+        WalkerPose pose,previous;
+        const rpg::MotionClip* clip=nullptr;
+        uint64_t frame=0;
+        float time=-1,changed=-1,burrowStart=-1000;
+        bool wasActive=false,seen=false;
+        Vec3 lastOrigin{};
+    };
     uint64_t poseFrame=1;
     std::vector<LivingPoseCache> livingPoses;
     std::array<Model,5> pickupModels;

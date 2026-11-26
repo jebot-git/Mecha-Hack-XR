@@ -91,3 +91,15 @@ revised="$PWD/artifacts/arc-motion-refinement"
 ```
 
 The model learns a smooth rate curve per rig family and action. It holds out entire rig groups where available, keeps alternate skins together and reserves phase samples for single-rig actions as well. The JSON artifact stores the fitted curves, device, accepted manifest digest and held-out errors against the pacing targets. During export, a monotone interpolator preserves the exact author-specified times for weapon emissions, landings and other contacts. The revised gallery contains every action. The two-up comparison uses the same camera framing and clock for each version and the accompanying JSON indexes the example chapters.
+
+### Released client playback
+
+The release stores the approved library in `assets/mecha/motions`. The client loads it once and interpolates the 24 Hz rigid joint samples at the display rate. Gameplay continues to supply world positions, the gravity frame, aim, weapon sockets, damage and tracked arm input. World actors select clips from their replicated action, technique, creature pose and movement. The exterior pilot hull uses the lower-body tracks during normal control and the articulated hull for transformation and ejection. The independent review gallery exposes every named clip, including isolated gestures without a distinct gameplay cue.
+
+To regenerate the compact playback data from a verified gallery, run the following from the source tree.
+
+```sh
+"$py" -m tools.mecha_motion.runtime_pack "$revised" assets/mecha/motions
+```
+
+The packer verifies each native track digest before writing per-clip signed 16-bit quaternions, offsets and vertical travel. The client decodes two neighbouring samples per visible joint. Horizontal motion stays with the simulation. The native playback test checks all 120 bindings and 2,164 clips.
