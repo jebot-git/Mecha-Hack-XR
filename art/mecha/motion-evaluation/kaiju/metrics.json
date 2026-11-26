@@ -1,0 +1,19 @@
+{
+  "fps": 24,
+  "samples": 157,
+  "triangles": 748,
+  "rig_parts": 19,
+  "min_planted_feet": 2,
+  "root_travel_m": 8.3,
+  "live": {
+    "max_world_travel_per_authored_hold_m": 3.0546,
+    "mean_world_travel_per_authored_hold_m": 0.90315,
+    "max_sampled_sole_penetration_m": 0.0
+  },
+  "prototype": {
+    "max_world_travel_per_authored_hold_m": 0.0,
+    "mean_world_travel_per_authored_hold_m": 0.0,
+    "max_sampled_sole_penetration_m": 0.0
+  },
+  "max_blender_bake_corner_error_m": 4.8e-06
+}

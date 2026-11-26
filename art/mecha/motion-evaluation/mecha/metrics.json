@@ -1,0 +1,22 @@
+{
+  "model": "mecha_ace",
+  "fps": 30,
+  "frames": 237,
+  "triangles": 748,
+  "live_rigid_parts": 12,
+  "study_rigid_parts": 14,
+  "baseline": {
+    "observed_ground_contact_intervals": 182,
+    "observed_ground_contact_rms_speed_mps": 2.514,
+    "stance_rms_horizontal_speed_mps": 2.1594,
+    "max_sole_penetration_m": 0.0,
+    "max_scheduled_contact_gap_m": 0.73098
+  },
+  "prototype": {
+    "observed_ground_contact_intervals": 148,
+    "observed_ground_contact_rms_speed_mps": 0.0131,
+    "stance_rms_horizontal_speed_mps": 0.0,
+    "max_sole_penetration_m": 0.0,
+    "max_scheduled_contact_gap_m": 0.0
+  }
+}

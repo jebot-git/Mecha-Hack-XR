@@ -1,0 +1,50 @@
+{
+  "source_sha256": "eda98d489984ac45289336207dafe3215757e7bc75b770a6a96239e093b4a0a9",
+  "frames": 241,
+  "fps": 30,
+  "cycle_frames": [
+    99,
+    134
+  ],
+  "double_support_fraction": 0.0373,
+  "sides": {
+    "left": {
+      "median_stride_frames": 34.0,
+      "contact_fraction": 0.5311,
+      "swing_frames": [
+        117,
+        134
+      ],
+      "swing_clearance": [
+        0.0,
+        0.316,
+        0.764,
+        1.0,
+        0.811,
+        0.364,
+        0.018,
+        0.027,
+        0.0
+      ]
+    },
+    "right": {
+      "median_stride_frames": 34.0,
+      "contact_fraction": 0.4979,
+      "swing_frames": [
+        100,
+        117
+      ],
+      "swing_clearance": [
+        0.0,
+        0.42,
+        0.902,
+        1.0,
+        0.758,
+        0.33,
+        0.048,
+        0.031,
+        0.0
+      ]
+    }
+  }
+}
